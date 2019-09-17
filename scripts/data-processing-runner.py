@@ -1,14 +1,17 @@
-from tqdm import tqdm_notebook as tqdm
+from tqdm import tqdm as tqdm
 import pandas as pd 
 import util
 import pickle
 
 ## load data
-path_to_data = '../data/a1_df.csv'
-a1_df = pd.read_csv(path_to_data, nrows=100, index_col=0, header=-1, squeeze=True)
+path_to_data_input = '../data/a1_df.csv'
+path_to_data_output = '../data/2019-09-16__parse-df-method-1.pkl'
 
-def process_one_body(article_id, body):
+a1_df = pd.read_csv(path_to_data_input, index_col=0, header=-1, squeeze=True)
+
+def process_one_body(row):
 	"""Take one body and extract the people with their descriptions."""
+	article_id, body = row
 	output = []
     doc = util.preprocess(body)
     entities = util.get_quotes_method_1(doc)
@@ -22,10 +25,10 @@ def process_one_body(article_id, body):
 
 ## iterate
 quoted_dfs_method_1 = []
-for output in tqdm(util.multiprocess(a1_df.iteritems(), process_one_body)):
+for output in tqdm(util.multiprocess(a1_df.iteritems(), process_one_body), total=len(a1_df)):
     if len(output)> 0:
         quoted_dfs_method_1.extend(output)
 
 ## concat
 all_quotes_df = pd.concat(quoted_dfs_method_1)
-pickle.dump(all_quotes_df, open('../data/2019-09-16__parse-df-method-1.pkl', 'wb'))
+pickle.dump(all_quotes_df, open(path_to_data_output, 'wb'))
