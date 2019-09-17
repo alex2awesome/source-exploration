@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 nlp = spacy.load('en_core_web_sm')
 
-def multiprocess(input_list, func):
+def multiprocess(input_list, func, max_workers=-1):
     """Simple ThreadPoolExecutor Wrapper.
 
         Input_list: list to be mapped over by the executor.
@@ -22,7 +22,7 @@ def multiprocess(input_list, func):
                 for output in executor.map(func, input_list):
                     yield output
     """
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
         for output in executor.map(func, input_list):
             yield output
 
