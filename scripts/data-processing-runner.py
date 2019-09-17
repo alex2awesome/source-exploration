@@ -4,15 +4,8 @@ import util
 import pickle
 
 ## load data
-path_to_data = '../data/unprocessed_full_data_df.csv'
-full_df = pd.read_csv(path_to_data)
-
-## filter data to A1 pages
-a1_df = (full_df
-         .loc[lambda df: df['print_section_and_page'] == 'A-001']
-         .loc[lambda df: df['body'].notnull()]
-         .set_index('id')['body']
-        )
+path_to_data = '../data/a1_df.csv'
+a1_df = pd.read_csv(path_to_data, nrows=100, index_col=0, header=-1, squeeze=True)
 
 def process_one_body(article_id, body):
 	"""Take one body and extract the people with their descriptions."""
