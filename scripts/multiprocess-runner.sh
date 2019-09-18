@@ -1,7 +1,8 @@
 #!/bin/bash
 #SBATCH --nodes=12
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=6
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=5G
 #SBATCH -t 10:00:00 # time required, here it is 1 min
 
 cd /home/rcf-proj/ef/spangher/source-exploration/scripts
