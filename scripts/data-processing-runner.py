@@ -1,19 +1,17 @@
 from tqdm import tqdm as tqdm
 import pandas as pd 
 import util
+import spacy
 import pickle
+import argparse 
 
-## load data
-path_to_data_input = '../data/a1_df.csv'
-path_to_data_output = '../data/2019-09-16__parse-df-method-1.pkl'
+nlp = spacy.load('en_core_web_sm')
 
-a1_df = pd.read_csv(path_to_data_input, index_col=0, header=-1, squeeze=True)
-
-def process_one_body(row):
-	"""Take one body and extract the people with their descriptions."""
-	article_id, body = row
-	output = []
-    doc = util.preprocess(body)
+def process_one_body(row, nlp=nlp):
+    """Take one body and extract the people with their descriptions."""
+    article_id, body = row
+    output = []
+    doc = util.preprocess(body, nlp)
     entities = util.get_quotes_method_1(doc)
     if len(entities)> 0:
         # quoted_entities = dict(filter(lambda x: len(x[1]['quote sentence']) > 0, entities_clustered.items()))
@@ -23,12 +21,36 @@ def process_one_body(row):
         output.append(quoted_ent_df)
     return output
 
-## iterate
-quoted_dfs_method_1 = []
-for output in tqdm(util.multiprocess(a1_df.iteritems(), process_one_body), total=len(a1_df)):
-    if len(output)> 0:
-        quoted_dfs_method_1.extend(output)
+if __name__=='__main__':
+    ## argparse
+    parser = argparse.ArgumentParser(description='Parse out the data.')
+    parser.add_argument('--start', type=int, help='start row')
+    parser.add_argument('--end',  type=int, help='end row')
+    args = parser.parse_args()
 
-## concat
-all_quotes_df = pd.concat(quoted_dfs_method_1)
-pickle.dump(all_quotes_df, open(path_to_data_output, 'wb'))
+    ## i/o paths
+    path_to_data_input = '../data/a1_df.csv'
+    path_to_data_output = '../data/2019-09-16__parse-df-method-1__start-%d__end-%d.pkl'
+
+    ## load data
+    a1_df = pd.read_csv(
+        path_to_data_input,
+        index_col=0,
+        header=-1,
+        squeeze=True,
+        skiprows=args.start,
+        nrows=(args.end - args.start)
+    )
+
+    ## iterate
+    quoted_dfs_method_1 = []
+    for output in tqdm(util.multiprocess(a1_df.iteritems(), process_one_body, max_workers=8), total=len(a1_df)):
+        if len(output)> 0:
+            quoted_dfs_method_1.extend(output)
+
+    ## concat and output
+    all_quotes_df = pd.concat(quoted_dfs_method_1)
+    pickle.dump(
+        all_quotes_df,
+        open(path_to_data_output % (args.start, args.end), 'wb')
+    )

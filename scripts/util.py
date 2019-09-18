@@ -3,11 +3,8 @@ import os
 from collections import defaultdict
 import jellyfish
 from spacy import displacy
-from  more_itertools import unique_everseen
+from more_itertools import unique_everseen
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
-
-
-nlp = spacy.load('en_core_web_sm')
 
 def multiprocess(input_list, func, max_workers=-1):
     """Simple ThreadPoolExecutor Wrapper.
@@ -26,7 +23,7 @@ def multiprocess(input_list, func, max_workers=-1):
         for output in executor.map(func, input_list):
             yield output
 
-def preprocess(text):
+def preprocess(text, nlp):
     """Remove duplicate and short sentences."""
     text = text.replace('\n', ' ').replace("''", '"').strip()
     doc = nlp(text)
