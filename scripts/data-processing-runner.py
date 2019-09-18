@@ -26,16 +26,19 @@ if __name__=='__main__':
     ## argparse
     parser = argparse.ArgumentParser(description='Parse out the data.')
     parser.add_argument('--start', type=int, help='start row')
-    parser.add_argument('--end',  type=int, help='end row')
+    parser.add_argument('--end', type=int, help='end row')
     args = parser.parse_args()
 
     # ## logger
-    # log = logging.getLogger(__name__)
-    # fh = logging.FileHandler('logs/process-logger__start-%d_end-%d.log' % (args.start, args.end))
-    # fh.setLevel(logging.DEBUG)
-    # log.setLevel(logging.INFO)
-    # log.addHandler(TqdmLoggingHandler())
-
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        datefmt='%m-%d %H:%M',
+        filename='logs/python-logging__start-%d_end-%d.log' % (args.start, args.end),
+        filemode='w'
+    )
+    log = logging.getLogger(__name__)
+    log.addHandler(util.TqdmLoggingHandler())
 
     ## i/o paths
     path_to_data_input = '../data/a1_df.csv'
