@@ -56,7 +56,7 @@ if __name__=='__main__':
 
     ## iterate
     quoted_dfs_method_1 = []
-    for output in tqdm(util.multiprocess(a1_df.iteritems(), process_one_body, max_workers=8), total=len(a1_df)):
+    for output in tqdm(util.multiprocess(a1_df.iteritems(), process_one_body, max_workers=4), total=len(a1_df)):
         if len(output)> 0:
             quoted_dfs_method_1.extend(output)
 
