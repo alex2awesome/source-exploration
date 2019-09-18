@@ -27,7 +27,7 @@ do
  	--ntasks=1 \
  	-w $node_i \
  	-o logs/logfile__$start_idx-$end_idx.out \
- 	-e logfile__$start_idx-$end_idx.err \
+ 	-e logs/logfile__$start_idx-$end_idx.err \
  	python3.7 data-processing-runner.py \
  		--start $start_idx \
  		--end $end_idx &
