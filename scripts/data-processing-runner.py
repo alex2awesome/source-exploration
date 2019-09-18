@@ -4,8 +4,9 @@ import util
 import spacy
 import pickle
 import argparse 
+import logging
 
-nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load('en_core_web_lg')
 
 def process_one_body(row, nlp=nlp):
     """Take one body and extract the people with their descriptions."""
@@ -27,6 +28,14 @@ if __name__=='__main__':
     parser.add_argument('--start', type=int, help='start row')
     parser.add_argument('--end',  type=int, help='end row')
     args = parser.parse_args()
+
+    # ## logger
+    # log = logging.getLogger(__name__)
+    # fh = logging.FileHandler('logs/process-logger__start-%d_end-%d.log' % (args.start, args.end))
+    # fh.setLevel(logging.DEBUG)
+    # log.setLevel(logging.INFO)
+    # log.addHandler(TqdmLoggingHandler())
+
 
     ## i/o paths
     path_to_data_input = '../data/a1_df.csv'

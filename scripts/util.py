@@ -5,6 +5,8 @@ import jellyfish
 from spacy import displacy
 from more_itertools import unique_everseen
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+import logging
+import tqdm
 
 def multiprocess(input_list, func, max_workers=-1):
     """Simple ThreadPoolExecutor Wrapper.
@@ -22,6 +24,23 @@ def multiprocess(input_list, func, max_workers=-1):
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         for output in executor.map(func, input_list):
             yield output
+
+
+class TqdmLoggingHandler(logging.Handler):
+    def __init__(self, level=logging.NOTSET):
+        super().__init__(level)
+
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            tqdm.tqdm.write(msg)
+            self.flush()
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            self.handleError(record)
+
+######## project specific utils
 
 def preprocess(text, nlp):
     """Remove duplicate and short sentences."""
