@@ -1,0 +1,5 @@
+*.pkl
+*.data
+*.txt
+*.metadata
+models/ACL2013_Personas/input*
