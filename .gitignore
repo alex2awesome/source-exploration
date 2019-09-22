@@ -3,3 +3,8 @@
 *.txt
 *.metadata
 models/ACL2013_Personas/input*
+*.xml.gz
+*.xml
+*.csv
+*.tar
+*.tar.gz
