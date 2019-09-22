@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+#####################################################
+
 name=$1
 input=$2
 heapsize=3000m
@@ -54,9 +57,9 @@ EOF
 
 # add all the jars anywhere in the lib/ directory to our classpath
 here=$(dirname runjava)
-CLASSES=$here/bin
+CLASSES=$here/build
 CLASSES=$CLASSES:$(echo $here/lib/*.jar | tr ' ' :)
 CLASSES=$CLASSES:$here/narrative.jar
 
 echo "COMMAND: java.exe -XX:ParallelGCThreads=2 -Xmx$heapsize -Xms$heapsize -ea -classpath $CLASSES $*" personas.ark.cs.cmu.edu/PersonaModel "$name.properties"
-java.exe -XX:ParallelGCThreads=2 -Xmx$heapsize -Xms$heapsize -ea -classpath $CLASSES personas.ark.cs.cmu.edu/PersonaModel "$name.properties"
+java -XX:ParallelGCThreads=2 -Xmx$heapsize -Xms$heapsize -ea -classpath $CLASSES personas.ark.cs.cmu.edu/PersonaModel "$name.properties"
