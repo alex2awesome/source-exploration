@@ -1,6 +1,11 @@
 #!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --mem=5G
+#SBATCH -t 10:00:00
 
+cd /home/rcf-proj/ef/spangher/source-exploration/models/ACL2013_Personas/java
 
+#!/bin/bash
 #####################################################
 
 name=$1
