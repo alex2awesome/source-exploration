@@ -2,7 +2,7 @@
 
 name=$1
 input=$2
-heapsize=512m
+heapsize=3000m
 
 echo "output dir: $name"
 
@@ -51,7 +51,6 @@ finalLAgentsFile="$name.out"/finalLAgentsFile
 finalLPatientsFile="$name.out"/finalLPatientsFile
 finalLModFile="$name.out"/finalLModFile
 EOF
-# ./runjava personas.ark.cs.cmu.edu/PersonaModel "$name.properties"
 
 # add all the jars anywhere in the lib/ directory to our classpath
 here=$(dirname runjava)
@@ -59,5 +58,5 @@ CLASSES=$here/bin
 CLASSES=$CLASSES:$(echo $here/lib/*.jar | tr ' ' :)
 CLASSES=$CLASSES:$here/narrative.jar
 
-echo "COMMAND: java.exe -XX:ParallelGCThreads=2 -Xmx$heapsize -Xms$heapsize -ea -classpath $CLASSES $*" src/personas.ark.cs.cmu.edu/PersonaModel "$name.properties"
-java.exe -XX:ParallelGCThreads=2 -Xmx$heapsize -Xms$heapsize -ea -classpath $CLASSES src/personas.ark.cs.cmu.edu/PersonaModel "$name.properties"
+echo "COMMAND: java.exe -XX:ParallelGCThreads=2 -Xmx$heapsize -Xms$heapsize -ea -classpath $CLASSES $*" personas.ark.cs.cmu.edu/PersonaModel "$name.properties"
+java.exe -XX:ParallelGCThreads=2 -Xmx$heapsize -Xms$heapsize -ea -classpath $CLASSES personas.ark.cs.cmu.edu/PersonaModel "$name.properties"
