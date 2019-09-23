@@ -33,16 +33,17 @@ def convert_sentences(doc_x):
         sent_infos['char_offsets'] = char_offsets
 
         deps_x = sent_x.find('.//collapsed-ccprocessed-dependencies')
+        deps_x = sent_x.find('.//dependencies[@type="collapsed-ccprocessed-dependencies"]')
         if deps_x is not None:
             deps_j = []
             #deps_x = sent_x.find('.//collapsed-dependencies')
             #deps_x = sent_x.find('.//basic-dependencies')
             for dep_x in deps_x.findall('.//dep'):
                 gov = dep_x.find('.//governor')
-                gi = int(gov.get('idx')) - 1
+                gi = int(gov.get('idx')) # - 1 ## new stanford core deps are 0 indexed.
                 dept= dep_x.find('.//dependent')
-                di = int(dept.get('idx')) - 1
-                tupl = [dep_x.get('type'), di,gi]
+                di = int(dept.get('idx')) #- 1
+                tupl = [dep_x.get('type'), di, gi]
                 deps_j.append(tupl)
             sent_infos['deps'] = deps_j
         if sent_x.findtext(".//parse") is not None:
