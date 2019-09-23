@@ -2,7 +2,7 @@
 
 datadir=../../../data/news-article-flatlist
 filelist=$datadir/filelist-to-process.txt
-ls -1 $datadir/raw > $filelist
+ls -1 -d $datadir/raw/* > $filelist
 
 java.exe \
 	-cp "../stanford-corenlp-full-2018-10-05/*" \
