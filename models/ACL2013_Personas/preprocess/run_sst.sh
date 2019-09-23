@@ -20,4 +20,4 @@ CLASSES="$CLASSES;$narrjava/lib/stanford-corenlp-2012-04-09.jar"
 CLASSES="$CLASSES;$narrjava/build"
 CLASSES="$CLASSES;$narrjava/narrative.jar"
 #java.exe -XX:ParallelGCThreads=2 -Xmx3000m -ea -classpath $CLASSES personas.ark.cs.cmu.edu.util.RunSS
-java.exe -XX:ParallelGCThreads=2 -ea -classpath $CLASSES personas.ark.cs.cmu.edu.util.RunSS
+java -XX:ParallelGCThreads=2 -Xmx3000m -ea -classpath $CLASSES personas.ark.cs.cmu.edu.util.RunSS

@@ -27,30 +27,20 @@ if [ ! -d SupersenseTagger ]; then
   exit -1
 fi
 
-if [ ! -d corenlp_plot_summaries ]; then
-  echo "ERROR cannot fine corenlp_plot_summaries directory (the CoreNLP XML files)"
-  exit -1
-fi
-
-# This script runs each step in serial. After the JSON-ification, each pipeline step operates on one giant file.
-# Commented-out is a parallelized version for the SST step (requires GNU Parallel)
-# that's a bit faster if you have the cores/memory to spare.
-#
-# Note that individual steps can of course be run on any subset of the
-# documents you want.  This is good for testing: for example, insert "head -5"
-# (or whatever) into step (2) to only work on a few documents.
-
-outname=all
+batch=$1
+data_dir=../../../data/news-article-flatlist
+mkdir -p $data_dir/preprocessed
+outname=$data_dir/preprocessed/batch-$batch
 
 # (2) Convert CoreNLP's XML format to JSON
 echo "\nCONVERTING CoreNLP XML to TSV/JSON format"
 
 # mkdir -p batches
-ls corenlp_plot_summaries/*.xml.gz | 
+ls $data_dir/stanford-parses/$batch/*.xml |
   head -100 |
-  python3 core2sent.py --sentmode tsent |
+  python3.7 core2sent.py --sentmode tsent |
   cat > $outname.noss
-  # awk '{print > "batches/" ($1 % 10) ".noss"}'
+#   awk '{print > "batches/" ($1 % 10) ".noss"}'
 
 echo
 echo "How many sentences:"
@@ -67,13 +57,13 @@ echo "\nRUNNING the supersense tagger"
 echo "\nCONVERTING to entity/tuples"
 
 # (4) Derive entity-centric tuple files
-cat $outname.ss | python3 coreproc.py > $outname.coreproc
+cat $outname.ss | python3.7 coreproc.py > $outname.coreproc
 
 # (5) Do the Freebase name matching
 # ./char_matcher_pipe.sh < $outname.coreproc > $outname.coreproc.fb
 
 # (6) Do the final slim-ification in preparation for the model
-cat $outname.coreproc | grep -v '^Tpair' | python3 conv_act_ent.py > $outname.data
+cat $outname.coreproc | grep -v '^Tpair' | python3.7 conv_act_ent.py > $outname.data
 
 echo "\nFINAL file ready for the model:"
 ls -l $outname.data
