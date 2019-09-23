@@ -123,7 +123,7 @@ def corexmls_autodetect():
 def corexmls_from_files(linegen):
     for doc_i,filename in enumerate(linegen):
         if doc_i % 100==0: sys.stderr.write('.')
-        fp = gzip.open(filename) if filename.endswith('.gz') else open(filename)
+        fp = gzip.open(filename, 'rb') if filename.endswith('.gz') else open(filename, 'rb')
         data = fp.read().decode('utf-8','replace').encode('utf-8')
         s = filename
         s = os.path.basename(s)
