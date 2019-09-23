@@ -1,6 +1,8 @@
 import pandas as pd 
 import spacy
 import os
+from more_itertools import unique_everseen
+
 
 def preprocess(text, nlp):
     """Remove duplicate and short sentences."""
@@ -18,7 +20,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Parse out the data.')
     parser.add_argument('--start', type=int, help='start row')
     parser.add_argument('--end', type=int, help='end row')
-    parser.add_argument('--batch', type=int, help="batch num.")
+    parser.add_argument('--batch', type=str, help="batch num.")
     args = parser.parse_args()
 
     ## handle I/O
@@ -41,6 +43,6 @@ if __name__=='__main__':
 
     ## process and write
     for idx, text in a1_df.iteritems():
-        processed_text = util.preprocess(text, nlp=nlp)
-        with open(os.path.join(output_dir, idx + '.txt'), 'w') as f:
+        processed_text = preprocess(text, nlp=nlp)
+        with open(os.path.join(path_to_data_output, idx + '.txt'), 'w') as f:
             f.write(processed_text.text)

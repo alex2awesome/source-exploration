@@ -1,25 +1,21 @@
 #!/bin/bash
 
 # get command line arguments
-while getopts ":s:e:b" opt; do
-  case $opt in
-    s) start="$OPTARG"
-    ;;
-    e) end="$OPTARG"
-    ;;
-    b) batch="$OPTARG"
-    ;;
-    \?) echo "Invalid option -$OPTARG" >&2
-    ;;
-  esac
-done
+start=$1
+end=$2
+batch=$3
+
+cd /home/rcf-proj/ef/spangher/source-exploration/models/ACL2013_Personas/generate_stanford_parses
 
 datadir=../../../data/news-article-flatlist
+inputdir=$datadir/raw/$batch
 outputdir=$datadir/stanford-parses/$batch
+mkdir -p $inputdir
 mkdir -p $outputdir
 
 ### split up data
 echo 'preprocessing using python...'
+echo "python3.7 split_a1_file.py --start $start --end $end --batch $batch"
 python3.7 split_a1_file.py --start $start --end $end --batch $batch
 
 ## aggregate list for CoreNLP
