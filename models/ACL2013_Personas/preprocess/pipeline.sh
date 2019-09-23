@@ -52,7 +52,7 @@ cat $outname.noss | cut -f1 | uniq | wc -l
 echo "\nRUNNING the supersense tagger"
 
 # print -l batches/*.noss | parallel -j5 --ungroup -v './run_sst.sh < {} > {.}.ss'
-./run_sst.sh < $outname.noss > $outname.ss
+bash run_sst.sh < $outname.noss > $outname.ss
 
 echo "\nCONVERTING to entity/tuples"
 
