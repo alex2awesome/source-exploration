@@ -11,8 +11,8 @@ def preprocess(text, nlp):
     return nlp(text)
 
 if __name__=='__main__':
-	import argparse
-	nlp = spacy.load('en_core_web_lg')
+    import argparse
+    nlp = spacy.load('en_core_web_lg')
 
     ## argparse
     parser = argparse.ArgumentParser(description='Parse out the data.')
@@ -27,7 +27,7 @@ if __name__=='__main__':
     path_to_data_output = os.path.join(data_dir, 'news-article-flatlist', 'raw', args.batch)
 
     if not os.path.exists(path_to_data_output):
-    	os.mkdir(path_to_data_output)
+        os.mkdir(path_to_data_output)
 
     ## load data
     a1_df = pd.read_csv(
@@ -41,6 +41,6 @@ if __name__=='__main__':
 
     ## process and write
     for idx, text in a1_df.iteritems():
-	    processed_text = util.preprocess(text, nlp=nlp)
-	    with open(os.path.join(output_dir, idx + '.txt'), 'w') as f:
-	        f.write(processed_text.text)
+        processed_text = util.preprocess(text, nlp=nlp)
+        with open(os.path.join(output_dir, idx + '.txt'), 'w') as f:
+            f.write(processed_text.text)
