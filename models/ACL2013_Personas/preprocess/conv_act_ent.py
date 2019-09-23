@@ -10,10 +10,6 @@ character ids where they can be aligned.
 import sys,re,json,operator,random
 
 def main(lines):
-    
-    # file=open(filename)
-
-
     agents=[]
     patients=[]
     modifiers = []
@@ -34,13 +30,11 @@ def main(lines):
             if len(cols) > 1:
                 id=cols[0].lower()
                 info = json.loads(cols[1])
-                # info['fb'] = info.get('fb','')
-                # info['fba'] = info.get('fba','')
+                info['fb'] = info.get('fb','')
+                info['fba'] = info.get('fba','')
 
                 fb=info['fb']
                 fbactor=info['fba']
-
-                #print fb, fbactor
 
                 if fb == "":
                     fb=id
@@ -50,14 +44,15 @@ def main(lines):
                 fbactors[id]=fbactor
 
                 mdict=info['lemma_c']
-                sorted_mdict = sorted(mdict.iteritems(), key=operator.itemgetter(1), reverse=True)
+                sorted_mdict = sorted(iter(mdict.items()), key=operator.itemgetter(1), reverse=True)
                 count=0
 
                 for name,count in sorted_mdict:
                     enames[fb]=name
                     break
+
                 mdict=info['fulltext_c']
-                sorted_mdict = sorted(mdict.iteritems(), key=operator.itemgetter(1), reverse=True)
+                sorted_mdict = sorted(iter(mdict.items()), key=operator.itemgetter(1), reverse=True)
                 count=0
 
                 for name,count in sorted_mdict:
@@ -65,7 +60,7 @@ def main(lines):
                     break
 
                 mdict=info['sstag_c']
-                sorted_mdict = sorted(mdict.iteritems(), key=operator.itemgetter(1), reverse=True)
+                sorted_mdict = sorted(iter(mdict.items()), key=operator.itemgetter(1), reverse=True)
                 count=0
 
                 sstags[fb]=""
@@ -74,10 +69,7 @@ def main(lines):
                     sstags[fb]=name
                     break
 
-    # file.close()
-    # file=open(filename)
-
-    for line in lines: 
+    for line in lines:
         if line.startswith("=== DOC"):
             cols=line.rstrip().split(" ")
             docID=cols[2]
@@ -94,7 +86,6 @@ def main(lines):
                 entityID=parts[3]
                 entity=parts[4]
                 
-
                 eID=entityID.lower()
                 fbEntity=fbs[eID]
 
@@ -102,12 +93,8 @@ def main(lines):
                 if sstag != "noun.person":
                     continue
 
-              #  print sstag
-
-
                 key="%s:%s:%s:%s:%s" % (fbEntity, tupleID, supersense, verb, rel)
                 
-               # print key
                 count=0
                 if fbEntity not in counts:
                     counts[fbEntity]=0
@@ -121,32 +108,31 @@ def main(lines):
                     modifiers.append(key)
                 else: assert False
 
-    print "%s\t" % docID,
+    print("%s\t" % docID, end=' ')
     for key in agents:
         cols=key.split(":")
         entityID=cols[0]
         if counts[entityID] > 0:
-            print "%s" % key.lower(),
-    print "\t",
+            print("%s" % key.lower(), end=' ')
+
+    print("\t", end=' ')
     for key in patients:
         cols=key.split(":")
         entityID=cols[0]
         if counts[entityID] > 0:
-            print "%s" % key.lower(),
-    print "\t",
+            print("%s" % key.lower(), end=' ')
+
+    print("\t", end=' ')
     for key in modifiers:
         cols=key.split(":")
         entityID=cols[0]
         if counts[entityID] > 0:
-            print "%s" % key.lower(),
+            print("%s" % key.lower(), end=' ')
 
-    print "\t",
-    print json.dumps(enames),
-    print "\t",
-    print json.dumps(fullnames)
-    
-    
-    # file.close()
+    print("\t", end=' ')
+    print(json.dumps(enames), end=' ')
+    print("\t", end=' ')
+    print(json.dumps(fullnames))
 
 def yield_docs():
     cur = []
@@ -160,7 +146,5 @@ def yield_docs():
     yield cur
 
 if __name__ == "__main__":
-    # main(sys.argv[1])
-    # main(open(sys.argv[1]).readlines())
     for doclines in yield_docs():
         main(doclines)

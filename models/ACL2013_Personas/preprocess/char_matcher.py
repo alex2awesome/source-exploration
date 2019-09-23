@@ -62,7 +62,7 @@ def main(nameFile, outDirectory):
 				if id.startswith("E"):
 					info = json.loads(cols[1])
 					mdict=info['lemma_c']
-					sorted_mdict = sorted(mdict.iteritems(), key=operator.itemgetter(1), reverse=True)
+					sorted_mdict = sorted(iter(mdict.items()), key=operator.itemgetter(1), reverse=True)
 					count=0
 					best=""
 					for name,count in sorted_mdict:

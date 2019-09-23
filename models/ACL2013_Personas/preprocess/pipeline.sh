@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # Before running this script, you need to unzip (or move or symlink)
 # several directories into this one.
@@ -21,10 +21,6 @@
 # After those steps, it should be possible to run this script
 #   ./pipeline.sh
 #
-# This script requires 'zsh' to be installed (it's a zsh script)
-# Though you can just run the commands yourself too, of course.
-
-set -eu
 
 if [ ! -d SupersenseTagger ]; then
   echo "ERROR cannot find SupersenseTagger directory."
@@ -50,9 +46,9 @@ outname=all
 echo "\nCONVERTING CoreNLP XML to TSV/JSON format"
 
 # mkdir -p batches
-print -l corenlp_plot_summaries/*.xml.gz | 
- # head -1000 |
-  python core2sent.py --sentmode tsent |
+ls corenlp_plot_summaries/*.xml.gz | 
+  head -100 |
+  python3 core2sent.py --sentmode tsent |
   cat > $outname.noss
   # awk '{print > "batches/" ($1 % 10) ".noss"}'
 
@@ -68,16 +64,16 @@ echo "\nRUNNING the supersense tagger"
 # print -l batches/*.noss | parallel -j5 --ungroup -v './run_sst.sh < {} > {.}.ss'
 ./run_sst.sh < $outname.noss > $outname.ss
 
-echo "\nCONVERTING to entity/tuples and Freebase matches"
+echo "\nCONVERTING to entity/tuples"
 
 # (4) Derive entity-centric tuple files
-cat $outname.ss | python coreproc.py > $outname.coreproc
+cat $outname.ss | python3 coreproc.py > $outname.coreproc
 
 # (5) Do the Freebase name matching
-./char_matcher_pipe.sh < $outname.coreproc > $outname.coreproc.fb
+# ./char_matcher_pipe.sh < $outname.coreproc > $outname.coreproc.fb
 
 # (6) Do the final slim-ification in preparation for the model
-cat $outname.coreproc.fb | grep -v '^Tpair' | python conv_act_ent.py > $outname.data
+cat $outname.coreproc | grep -v '^Tpair' | python3 conv_act_ent.py > $outname.data
 
 echo "\nFINAL file ready for the model:"
 ls -l $outname.data
