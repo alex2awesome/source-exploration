@@ -29,8 +29,8 @@ def parse_docrows(rows):
         s['pos']=row[4].split()
         s['sstag']=row[-1].split()
         s['deps']=json.loads(row[6])
-        assert len(s['word'])==len(s['sstag'])
-        sents.append(s)
+        if len(s['word'])==len(s['sstag']):
+            sents.append(s)
     ents  = [json.loads(row[-1]) for row in rows if row[1].startswith('E')]
     return sents, ents
 
