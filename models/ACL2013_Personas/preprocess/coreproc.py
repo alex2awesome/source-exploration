@@ -404,7 +404,7 @@ def process_doc(sents, ents):
 
 def make_shortform(sents,ents):
     entity_summaries(sents, ents)
-    for snum,sent in enumerate(sents):
+    for snum, sent in enumerate(sents):
         print("{}\t{}".format(sent['id'], showsent(sent)))
         verb_analysis(sent, ents)
         new_stuff(sent, ents, snum)
@@ -413,8 +413,8 @@ def main():
     for docid, rows in itertools.groupby(rowgen(), key=lambda r: r[0]):
         sents, ents = parse_docrows(rows)
         print('\n=== DOC', docid, len(sents), len(ents))
-        process_doc(sents,ents)
-        make_shortform(sents,ents)
+        process_doc(sents, ents)
+        make_shortform(sents, ents)
 
 
 main()

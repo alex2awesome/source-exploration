@@ -40,9 +40,9 @@ def convert_sentences(doc_x):
             #deps_x = sent_x.find('.//basic-dependencies')
             for dep_x in deps_x.findall('.//dep'):
                 gov = dep_x.find('.//governor')
-                gi = int(gov.get('idx')) # - 1 ## new stanford core deps are 0 indexed.
+                gi = int(gov.get('idx')) - 1
                 dept= dep_x.find('.//dependent')
-                di = int(dept.get('idx')) #- 1
+                di = int(dept.get('idx')) - 1
                 tupl = [dep_x.get('type'), di, gi]
                 deps_j.append(tupl)
             sent_infos['deps'] = deps_j
