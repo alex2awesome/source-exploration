@@ -36,6 +36,7 @@ def parse_docrows(rows):
             if len(s['word']) > len(s['sstag']):
                 diff = len(s['word']) - len(s['sstag'])
                 s['sstag'] += [0] * diff
+
         ## 
         assert(len(s['word']) == len(s['sstag'])) 
         sents.append(s)
@@ -436,12 +437,9 @@ def make_shortform(sents,ents):
 
 def main():
     for docid, rows in itertools.groupby(rowgen(), key=lambda r: r[0]):
-        try:
-            sents, ents = parse_docrows(rows)
-            print('\n=== DOC', docid, len(sents), len(ents))
-            process_doc(sents, ents)
-            make_shortform(sents, ents)
-        except:
-            continue
+        sents, ents = parse_docrows(rows)
+        print('\n=== DOC', docid, len(sents), len(ents))
+        process_doc(sents, ents)
+        make_shortform(sents, ents)
 
 main()
