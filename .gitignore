@@ -9,3 +9,4 @@ models/ACL2013_Personas/input*
 *.tar
 *.tar.gz
 *.tsv
+*.ss
