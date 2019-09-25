@@ -37,7 +37,11 @@ def parse_docrows(rows):
 def process_entity(ent, sents):
     headinds = [(m['sentence'],m['head']) for m in ent['mentions']]
     headlemmas = [sents[s]['lemma'][t] for s,t in headinds]
-    mention_texts = [ ' '.join([sents[m['sentence']]['word'][t] for t in range(m['start'],m['end'])]) for m in ent['mentions']]
+    mention_texts = [ ' '.join([
+            sents[m['sentence']]['word'][t] for t in range(m['start'],m['end'])
+        ]) 
+        for m in ent['mentions']
+    ]
 
     sstags = [sents[s]['sstag'][t].split('-')[-1] for s,t in headinds]
     ssc = uniq_c(sstags)
@@ -108,17 +112,25 @@ def decide_canonical_mention(ent, sents):
         text = ' '.join(sent['word'][t] for t in tokinds).lower()
         good_texts[text] += 1
     if good_texts:
-        best = sorted(list(good_texts.items()), key=lambda text_c: (-text_c[1], -len(text_c[0].split()))
-                )[0][0]
+        best = sorted(
+            list(good_texts.items()), 
+            key=lambda text_c: (-text_c[1], -len(text_c[0].split()))
+        )[0][0]
     elif fallback_texts:
-        best = sorted(list(fallback_texts.items()), key=lambda text_c1: (-text_c1[1], len(text_c1[0].split()))
-                )[0][0]
+        best = sorted(
+            list(fallback_texts.items()), 
+            key=lambda text_c1: (-text_c1[1], len(text_c1[0].split()))
+        )[0][0]
     elif really_fallbacks:
-        best = sorted(list(really_fallbacks.items()), key=lambda text_c2: (-text_c2[1], -len(text_c2[0].split()))
-                )[0][0]
+        best = sorted(
+            list(really_fallbacks.items()),
+            key=lambda text_c2: (-text_c2[1], -len(text_c2[0].split()))
+        )[0][0]
     elif len(ent['mentions']) > 0:
         m = ent['mentions'][0]
-        best = ' '.join(sents[m['sentence']]['word'][t] for t in range(m['start'], m['end'])).lower()
+        best = ' '.join(
+            sents[m['sentence']]['word'][t] for t in range(m['start'], m['end'])
+        ).lower()
     else:
         best = 'NO_TEXT'
     ent['canonical_text'] = best
@@ -212,12 +224,15 @@ def extend_path_for_superobj(paths, sent):
         # if sent['entities'][last] is not None:
         #     continue
         for rel,di,gi in sent['deps']:
-            if not (gi==last or di==last): continue
+            if not (gi==last or di==last): 
+                continue
             index = di if gi==last else gi
-            if index in seen_nodes: continue
+            if index in seen_nodes: 
+                continue
             direction = 'U' if di==last else 'D'
             new_pathpoint = (direction,rel,index)
-            if not pathendpoint_filter(new_pathpoint): continue
+            if not pathendpoint_filter(new_pathpoint): 
+                continue
             yield path + [new_pathpoint]
 
 def get_superobj_paths(seedpath, sent, sizelim=7):
@@ -241,7 +256,8 @@ def new_stuff(sent, ents, snum):
     all_patient_unaries = set()
     for s in range(T):
         ent = sent['entities'][s]
-        if ent is None: continue
+        if ent is None:
+            continue
         print('ENTMENT', ent, sent['word'][s])
 
         govs   = [(rel,gi) for rel,di,gi in sent['deps'] if di==s]
@@ -286,12 +302,13 @@ def new_stuff(sent, ents, snum):
     for pairid,(agentind, patientind, verbind, pathstr) in enumerate(all_pathtuples):
         def printstr(pathside, entityind):
             sys.stdout.write("Tpair{}.{}\t".format(snum, pairid))
-            print(' '.join(str(x) for x in [
-                pathstr,
-                clean_sstag(sent['sstag'][entityind]),
+            print(' '.join(str(x) for x in [ 
+                pathstr, 
+                clean_sstag(sent['sstag'][entityind]), 
                 pathside, 
                 "E{}".format(sent['entities'][entityind]),
-                sent['lemma'][entityind] ]))
+                sent['lemma'][entityind] 
+            ]))
         printstr('A:bla', agentind)
         printstr('P:bla', patientind)
 
@@ -411,10 +428,12 @@ def make_shortform(sents,ents):
 
 def main():
     for docid, rows in itertools.groupby(rowgen(), key=lambda r: r[0]):
-        sents, ents = parse_docrows(rows)
-        print('\n=== DOC', docid, len(sents), len(ents))
-        process_doc(sents, ents)
-        make_shortform(sents, ents)
-
+        try:
+            sents, ents = parse_docrows(rows)
+            print('\n=== DOC', docid, len(sents), len(ents))
+            process_doc(sents, ents)
+            make_shortform(sents, ents)
+        except:
+            continue
 
 main()

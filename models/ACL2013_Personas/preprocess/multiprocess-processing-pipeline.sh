@@ -22,7 +22,7 @@ do
  	--nodes=1 \
  	--ntasks=1 \
  	-w $node_i \
- 	-e logs/logfile__$start_idx-$end_idx.err \
+ 	-e logs/logfile__$i.err \
 	 	bash pipeline.sh $i &
  sleep 5
 done
