@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --mem=5G
-#SBATCH -t 10:00:00
+#SBATCH --mem=10G
+#SBATCH -t 24:00:00
 
 cd /home/rcf-proj/ef/spangher/source-exploration/models/ACL2013_Personas/java
 
@@ -62,7 +62,7 @@ EOF
 
 # add all the jars anywhere in the lib/ directory to our classpath
 here=$(dirname runjava)
-CLASSES=$here/build
+CLASSES=$here/out/production/java/personas/ark/cs/cmu/edu
 CLASSES=$CLASSES:$(echo $here/lib/*.jar | tr ' ' :)
 CLASSES=$CLASSES:$here/narrative.jar
 
