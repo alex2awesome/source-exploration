@@ -19,7 +19,7 @@ def rowgen():
         yield row
 
 def parse_docrows(rows):
-    rows = list(rows)
+    rows = list(filter(lambda x: len(x) > 1, rows))
     sents = []
     for row in (r for r in rows if r[1].startswith('S')):
         s = {}
@@ -29,8 +29,16 @@ def parse_docrows(rows):
         s['pos']=row[4].split()
         s['sstag']=row[-1].split()
         s['deps']=json.loads(row[6])
-        if len(s['word'])==len(s['sstag']):
-            sents.append(s)
+
+        ## hack to correct for weird sentences... I think it's OK because I don't think
+        ## we even use super-sense at all...
+        if len(s['word']) != len(s['sstag']):
+            if len(s['word']) > len(s['sstag']):
+                diff = len(s['word']) - len(s['sstag'])
+                s['sstag'] += [0] * diff
+        ## 
+        assert(len(s['word']) == len(s['sstag'])) 
+        sents.append(s)
     ents  = [json.loads(row[-1]) for row in rows if row[1].startswith('E')]
     return sents, ents
 
