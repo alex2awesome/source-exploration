@@ -214,7 +214,6 @@ public class PersonaModel {
 							for (String genre : doc.genres) {
 								int genreID = featureIds.get(genre);
 								predictor.set(genreID, 1.0);
-
 							}
 
 							HashSet<Integer> characterFeatures = e
@@ -222,7 +221,6 @@ public class PersonaModel {
 							for (int feat : characterFeatures) {
 								predictor.set(feat, 1.0);
 							}
-
 						}
 
 						// Group everything by unique combinations of features
@@ -236,7 +234,6 @@ public class PersonaModel {
 							}
 							goodResponses.set(sourceindex, keeper);
 						} else {
-
 							regressionPredictors.add(predictor);
 							vectors.put(predictor.toString(), predictor);
 							indices.put(predictor, maxInt);
@@ -244,7 +241,6 @@ public class PersonaModel {
 							goodResponses.add(responses[index]);
 						}
 					}
-
 				}
 			}
 		}

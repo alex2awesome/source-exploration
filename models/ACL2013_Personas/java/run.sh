@@ -7,9 +7,15 @@ cd /home/rcf-proj/ef/spangher/source-exploration/models/ACL2013_Personas/java
 
 #!/bin/bash
 #####################################################
+numtopics=5
+maxvocab=1000
+numpersonas=50
+runreg=true
 
-name=$1
-input=$2
+#name=$1
+#input=$2
+name=newspapers__numtopics-$numtopics__numpersonas-$numpersonas__runreg-$runreg
+input=../../../data/news-article-flatlist/preprocessed/all-data.data
 heapsize=3000m
 
 echo "output dir: $name"
@@ -18,13 +24,11 @@ mkdir -p "$name.out"
 
 cat > "$name.properties"  <<-EOF
 # number of topics
-K=5
-
+K=$numtopics
 # number of personas
-A=50
-
+A=$numpersonas
 # max vocabulary size
-V=1000
+V=$maxvocab
 
 # initial dirichlet document-persona smoother (this gets optimized)
 alpha=10
@@ -39,7 +43,7 @@ L2=.01
 maxIterations=50000
 
 # true = run Persona Regression model; false = run Dirichlet Persona Model.
-runPersonaRegressionModel=true
+runPersonaRegressionModel=$runreg
 
 # input
 data=$input
@@ -62,7 +66,7 @@ EOF
 
 # add all the jars anywhere in the lib/ directory to our classpath
 here=$(dirname runjava)
-CLASSES=$here/out/production/java/personas/ark/cs/cmu/edu
+CLASSES=$here/out/production/java
 CLASSES=$CLASSES:$(echo $here/lib/*.jar | tr ' ' :)
 CLASSES=$CLASSES:$here/narrative.jar
 
