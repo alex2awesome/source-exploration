@@ -37,7 +37,7 @@ echo "\nCONVERTING CoreNLP XML to TSV/JSON format"
 
 # mkdir -p batches
 ls $data_dir/stanford-parses/$batch/*.xml |
-  head -100 |
+  # head -100 |
   python3.7 core2sent.py --sentmode tsent |
   cat > $outname.noss
 #   awk '{print > "batches/" ($1 % 10) ".noss"}'
