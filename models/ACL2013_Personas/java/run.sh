@@ -18,7 +18,7 @@ mkdir -p "$name.out"
 
 cat > "$name.properties"  <<-EOF
 # number of topics
-K=50
+K=5
 
 # number of personas
 A=50
@@ -43,8 +43,8 @@ runPersonaRegressionModel=true
 
 # input
 data=$input
-movieMetadata=input/all.movies.metadata
-characterMetadata=input/all.character.metadata
+# movieMetadata=input/all.movies.metadata
+# characterMetadata=input/all.character.metadata
 
 # output
 characterPosteriorFile="$name.out"/25.100.lda.log.txt

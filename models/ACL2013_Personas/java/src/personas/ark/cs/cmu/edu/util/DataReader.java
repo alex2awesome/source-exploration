@@ -207,12 +207,12 @@ public class DataReader {
 			while ((str1 = in1.readLine()) != null) {
 				try {
 					String[] mainparts = str1.split("\t");
-					String movieID = mainparts[0];
-					String agentLine = mainparts[1];
-					String patientLine = mainparts[2];
-					String modifierLine = mainparts[3];
-					String entityNameString = mainparts[4];
-					String entityFullNameString = mainparts[5];
+					String movieID = mainparts[0].trim();
+					String agentLine = mainparts[1].trim();
+					String patientLine = mainparts[2].trim();
+					String modifierLine = mainparts[3].trim();
+					String entityNameString = mainparts[4].trim();
+					String entityFullNameString = mainparts[5].trim();
 
 					// key off entity ID for all of these.
 					HashMap<String, Entity> entitiesByEID = new HashMap<String, Entity>();
@@ -264,10 +264,8 @@ public class DataReader {
 
 					// read the tuple predarg fragments
 					HashMap<String, EventTuple> eventsByTID = new HashMap<String, EventTuple>();
-					readTupleArgs(EventRole.AGENT, agentLine, entitiesByEID,
-							eventsByTID);
-					readTupleArgs(EventRole.PATIENT, patientLine,
-							entitiesByEID, eventsByTID);
+					readTupleArgs(EventRole.AGENT, agentLine, entitiesByEID, eventsByTID);
+					readTupleArgs(EventRole.PATIENT, patientLine, entitiesByEID, eventsByTID);
 					readModifierArgs(eventsByTID, modifierLine, entitiesByEID);
 
 					if (model.movieGenres.containsKey(movieID)) {
@@ -283,7 +281,7 @@ public class DataReader {
 					model.data.add(doc);
 
 				} catch (Exception e) {
-					// e.printStackTrace();
+					 e.printStackTrace();
 				}
 
 			}
@@ -356,46 +354,55 @@ public class DataReader {
 		}
 	}
 
-	private static void readTupleArgs(EventRole role, String argLine,
+	private static void readTupleArgs(
+			EventRole role, String argLine,
 			Map<String, Entity> entitiesByEID,
-			Map<String, EventTuple> eventsByTID) {
+			Map<String, EventTuple> eventsByTID
+	) {
 		String[] parts = argLine.split(" ");
 		for (String word : parts) {
 			String[] wparts = word.split(":");
-			String eKey = wparts[0].toLowerCase();
-			String tupleID = wparts[1];
-			String supertag = wparts[2];
-			String verb = wparts[3];
+			if (wparts.length > 3) {
+				String eKey = wparts[0].toLowerCase();
+				String tupleID = wparts[1];
+				String supertag = wparts[2];
+				String verb = wparts[3];
 
-			// rel doesn't matter but old rel = "nsubj", new rel = "p:nsubjpass"
-			// String rel=wparts[5];
+				// rel doesn't matter but old rel = "nsubj", new rel = "p:nsubjpass"
+				// String rel=wparts[5];
 
-			if (!eventsByTID.containsKey(tupleID)) {
-				eventsByTID.put(tupleID, new EventTuple(tupleID, verb));
+				if (!eventsByTID.containsKey(tupleID)) {
+					eventsByTID.put(tupleID, new EventTuple(tupleID, verb));
+				}
+				EventArg arg = new EventArg(role, entitiesByEID.get(eKey));
+				arg.tuple = eventsByTID.get(tupleID);
+				arg.tuple.setArg(arg);
 			}
-			EventArg arg = new EventArg(role, entitiesByEID.get(eKey));
-			arg.tuple = eventsByTID.get(tupleID);
-			arg.tuple.setArg(arg);
 		}
 	}
 
-	private static void readModifierArgs(Map<String, EventTuple> eventsByTID,
-			String argLine, Map<String, Entity> entitiesByEID) {
+	private static void readModifierArgs(
+			Map<String, EventTuple> eventsByTID,
+			String argLine,
+			Map<String, Entity> entitiesByEID
+	) {
 		String[] parts = argLine.split(" ");
 		for (String word : parts) {
 			String[] wparts = word.split(":");
-			String eKey = wparts[0].toLowerCase();
-			String modifierID = wparts[1];
-			String supertag = wparts[2];
-			String modifierLemma = wparts[3];
+			if (wparts.length > 3) {
+				String eKey = wparts[0].toLowerCase();
+				String modifierID = wparts[1];
+				String supertag = wparts[2];
+				String modifierLemma = wparts[3];
 
-			EventTuple et = new EventTuple(modifierID, modifierLemma);
-			EventArg arg = new EventArg(EventRole.MODIFIEE,
-					entitiesByEID.get(eKey));
-			arg.tuple = et;
-			arg.tuple.setArg(arg);
+				EventTuple et = new EventTuple(modifierID, modifierLemma);
+				EventArg arg = new EventArg(EventRole.MODIFIEE,
+						entitiesByEID.get(eKey));
+				arg.tuple = et;
+				arg.tuple.setArg(arg);
 
-			eventsByTID.put(modifierID, et);
+				eventsByTID.put(modifierID, et);
+			}
 		}
 
 	}

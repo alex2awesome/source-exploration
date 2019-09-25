@@ -34,7 +34,7 @@ public class PrintUtil {
 
 		OutputStreamWriter out;
 		try {
-			out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8");
+			out = new OutputStreamWriter(new FileOutputStream(outFile.replace("\"", "")), "UTF-8");
 
 			for (int j = 0; j < V; j++) {
 				out.write(reverseVocab[j]);
@@ -144,7 +144,7 @@ public class PrintUtil {
 
 		try {
 			OutputStreamWriter out = new OutputStreamWriter(
-					new FileOutputStream(weightFile), "UTF-8");
+					new FileOutputStream(weightFile.replace("\"", "")), "UTF-8");
 
 			for (int i = 0; i < model.numFeatures; i++) {
 				double mean = model.featureMeans[i];
@@ -172,9 +172,9 @@ public class PrintUtil {
 
 		try {
 			OutputStreamWriter out = new OutputStreamWriter(
-					new FileOutputStream(characterPosteriorFile), "UTF-8");
+					new FileOutputStream(characterPosteriorFile.replace("\"", "")), "UTF-8");
 			OutputStreamWriter outCond = new OutputStreamWriter(
-					new FileOutputStream(characterConditionalFile), "UTF-8");
+					new FileOutputStream(characterConditionalFile.replace("\"", "")), "UTF-8");
 			DecimalFormat df = new DecimalFormat("0.00000");
 
 			double[][] featureCounts = new double[model.A][model.numFeatures];
@@ -302,7 +302,7 @@ public class PrintUtil {
 			outCond.close();
 
 			OutputStreamWriter outFeat = new OutputStreamWriter(
-					new FileOutputStream(featureFile), "UTF-8");
+					new FileOutputStream(featureFile.replace("\"", "")), "UTF-8");
 
 			outFeat.write("Labels\t");
 			for (int i = 0; i < model.numFeatures; i++) {
@@ -342,9 +342,9 @@ public class PrintUtil {
 
 		try {
 			OutputStreamWriter out = new OutputStreamWriter(
-					new FileOutputStream(characterPosteriorFile), "UTF-8");
+					new FileOutputStream(characterPosteriorFile.replace("\"", "")), "UTF-8");
 			OutputStreamWriter outCond = new OutputStreamWriter(
-					new FileOutputStream(characterConditionalFile), "UTF-8");
+					new FileOutputStream(characterConditionalFile.replace("\"", "")), "UTF-8");
 			DecimalFormat df = new DecimalFormat("0.00000");
 
 			double[][] featureCounts = new double[model.A][model.numFeatures];
@@ -453,7 +453,7 @@ public class PrintUtil {
 			outCond.close();
 
 			OutputStreamWriter outFeat = new OutputStreamWriter(
-					new FileOutputStream(featureFile), "UTF-8");
+					new FileOutputStream(featureFile.replace("\"", "")), "UTF-8");
 
 			outFeat.write("Labels\t");
 			for (int i = 0; i < model.numFeatures; i++) {
@@ -499,7 +499,7 @@ public class PrintUtil {
 			PersonaModel model) {
 		try {
 			OutputStreamWriter out = new OutputStreamWriter(
-					new FileOutputStream(outfile), "UTF-8");
+					new FileOutputStream(outfile.replace("\"", "")), "UTF-8");
 
 			for (int i = 0; i < model.A; i++) {
 				out.write(i + "\t");

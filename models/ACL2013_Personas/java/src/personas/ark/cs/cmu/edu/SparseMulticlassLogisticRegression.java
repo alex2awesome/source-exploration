@@ -183,7 +183,10 @@ public class SparseMulticlassLogisticRegression {
 		public void printWeightsToFile(String weightFile, String[] reverseFeatureIds, HashMap<String, String> genreIdToString) {
 			
 			try {
-				OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(weightFile),"UTF-8");
+				OutputStreamWriter out = new OutputStreamWriter(
+						new FileOutputStream(weightFile.replace("\"", "")),
+						"UTF-8"
+				);
 				
 				for (int i=0; i<K; i++) {
 					for (int j=0; j<numFeatures; j++) {

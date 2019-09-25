@@ -2,7 +2,7 @@
 
 # add all the jars anywhere in the lib/ directory to our classpath
 here=$(dirname $0)
-CLASSES=$here/bin
+CLASSES=$here/build
 CLASSES=$CLASSES:$(echo $here/lib/*.jar | tr ' ' :)
 CLASSES=$CLASSES:$here/narrative.jar
 
@@ -12,7 +12,10 @@ java.exe -XX:ParallelGCThreads=2 -Xmx3000m -Xms3000m -ea -classpath $CLASSES $*
 ####### intellij generated script
 
 java.exe -XX:ParallelGCThreads=2 -Xmx3000m \
-	-classpath "C:\Users\alexa\Projects\usc-research\source-exploration\models\ACL2013_Personas\java\out\production\java;\
-				C:\Users\alexa\Projects\usc-research\source-exploration\models\ACL2013_Personas\java\lib\*" \
+	-classpath "C:\Users\alexa\Projects\usc-research\source-exploration\models\ACL2013_Personas\java\out\production\java;C:\Users\alexa\Projects\usc-research\source-exploration\models\ACL2013_Personas\java\lib\*" \
 		personas.ark.cs.cmu.edu.PersonaModel \
 				movies.properties
+
+
+## runs on HPC
+java -XX:ParallelGCThreads=2 -Xmx3000m -classpath ./build:./lib/*:./narrative.jar  personas.ark.cs.cmu.edu.PersonaModel movies.properties
