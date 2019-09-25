@@ -437,9 +437,12 @@ def make_shortform(sents,ents):
 
 def main():
     for docid, rows in itertools.groupby(rowgen(), key=lambda r: r[0]):
-        sents, ents = parse_docrows(rows)
-        print('\n=== DOC', docid, len(sents), len(ents))
-        process_doc(sents, ents)
-        make_shortform(sents, ents)
+        try:
+            sents, ents = parse_docrows(rows)
+            print('\n=== DOC', docid, len(sents), len(ents))
+            process_doc(sents, ents)
+            make_shortform(sents, ents)
+        except:
+            continue
 
 main()
