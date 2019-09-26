@@ -2,6 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --mem=10G
 #SBATCH -t 24:00:00
+#SBATCH --cpus-per-task=16
 
 cd /home/rcf-proj/ef/spangher/source-exploration/models/ACL2013_Personas/java
 
@@ -14,7 +15,7 @@ runreg=true
 
 #name=$1
 #input=$2
-name=newspapers__numtopics-$numtopics__numpersonas-$numpersonas__runreg-$runreg
+name=newspapers.numtopics-$numtopics.numpersonas-$numpersonas.runreg-$runreg
 input=../../../data/news-article-flatlist/preprocessed/all-data.data
 heapsize=3000m
 
