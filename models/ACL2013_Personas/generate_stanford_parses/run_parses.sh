@@ -28,6 +28,6 @@ java \
 	-cp "../stanford-corenlp-full-2018-10-05/*" \
 	-Xmx5g \
 	edu.stanford.nlp.pipeline.StanfordCoreNLP \
-	-annotators tokenize,ssplit,pos,lemma,ner,parse,coref \
-	-fileList $filelist
+	-annotators tokenize,ssplit,pos,lemma,ner,parse,depparse,coref \
+	-fileList $filelist \
 	-outputDirectory $outputdir

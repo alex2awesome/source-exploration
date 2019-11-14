@@ -436,14 +436,11 @@ public class PersonaModel {
 	}
 
 	// ///////////////////// z-level sampling inference stuff here
-	public void incrementClassInfo(int delta, EventArg arg, int cur_z,
-			int currentType) {
-		incrementUnaries(delta, arg.entity, cur_z,
-				arg.tuple.getCanonicalVerb(), currentType, arg.role);
+	public void incrementClassInfo(int delta, EventArg arg, int cur_z, int currentType) {
+		incrementUnaries(delta, arg.entity, cur_z, arg.tuple.getCanonicalVerb(), currentType, arg.role);
 	}
 
-	public void incrementUnaries(int delta, Entity e, int currentZ, int wordId,
-			int currentType, EventRole role) {
+	public void incrementUnaries(int delta, Entity e, int currentZ, int wordId, int currentType, EventRole role) {
 
 		phis[currentZ][wordId] += delta;
 		phiTotals[currentZ] += delta;
@@ -485,9 +482,7 @@ public class PersonaModel {
 
 	public void LDASamplePersonas(boolean first) {
 		for (int i = 0; i < data.size(); i++) {
-
 			Doc doc = data.get(i);
-
 			for (Entity entity : doc.entities.values()) {
 				if (!first) {
 					doc.currentPersonaSamples[entity.currentType]--;
@@ -571,28 +566,18 @@ public class PersonaModel {
 		}
 
 		for (int i = 0; i < data.size(); i++) {
-
 			Doc doc = data.get(i);
-
 			for (EventTuple t : doc.eventTuples) {
-
 				for (EventArg arg : t.arguments.values()) {
-
 					int old_z = arg.currentSample;
 					if (!first) {
 						incrementClassInfo(-1, arg, old_z, arg.entity.lastType);
 					}
-
 					double[] regprobs = new double[K];
 					Arrays.fill(regprobs, 1.0);
-
 					for (int k = 0; k < K; k++) {
-
-						regprobs[k] *= unaryLFactor(arg, k,
-								arg.entity.currentType);
-
+						regprobs[k] *= unaryLFactor(arg, k, arg.entity.currentType);
 						regprobs[k] *= unaryEmissionFactor(arg, k);
-
 					}
 
 					double sum = ArrayMath.sum(regprobs);
@@ -611,7 +596,6 @@ public class PersonaModel {
 			}
 		}
 		return info;
-
 	}
 
 	public static void main(String[] args) {
@@ -686,10 +670,8 @@ public class PersonaModel {
 				IterInfo info = gibbs.sample(false, i % doCompleteLLEvery == 0);
 
 				if (i % doCompleteLLEvery == 0) {
-					info.runningTotalLL += HyperparameterOptimization
-							.totalLL(gibbs);
-					System.out
-							.println(String.format("Iter %3d: %s\n", i, info));
+					info.runningTotalLL += HyperparameterOptimization.totalLL(gibbs);
+					System.out.println(String.format("Iter %3d: %s\n", i, info));
 				}
 
 				/*
@@ -712,24 +694,19 @@ public class PersonaModel {
 					gibbs.generatePosteriors();
 					gibbs.generateConditionalPosterior();
 
-					PrintUtil.printPosteriorsToFile(characterPosteriorFile,
-							characterConditionalPosteriorFile, featureFile,
-							gibbs);
+					PrintUtil.printPosteriorsToFile(characterPosteriorFile, characterConditionalPosteriorFile, featureFile, gibbs);
 
-					System.out.println(PrintUtil.printMeanTop(
-							gibbs.phis, gibbs.reverseVocab,
-							"topic ratiorank", numWordsToPrint));
-					System.out.println(PrintUtil.printSimpleTop(
-							gibbs.phis, gibbs.reverseVocab,
-							"topic freqrank", numWordsToPrint));
+					System.out.println(
+						PrintUtil.printMeanTop(gibbs.phis, gibbs.reverseVocab,"topic ratiorank", numWordsToPrint)
+					);
+					System.out.println(
+						PrintUtil.printSimpleTop(gibbs.phis, gibbs.reverseVocab, "topic freqrank", numWordsToPrint)
+					);
 
 				}
 
 				if (i % 100 == 0)
-					System.out.println(String.format("\t wordLL %.3f\n",
-							HyperparameterOptimization.wordLL(gibbs.gamma,
-									gibbs)));
-
+					System.out.println(String.format("\t wordLL %.3f\n", HyperparameterOptimization.wordLL(gibbs.gamma, gibbs)));
 			}
 
 			// take 100 samples
@@ -750,18 +727,15 @@ public class PersonaModel {
 			 * Write character posteriors, conditional posteriors, and
 			 * class/feature associations to file
 			 */
-			PrintUtil.printFinalPosteriorsToFile(characterPosteriorFile,
-					characterConditionalPosteriorFile, featureFile, gibbs);
+			PrintUtil.printFinalPosteriorsToFile(characterPosteriorFile, characterConditionalPosteriorFile, featureFile, gibbs);
 
 			/*
 			 * Write personas to file
 			 */
 			PrintUtil.printFinalPersonas(personaFile, gibbs);
 
-			System.out.println(PrintUtil.printMeanTop(gibbs.finalPhis,
-					gibbs.reverseVocab, "final ratiorank", numWordsToPrint));
-			System.out.println(PrintUtil.printSimpleTop(gibbs.finalPhis,
-					gibbs.reverseVocab, "final freqrank", numWordsToPrint));
+			System.out.println(PrintUtil.printMeanTop(gibbs.finalPhis, gibbs.reverseVocab, "final ratiorank", numWordsToPrint));
+			System.out.println(PrintUtil.printSimpleTop(gibbs.finalPhis, gibbs.reverseVocab, "final freqrank", numWordsToPrint));
 
 			String[] names = new String[K];
 			for (int i = 0; i < K; i++) {
@@ -771,11 +745,9 @@ public class PersonaModel {
 			/**
 			 * Write distributions to file
 			 */
-			PrintUtil.printWeights(gibbs.finalPhis, gibbs.reverseVocab,
-					outPhiWeights);
+			PrintUtil.printWeights(gibbs.finalPhis, gibbs.reverseVocab, outPhiWeights);
 			PrintUtil.printWeights(gibbs.finalLAgents, names, finalLAgentsFile);
-			PrintUtil.printWeights(gibbs.finalLPatients, names,
-					finalLPatientsFile);
+			PrintUtil.printWeights(gibbs.finalLPatients, names, finalLPatientsFile);
 			PrintUtil.printWeights(gibbs.finalLMod, names, finalLModFile);
 
 		} catch (FileNotFoundException e) {

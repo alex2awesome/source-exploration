@@ -254,7 +254,7 @@ def get_superobj_paths(seedpath, sent, sizelim=7):
         last_paths = new_paths
     return allpaths
 
-def new_stuff(sent, ents, snum):
+def new_stuff(sent, ents, snum, agent_output, patient_output, modifier_output, entity_output):
     T = len(sent['word'])
     all_entids = set(sent['entities'])
     if None in all_entids:
@@ -267,10 +267,17 @@ def new_stuff(sent, ents, snum):
         ent = sent['entities'][s]
         if ent is None:
             continue
-        print('ENTMENT', ent, sent['word'][s])
 
-        govs   = [(rel,gi) for rel,di,gi in sent['deps'] if di==s]
-        childs = [(rel,di) for rel,di,gi in sent['deps'] if gi==s]
+        ## dump entity mention
+        entity_output.append({
+            "sentence-idx": snum,
+            "entity-id": sent['entities'][s],
+            "entity-lemma": sent['lemma'][s],
+            "type": "entity-mention",
+            "entity-idx": s
+        })
+        govs   = [(rel,gi) for rel, di, gi in sent['deps'] if di==s]
+        childs = [(rel,di) for rel, di, gi in sent['deps'] if gi==s]
 
         # governing verb analysis
         immediate_verbgovs = [(r,i) for r,i in govs if is_verb(sent,i)]
@@ -280,63 +287,63 @@ def new_stuff(sent, ents, snum):
         all_patient_unaries |= {(s,verbind) for r,verbind in patient_verbgovs}
         all_pathtuples += pathtuples_with_agent(sent, s, agent_verbgovs)
 
-        def printmod(direction, rel,ind):
-            sys.stdout.write("M.{}.{}.{}\t".format(snum, s, ind))
-            # output_word = compact_json([direction, rel, sent['lemma'][ind]])
-            output_word = sent['lemma'][ind]
-            print(' '.join(str(x) for x in [
-                output_word,
-                clean_sstag(sent['sstag'][s]),
-                'M:bla',
-                "E{}".format(sent['entities'][s]),
-                sent['lemma'][s]
-            ]))
+        def printmod(direction, rel, ind, modifier_list):
+            modifier_list.append({
+                "sentence-idx": snum,
+                "type": "modifier",
+                "relation": rel,
+                "entity-lemma": sent['lemma'][s],
+                "entity-id": sent['entities'][s],
+                'entity-idx': s, ## idx always refers to the word-position in the sentence
+                "mod-idx": ind,
+                "mod-lemma": sent['lemma'][ind]
+            })
 
         def is_modifier_pos(t):
             # basically want common nouns and adjectives.
             return not is_pronoun(sent,t) and not is_proper(sent,t) and not is_verb(sent,t)
 
         if is_modifier_pos(s):
-            printmod('SM', 'selfmention', s)
+            printmod('SM', 'selfmention', s, modifier_output)
 
         mod_filter = lambda i: is_modifier_pos(i) and sent['entities'][i] is None
-        mod_govs = [(r,i) for r,i in govs if r in ('nsubj','appos') and mod_filter(i)]
-        mod_childs = [(r,i) for r,i in childs if r in ('nsubj','appos','amod','nn') and mod_filter(i)]
-        for r,i in mod_govs:
-            printmod('U',r,i)
-        for r,i in mod_childs:
-            printmod('D',r,i)
-
+        mod_govs = [(r,i) for r, i in govs if r in ('nsubj', 'appos') and mod_filter(i)]
+        mod_childs = [(r,i) for r, i in childs if r in ('nsubj', 'appos', 'amod', 'nn') and mod_filter(i)]
+        for r, i in mod_govs:
+            printmod('U', r, i, modifier_output)
+        for r, i in mod_childs:
+            printmod('D', r, i, modifier_output)
 
     for pairid,(agentind, patientind, verbind, pathstr) in enumerate(all_pathtuples):
-        def printstr(pathside, entityind):
-            sys.stdout.write("Tpair{}.{}\t".format(snum, pairid))
-            print(' '.join(str(x) for x in [ 
-                pathstr, 
-                clean_sstag(sent['sstag'][entityind]), 
-                pathside, 
-                "E{}".format(sent['entities'][entityind]),
-                sent['lemma'][entityind] 
-            ]))
-        printstr('A:bla', agentind)
-        printstr('P:bla', patientind)
+        def format_output(pathside, entityind):
+            return {
+                "type": 'Tpair',
+                'sentence-idx': snum,
+                'pathstr': str(pathstr),
+                'pathside': pathside,
+                'verb-idx': verbind,
+                'verb-lemma': sent['lemma'][verbind],
+                'entity-id': sent['entities'][entityind],
+                "entity-idx": entityind,
+                'entity-lemma': sent['lemma'][entityind],
+            }
+        agent_output.append(format_output('A:bla', agentind))
+        patient_output.append(format_output('P:bla', patientind))
 
 def pathtuples_with_agent(sent, agentind, agent_verbgovs):
     path_tuples = []
     for r,verbind in agent_verbgovs:
-        seedpath = [(None,None,agentind), ('U',r,verbind)]
+        seedpath = [(None,None,agentind), ('U', r, verbind)]
         superobj_paths = get_superobj_paths(seedpath, sent, 3)
         for path in superobj_paths:
             last = path[-1][2]
             if sent['entities'][last] is None: continue
             if not is_patient_rel(path[-1][1]): continue
             path = normalize_edgelabels(path)
-            pathstr = pathstring(path,sent)
+            pathstr = pathstring(path, sent)
             # print 'PATHTUPLE', sent['lemma'][s], sent['lemma'][last], pathstr
             path_tuples.append((agentind, last, path[1][2], pathstr))
     return path_tuples
-
-
 
 def compact_json(x):
     return json.dumps(x, separators=(',', ':'))
@@ -345,7 +352,6 @@ def pathstring(path, sent):
     newlist = [(dir,rel,sent['lemma'][i]) for dir,rel,i in path[2:-1]]
     newlist = [sent['lemma'][path[1][2]]] + newlist + [path[-1][:2]]
     s = json.dumps(newlist, separators=(',', ':'))
-    # s = s.replace(' ','_') ## 
     assert ' ' not in s
     return s
 
@@ -375,52 +381,86 @@ def is_patient_rel(rel):
 # 138 attr
 # 114 poss
 
-def verb_analysis(sent, ents):
+def verb_analysis(sent, ents, agent_output, patient_output):
+    if len(sent['word']) != len(sent['pos']):
+        return
+
     T = len(sent['word'])
     verbinds = [t for t in range(T) if sent['pos'][t].startswith('VB')]
     for verbid, verbind in enumerate(verbinds):
+        ## get dependents for verbs that mention an entity
         childs = [(rel, di) for rel, di, gi in sent['deps'] if gi==verbind and sent['entities'][di] is not None]
+
+        ## filter to patient and agent relations
         childs = [(rel, c) for rel, c in childs if is_patient_rel(rel) or is_agent_rel(rel)]
         if not childs:
             continue
 
         ## dedupe by headword position. stanford dep bug that these exist?
         childs = set(childs)
+
         ## dedupe by entity. prefer later positions, therefore reverse sort here
-        childs = [(rel,i, sent['entities'][i]) for rel,i in childs]
+        childs = [(rel, i, sent['entities'][i]) for rel, i in childs]
         childs.sort(key=lambda rel_i_e: (-rel_i_e[1], rel_i_e[0], rel_i_e[2]))
-        childs_by_ent = { e:(rel,i,e) for rel, i, e in childs }
+        childs_by_ent = { e:(rel, i, e) for rel, i, e in childs }
         childs = list(childs_by_ent.values())
         childs.sort(key=lambda rel_i_e3: (rel_i_e3[1], rel_i_e3[0], rel_i_e3[2]))
-        childs = [(rel,i) for rel,i,e in childs]
+        # childs = [(rel,i) for rel, i, e in childs]
 
-        agents =  [(rel,i) for rel,i in childs if is_agent_rel(rel)]
-        patients= [(rel,i) for rel,i in childs if is_patient_rel(rel)]
+        ## seperate agents and patients
+        agents =  [(rel, i, e) for rel, i, e in childs if is_agent_rel(rel)]
+        patients= [(rel, i, e) for rel, i, e in childs if is_patient_rel(rel)]
 
         if not agents and not patients:
             continue
 
         # add these so crossproduct sees singletons
-        if not agents:   agents = [(None,None)]
-        if not patients: patients=[(None,None)]
+        if not agents:   agents = [(None,None, None)]
+        if not patients: patients=[(None,None, None)]
 
         sentid=re.sub("^S", "", sent['id'])
 
-        for pairid, ((arel, agent_i), (prel, patient_i)) in enumerate(itertools.product(agents,patients)):
+        for pairid, ((arel, agent_idx, agent_id), (prel, patient_idx, patient_id)) in enumerate(itertools.product(agents, patients)):
             if arel is not None:
-                sys.stdout.write("T{}.{}.{}\t".format(sentid, verbid, pairid))
-                print(eventarg_str(sent, 'A:'+arel, verbind, agent_i))
+                agent_output.append({
+                    "sentence-idx": int(sentid),
+                    "pair-id": pairid,
+                    "entity-idx": agent_idx,
+                    "entity-id": agent_id,
+                    "entity-lemma": sent['lemma'][agent_idx],
+                    "verb-idx": verbind,
+                    "verb-lemma": sent['lemma'][verbind],
+                })
+                # print(eventarg_str(sent, 'A:'+arel, verbind, agent_i))
             if prel is not None:
-                sys.stdout.write("T{}.{}.{}\t".format(sentid, verbid, pairid))
-                print(eventarg_str(sent, 'P:'+prel, verbind, patient_i))
+                patient_output.append({
+                    "sentence-idx": int(sentid),
+                    "pair-id": pairid,
+                    "entity-idx": patient_idx,
+                    "entity-id": patient_id,
+                    "entity-lemma": sent['lemma'][patient_idx],
+                    "verb-idx": verbind,
+                    "verb-lemma": sent['lemma'][verbind],
+                })
+
+                # print(eventarg_str(sent, 'P:'+prel, verbind, patient_i))
 
 def eventarg_str(sent, rel, verbind, argind, suffix=''):
-    return ' '.join(str(x) for x in [
+    return 'EVENT__' + '__'.join(str(x) for x in [
+        'verb-lemma',
         sent['lemma'][verbind],
+        'clean-verb-sstag',
         clean_sstag(sent['sstag'][verbind]),
-        rel, 
-        "E{}".format(sent['entities'][argind]), 
-        sent['lemma'][argind]
+        'verb-ind',
+        verbind,
+        'rel',
+        rel,
+        'ent-idx',
+        "E{}".format(sent['entities'][argind]),
+        'ent',
+        sent['lemma'][argind],
+        'ent-idx',
+        argind
     ])
 
 def process_doc(sents, ents):
@@ -428,12 +468,11 @@ def process_doc(sents, ents):
     for ent in ents:
         process_entity(ent, sents)
 
-def make_shortform(sents,ents):
-    entity_summaries(sents, ents)
+def make_shortform(sents, ents, sentence_output, agent_output, patient_output, modifier_output, entity_output):
     for snum, sent in enumerate(sents):
-        print("{}\t{}".format(sent['id'], showsent(sent)))
-        verb_analysis(sent, ents)
-        new_stuff(sent, ents, snum)
+        sentence_output.append({"sentence-id": sent['id'], "sentence": showsent(sent)})
+        verb_analysis(sent, ents, agent_output, patient_output)
+        new_stuff(sent, ents, snum, agent_output, patient_output, modifier_output, entity_output)
 
 def main():
     for docid, rows in itertools.groupby(rowgen(), key=lambda r: r[0]):
@@ -445,4 +484,36 @@ def main():
         except:
             continue
 
-main()
+# main()
+
+def process_full_doc(rows):
+    sentence_output, agent_output, patient_output, modifier_output, entity_output = [], [], [], [], []
+    sents, ents = parse_docrows(rows)
+    process_doc(sents, ents)
+    make_shortform(sents, ents, sentence_output, agent_output, patient_output, modifier_output, entity_output)
+    return {
+            'sentences': sentence_output,
+            'agents': agent_output,
+            'patients': patient_output,
+            'modifiers': modifier_output,
+            'entities': entity_output
+    }
+
+if __name__=="__main__":
+    import sys, os
+    here = sys.path[0]
+    file = open(os.path.join(here, 'batch-0.ss')).read().strip().split('\n')
+
+    all_rows = list(map(lambda x: x.strip().split('\t'), file))
+    all_outputs = {}
+    idx = 0
+    for docid, rows in itertools.groupby(all_rows, key=lambda r: r[0]):
+        # try:
+        if idx > 5:
+            processed_output = process_full_doc(rows)
+            all_outputs[docid] = processed_output
+
+        idx += 1
+        # except:
+        #     continue
+

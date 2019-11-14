@@ -5,6 +5,7 @@
 #SBATCH -t 10:00:00 # time required
 
 cd /home/rcf-proj/ef/spangher/source-exploration/models/ACL2013_Personas/generate_stanford_parses
+mkdir -p logs
 
 nrows=45527
 worker_num=12
@@ -27,7 +28,7 @@ do
  	--ntasks=1 \
  	-w $node_i \
  	-e logs/logfile__$start_idx-$end_idx.err \
-	 	source run_parses.sh -s $start_idx -e $end_idx -b $i
+	 	run_parses.sh $start_idx $end_idx $i &
  sleep 5
 done
 wait

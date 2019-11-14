@@ -41,8 +41,12 @@ public class DataReader {
 	 * @param model
 	 *            The model to train
 	 */
-	public static void read(String characterMetadata, String movieMetadata,
-			String dataFile, PersonaModel model) {
+	public static void read(
+			String characterMetadata,
+			String movieMetadata,
+			String dataFile,
+			PersonaModel model
+	) {
 		readCharacterMetadata(characterMetadata, model);
 		readMovieMetadata(movieMetadata, model);
 		finalizeFeatures(model);
@@ -396,8 +400,8 @@ public class DataReader {
 				String modifierLemma = wparts[3];
 
 				EventTuple et = new EventTuple(modifierID, modifierLemma);
-				EventArg arg = new EventArg(EventRole.MODIFIEE,
-						entitiesByEID.get(eKey));
+
+				EventArg arg = new EventArg(EventRole.MODIFIEE, entitiesByEID.get(eKey));
 				arg.tuple = et;
 				arg.tuple.setArg(arg);
 

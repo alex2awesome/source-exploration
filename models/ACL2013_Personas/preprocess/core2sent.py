@@ -22,7 +22,12 @@ def convert_sentences(doc_x):
         sent_infos = {}
 
         toks_x = sent_x.findall(".//token")
-        toks_j = [(t.findtext(".//word"), t.findtext(".//lemma"), t.findtext(".//POS"), t.findtext(".//NER")) for t in toks_x]
+        toks_j = [(
+                t.findtext(".//word"),
+                t.findtext(".//lemma"),
+                t.findtext(".//POS"),
+                t.findtext(".//NER")
+            ) for t in toks_x]
         sent_infos['tokens'] = toks_j
 
         char_offsets = []
@@ -175,9 +180,10 @@ if __name__=='__main__':
 
         if args.sentmode=='dsent':
             sent_texts = [' '.join(t[0] for t in jsent['tokens']) for jsent in sentences]
-            print("{docid}\t{sent_texts}\t{fullinfo}".format(docid=docid,
-                    sent_texts=json.dumps(sent_texts),
-                    fullinfo = json.dumps({'sentences':sentences, 'entities':entities}),
+            print("{docid}\t{sent_texts}\t{fullinfo}".format(
+                docid=docid,
+                sent_texts=json.dumps(sent_texts),
+                fullinfo = json.dumps({'sentences':sentences, 'entities':entities}),
             ))
 
         elif args.sentmode=='jsent':

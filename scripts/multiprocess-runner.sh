@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=12
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=16
 #SBATCH --mem=5G
 #SBATCH -t 10:00:00 # time required, here it is 1 min
 
@@ -34,3 +34,4 @@ do
  		--end $end_idx &
  sleep 5
 done
+wait
