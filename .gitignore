@@ -6,6 +6,7 @@ models/ACL2013_Personas/input*
 *.xml.gz
 *.xml
 *.csv
+*.json
 *.tar
 *.tar.gz
 *.tsv
