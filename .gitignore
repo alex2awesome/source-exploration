@@ -3,6 +3,8 @@
 *.txt
 *.metadata
 models/ACL2013_Personas/input*
+models/ACL2013_Personas/output/slurm*
+models/ACL2013_Personas/stanford-corenlp-full-2018-10-05/*
 *.xml.gz
 *.xml
 *.csv
