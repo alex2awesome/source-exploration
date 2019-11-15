@@ -48,7 +48,7 @@ def parse_sources_from_texts(
                 json.dump(people_and_doc, open(os.path.join(outpath, doc_id + '.json'), 'w'))
         except:
             continue
-            
+
     ## return
     return parsed_texts
 
