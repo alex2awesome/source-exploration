@@ -28,23 +28,27 @@ def parse_sources_from_texts(
     stanford_parses = glob.glob(os.path.join(stanford_input_dir, '*', '*'))
     parsed_texts = []
     for xml_file in tqdm(stanford_parses):
-        ## parse
-        people_and_doc = parsing_util.parse_people_and_docs(
-            xml_file,
-            include_all_mentions=include_all_source_mentions,
-            include_all_sentences_in_doc=include_all_sentences_in_doc
-        )
-        ## filter
-        if len(people_and_doc['source_sentences']) > 0:
-            doc_id = people_and_doc['doc_id']
-            parsed_texts.append(people_and_doc)
-            ## maintain recursive structure
-            folder_id = os.path.basename(os.path.dirname(xml_file))
-            outpath = os.path.join(output_dir, folder_id)
-            if not os.path.exists(outpath):
-                os.makedirs(outpath)
-            ## cache
-            json.dump(people_and_doc, open(os.path.join(outpath, doc_id + '.json'), 'w'))
+        try:
+            ## parse
+            people_and_doc = parsing_util.parse_people_and_docs(
+                xml_file,
+                include_all_mentions=include_all_source_mentions,
+                include_all_sentences_in_doc=include_all_sentences_in_doc
+            )
+            ## filter
+            if len(people_and_doc['source_sentences']) > 0:
+                doc_id = people_and_doc['doc_id']
+                parsed_texts.append(people_and_doc)
+                ## maintain recursive structure
+                folder_id = os.path.basename(os.path.dirname(xml_file))
+                outpath = os.path.join(output_dir, folder_id)
+                if not os.path.exists(outpath):
+                    os.makedirs(outpath)
+                ## cache
+                json.dump(people_and_doc, open(os.path.join(outpath, doc_id + '.json'), 'w'))
+        except:
+            continue
+            
     ## return
     return parsed_texts
 
