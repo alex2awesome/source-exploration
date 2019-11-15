@@ -179,6 +179,9 @@ def format_and_dump_text(
         doc_chunk = {}
         doc_id = text['doc_id']
         doc_chunk['doc_vec'] = parsing_util.map_words(text['doc_sentences'], cutoff=doc_cutoff, cv=cv)
+        if len(doc_chunk['doc_vec']) < 4:
+            continue
+
         doc_chunk['doc_id'] = doc_id
 
         ## configure sources
