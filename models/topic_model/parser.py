@@ -1,7 +1,7 @@
 import pandas as pd
 import glob, os, sys
 from tqdm import tqdm
-from models.topic_model import parsing_util
+import parsing_util
 from sklearn.feature_extraction.text import CountVectorizer
 import json, pickle
 from collections import defaultdict
