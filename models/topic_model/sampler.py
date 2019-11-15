@@ -207,9 +207,9 @@ class BOW_Source_GibbsSampler():
             source_prob_vec[s] = self.sourcetype_prob(s, doc_id, source_id)
 
         source_prob_vec[np.where(source_prob_vec == np.inf)] = 0 ## another hack
-        source_prob_vec[np.where(source_prob_vec > .99)] = .2 ## another hack
-
+        source_prob_vec[np.where(source_prob_vec == -np.inf)] = 0 ## another hack
         source_prob_vec = source_prob_vec / source_prob_vec.sum()
+        source_prob_vec[np.where(source_prob_vec == np.nan)] = 0 ## another hack
         sourcetype = categorical(self.num_source_types, p=source_prob_vec)
         return sourcetype
 
