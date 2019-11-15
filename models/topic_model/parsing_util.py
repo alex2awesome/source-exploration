@@ -7,6 +7,27 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 
 
+def map_words(input_text, cv, cutoff=None):
+    """
+        Maps text words to vocab indices, based on CountVectorizer cv's vocabulary.
+    """
+    # get vocabulary
+    vocabulary = None
+    if 'vocabulary_' in cv.__dict__:
+        vocabulary = cv.vocabulary_
+    elif 'vocabulary' in cv.__dict__:
+        vocabulary = cv.vocabulary
+    else:
+        exit("train cv...")
+
+    # transform
+    output = []
+    for idx, word in enumerate(input_text.split()):
+        if word in vocabulary:
+            output.append(vocabulary[word])
+    return output[:cutoff]
+
+
 class EntityMention():    
     def __init__(self, name=None, start=None, end=None, head=None, sentence=None):
         self.name=name
