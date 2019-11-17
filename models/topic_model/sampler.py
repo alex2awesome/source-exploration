@@ -207,15 +207,20 @@ class BOW_Source_GibbsSampler():
             source_prob_vec[s] = self.sourcetype_prob(s, doc_id, source_id)
 
         ### hacks for removing negative probability
-        source_prob_vec[np.where(source_prob_vec == np.inf)] = 0 ## another hack
-        source_prob_vec[np.where(source_prob_vec == -np.inf)] = 0 ## another hack
+        source_prob_vec[np.where(source_prob_vec == np.inf)] = 0  ## another hack
+        source_prob_vec[np.where(source_prob_vec == -np.inf)] = 0  ## another hack
         source_prob_vec = source_prob_vec / source_prob_vec.sum()
-        source_prob_vec[np.where(source_prob_vec == np.nan)] = 0 ## another hack
+        source_prob_vec[np.where(source_prob_vec == np.nan)] = 0  ## another hack
         source_prob_vec = source_prob_vec / source_prob_vec.sum()
         ### todo: log what is happening here.
-
-        sourcetype = categorical(self.num_source_types, p=source_prob_vec)
-        return sourcetype
+        try:
+            sourcetype = categorical(self.num_source_types, p=source_prob_vec)
+            return sourcetype
+        except:
+            print('source sampling error...')
+            print(source_prob_vec)
+            print()
+            return np.random.choice(range(self.num_source_types))
 
     def sample_source_type(self):
         for doc_id, doc in tqdm(enumerate(self.docs), total=len(self.docs)):
