@@ -1,8 +1,9 @@
 import numpy as np
-from collections import defaultdict
 import os
 import json
 from tqdm import tqdm
+import pickle
+import glob, re
 
 def categorical(k, p):
     return np.random.choice(range(k), p=p)
@@ -132,24 +133,24 @@ class BOW_Source_GibbsSampler():
 
         ## source_type factor
         sourcetype_term = 0
-        denom = self.num_source_types * self.H_S + self.doctype__source_counts[proposed_doctype]
+        log_denom = np.log(self.num_source_types * self.H_S + self.doctype__source_counts[proposed_doctype])
         for source_id in self.docs[doc_id]['source_map'].keys():
             sourcetype = self.source_to_source_type[(doc_id, source_id)]
             num = self.H_S + self.sourcetype_by_doctype__source_counts[proposed_doctype, sourcetype]
-            sourcetype_term += (np.log(num / denom))
+            sourcetype_term += np.log(num) - log_denom
 
         ## background word_topic factor
         background_wordtopic_term = 0
-        denom = self.num_topics * self.H_z + self.doctype__wordtopic_counts[proposed_doctype]
+        log_denom = np.log(self.num_topics * self.H_z + self.doctype__wordtopic_counts[proposed_doctype])
         for word_id, word in enumerate(self.docs[doc_id]['doc_vec']):
             if background_wordtopic_term < -100: ## hack... is there any other way to deal with very low probabilities?
                 break
             doc_wordtopic = self.word_to_background_topic[(doc_id, word_id)]
             num = self.H_z + self.doctype_by_wordtopic__wordtopic_counts[proposed_doctype, doc_wordtopic]
-            background_wordtopic_term += (np.log(num / denom))
+            background_wordtopic_term += np.log(num) - log_denom
 
         ## combine and return
-        log_prob =  doctype_term + sourcetype_term + background_wordtopic_term
+        log_prob = doctype_term + sourcetype_term + background_wordtopic_term
         return np.exp(log_prob)
 
     def propose_new_doctype(self, doc_id):
@@ -182,7 +183,7 @@ class BOW_Source_GibbsSampler():
         doc_type = self.doc_to_doctype[doc_id]
 
         ## sourcetype factor
-        sourcetype_term = self.H_S + self.sourcetype_by_doctype__source_counts[doc_type, proposed_sourcetype]
+        sourcetype_term = np.log(self.H_S + self.sourcetype_by_doctype__source_counts[doc_type, proposed_sourcetype])
 
         ## source word_topic factor
         source_wordtopic_term = 0
@@ -190,11 +191,11 @@ class BOW_Source_GibbsSampler():
         for word_id, word in enumerate(self.docs[doc_id]['source_vecs'][source_id]):
             if source_wordtopic_term < -80: ## hack... is there any other way to deal with very low probabilities?
                 break
-            if source_wordtopic_term > 80:
+            if source_wordtopic_term > 50:
                 break
             source_wordtopic = self.word_to_sourcetopic[(doc_id, source_id, word_id)]
             num = self.H_z + self.sourcetype_by_wordtopic__wordtopic_counts[proposed_sourcetype, source_wordtopic]
-            source_wordtopic_term += np.log(num / denom)
+            source_wordtopic_term += np.log(num) - np.log(denom)
 
         ## combine and return 
         log_prob = sourcetype_term + source_wordtopic_term
@@ -207,8 +208,8 @@ class BOW_Source_GibbsSampler():
             source_prob_vec[s] = self.sourcetype_prob(s, doc_id, source_id)
 
         ### hacks for removing negative probability
-        source_prob_vec[np.where(source_prob_vec == np.inf)] = 0  ## another hack
-        source_prob_vec[np.where(source_prob_vec == -np.inf)] = 0  ## another hack
+        source_prob_vec[np.where(source_prob_vec == np.inf)] = .99   ## another hack
+        source_prob_vec[np.where(source_prob_vec == -np.inf)] = .01  ## another hack
         source_prob_vec = source_prob_vec / source_prob_vec.sum()
         source_prob_vec[np.where(source_prob_vec == np.nan)] = 0  ## another hack
         source_prob_vec = source_prob_vec / source_prob_vec.sum()
@@ -346,16 +347,16 @@ class BOW_Source_GibbsSampler():
                 ## cache
                 self.word_to_background_topic[(doc_id, word_id)] = new_word_topic
 
-    def sample(self, num_iterations=50):
-        for i in tqdm(range(num_iterations), total=num_iterations):
-            print('sampling doc-type...')
-            self.sample_doctype()
-            print('sampling source-type...')
-            self.sample_source_type()
-            print('sampling background word topic...')
-            self.sample_background_word_topics()
-            print('sampling word-topic...')
-            self.sample_source_word_topic()
+    def sample_pass(self):
+        print('sampling doc-type...')
+        self.sample_doctype()
+        print('sampling source-type...')
+        self.sample_source_type()
+        print('sampling background word topic...')
+        self.sample_background_word_topics()
+        print('sampling word-topic...')
+        self.sample_source_word_topic()
+
 
     def joint_probability(self):
         pass
@@ -366,8 +367,10 @@ if __name__=="__main__":
     # model params
     p.add_argument('-i', type=str, help="input directory.")
     p.add_argument('-o', type=str, help="output directory.")
-    p.add_argument('-k', type=int, help="num topics")
-    p.add_argument('-p', type=int, help="num personas")
+    p.add_argument('-k', type=int, help="num topics.")
+    p.add_argument('-p', type=int, help="num personas.")
+    p.add_argument('-t', type=int, help="num iterations.")
+    p.add_argument('--use-cached', default='store_true', dest='use_cached', help='use intermediate cached file.')
     args = p.parse_args()
 
     here = os.path.dirname(__file__)
@@ -392,16 +395,20 @@ if __name__=="__main__":
         sampler = BOW_Source_GibbsSampler(docs=docs, vocab=vocab, use_labels=False)
 
     ##
-    intermediate_sample = False
-    if not intermediate_sample:
+    if not args.use_cached:
         sampler.initialize()
-        import pickle
-        pickle.dump(sampler, open('intermediate-model.pkl', 'wb'))
+        pickle.dump(sampler, open('trained-sampled-iter-0.pkl', 'wb'))
 
-    if intermediate_sample:
+    else:
         print('loading...')
-        import pickle
-        sampler = pickle.load(open('intermediate-model.pkl', 'rb'))
+        files = glob.glob('trained-sampled-iter*')
+        max_file = max(files, key=lambda x: int(re.findall('iter-(\d+)', x)[0]))
+        sampler = pickle.load(open(max_file, 'rb'))
 
-    sampler.sample(num_iterations=10)
+    for i in tqdm(args.t):
+        if i % 10 == 0:
+            pickle.dump(sampler, open('trained-sampled-iter-%d.pkl' % i, 'wb'))
+        sampler.sample_pass()
+
+    ## done 
     pickle.dump(sampler, open('trained-sampler-with-labels.pkl', 'wb'))
