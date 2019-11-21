@@ -410,5 +410,5 @@ if __name__=="__main__":
             pickle.dump(sampler, open('trained-sampled-iter-%d.pkl' % i, 'wb'))
         sampler.sample_pass()
 
-    ## done 
+    ## done
     pickle.dump(sampler, open('trained-sampler-with-labels.pkl', 'wb'))

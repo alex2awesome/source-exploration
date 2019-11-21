@@ -5,7 +5,9 @@
 
 cd  /home/rcf-proj/ef/spangher/source-exploration/models/topic_model
 
-python3.7 parser.py \
+python3.7 sampler.py \
   -i input_data \
   -k 50 \
-  -p 8
+  -p 8 \
+  -t 100 \
+  --use-cached

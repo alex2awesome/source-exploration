@@ -50,6 +50,7 @@ public class PersonaModel {
 	public double nuP = 1;
 	public double nuM = 1;
 
+	// num personas
 	public int A = 50;
 	public boolean personaRegression;
 
@@ -60,7 +61,7 @@ public class PersonaModel {
 	public HashMap<String, String> genreIdToString;
 	public int numFeatures;
 
-	// number of personas
+	// number of topics
 	public int K;
 	// max vocabulary size
 	public int V;
