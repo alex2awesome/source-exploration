@@ -403,7 +403,7 @@ if __name__=="__main__":
         max_file = max(cached_files, key=lambda x: int(re.findall('iter-(\d+)', x)[0]))
         sampler = pickle.load(open(max_file, 'rb'))
 
-    for i in tqdm(args.t):
+    for i in tqdm(range(args.t, total=args.t)):
         if i % 10 == 0:
             pickle.dump(sampler, open('trained-sampled-iter-%d.pkl' % i, 'wb'))
         sampler.sample_pass()
