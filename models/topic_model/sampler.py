@@ -395,14 +395,12 @@ if __name__=="__main__":
         sampler = BOW_Source_GibbsSampler(docs=docs, vocab=vocab, use_labels=False)
 
     ##
-    if not args.use_cached:
+    cached_files = glob.glob('trained-sampled-iter*')
+    if not args.use_cached or (len(cached_files) == 0):
         sampler.initialize()
-        pickle.dump(sampler, open('trained-sampled-iter-0.pkl', 'wb'))
-
     else:
         print('loading...')
-        files = glob.glob('trained-sampled-iter*')
-        max_file = max(files, key=lambda x: int(re.findall('iter-(\d+)', x)[0]))
+        max_file = max(cached_files, key=lambda x: int(re.findall('iter-(\d+)', x)[0]))
         sampler = pickle.load(open(max_file, 'rb'))
 
     for i in tqdm(args.t):
