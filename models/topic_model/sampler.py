@@ -370,7 +370,7 @@ if __name__=="__main__":
     p.add_argument('-k', type=int, help="num topics.")
     p.add_argument('-p', type=int, help="num personas.")
     p.add_argument('-t', type=int, help="num iterations.")
-    p.add_argument('--use-cached', default='store_true', dest='use_cached', help='use intermediate cached file.')
+    p.add_argument('--use-cached', action='store_true', dest='use_cached', help='use intermediate cached file.')
     args = p.parse_args()
 
     here = os.path.dirname(__file__)
