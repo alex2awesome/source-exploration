@@ -293,4 +293,11 @@ if __name__=="__main__":
 
     ## final formatting
     print('writing...')
-    format_and_dump_text(parsed_texts=parsed_texts, s_id2label=s_id2label, cv=cv, doc_source_output=doc_outfile, vocab_source_output=vocab_outfile)
+    format_and_dump_text(
+        parsed_texts=parsed_texts,
+        s_id2label=s_id2label,
+        cv=cv,
+        doc_source_output=doc_outfile,
+        vocab_source_output=vocab_outfile,
+        convert_words_to_idx=not args.map_text
+    )
