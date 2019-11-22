@@ -154,6 +154,7 @@ def format_and_dump_text(
         doc_cutoff=200, source_cutoff=100,
         doc_source_output='doc_source.json',
         vocab_source_output='vocab.txt',
+        convert_words_to_idx=True
     ):
     """
     Takes in processed steps and dumps them.
@@ -178,9 +179,12 @@ def format_and_dump_text(
     for doc_num, text in enumerate(parsed_texts):
         doc_chunk = {}
         doc_id = text['doc_id']
-        doc_chunk['doc_vec'] = parsing_util.map_words(text['doc_sentences'], cutoff=doc_cutoff, cv=cv)
-        if len(doc_chunk['doc_vec']) < 4:
-            continue
+        if convert_words_to_idx:
+            doc_chunk['doc_vec'] = parsing_util.map_words(text['doc_sentences'], cutoff=doc_cutoff, cv=cv)
+            if len(doc_chunk['doc_vec']) < 4:
+                continue
+        else:
+            doc_chunk['doc_vec'] = text['doc_sentences']
 
         doc_chunk['doc_id'] = doc_id
 
@@ -190,7 +194,11 @@ def format_and_dump_text(
         for source_num, (name, source_text) in enumerate(text['source_sentences'].items()):
             source_id = 'S_%s_%s' % (doc_num, source_num)
             source_map[source_id] = name
-            source_vecs[source_id] = parsing_util.map_words(source_text, cutoff=source_cutoff, cv=cv)
+            if convert_words_to_idx:
+                source_vecs[source_id] = parsing_util.map_words(source_text, cutoff=source_cutoff, cv=cv)
+            else:
+                source_vecs[source_id] = source_text
+
         ## store source information in the document.
         doc_chunk['source_map'] = source_map
         doc_chunk['source_vecs'] = source_vecs
@@ -224,6 +232,7 @@ if __name__=="__main__":
     p.add_argument('--use-labels', dest='use_labels', action='store_true', default=False, help="Whether to include hand-labels in a semi-supervised manner.")
     p.add_argument('--full-source-text', dest='full_source_text', action='store_true', default=False, help="True -- include the full text of each speaker. False -- store only first sentence and quote.")
     p.add_argument('--full-doc-text', dest='full_doc_text', action='store_true', default=False, help="True -- include the full text of each document. False -- exclue text associated with speakers.")
+    p.add_argument('--map-text', dest='map_text', action='store_true', default=False, help="Map text to the indexes.")
     args = p.parse_args()
 
     here = os.path.dirname(__file__)
@@ -260,7 +269,12 @@ if __name__=="__main__":
 
     ## parse stanford and extract sources
     print('parsing stanford...')
-    parsed_texts = parse_sources_from_texts(stanford_input_dir=stanford_dir, output_dir=processed_text_dir)
+    parsed_texts = parse_sources_from_texts(
+        stanford_input_dir=stanford_dir,
+        output_dir=processed_text_dir,
+        include_all_source_mentions=args.full_source_text,
+        include_all_sentences_in_doc=args.full_doc_text
+    )
 
     ## build vocabulary
     print('building vocab...')
