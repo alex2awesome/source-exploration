@@ -375,6 +375,10 @@ if __name__=="__main__":
 
     here = os.path.dirname(__file__)
     input_documents_fp = os.path.join(here, args.i, 'doc_source.json')
+    output_dir = os.path.join(here, args.o)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     with open(input_documents_fp) as f:
         doc_strs =  f.read().split('\n')
         docs = []
@@ -395,7 +399,7 @@ if __name__=="__main__":
         sampler = BOW_Source_GibbsSampler(docs=docs, vocab=vocab, use_labels=False)
 
     ##
-    cached_files = glob.glob('trained-sampled-iter*')
+    cached_files = glob.glob(os.path.join(output_dir, 'trained-sampled-iter*'))
     if not args.use_cached or (len(cached_files) == 0):
         sampler.initialize()
     else:
@@ -405,8 +409,8 @@ if __name__=="__main__":
 
     for i in tqdm(range(args.t), total=args.t):
         if i % 10 == 0:
-            pickle.dump(sampler, open('trained-sampled-iter-%d.pkl' % i, 'wb'))
+            pickle.dump(sampler, open(os.path.join(output_dir, 'trained-sampled-iter-%d.pkl' % i), 'wb'))
         sampler.sample_pass()
 
     ## done
-    pickle.dump(sampler, open('trained-sampler-with-labels.pkl', 'wb'))
+    pickle.dump(sampler, open(os.path.join(output_dir, 'trained-sampled-iter-%d.pkl' % i), 'wb'))

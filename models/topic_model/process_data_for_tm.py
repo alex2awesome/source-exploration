@@ -27,7 +27,7 @@ def parse_sources_from_texts(
     """
     stanford_parses = glob.glob(os.path.join(stanford_input_dir, '*', '*'))
     parsed_texts = []
-    for xml_file in tqdm(stanford_parses):
+    for xml_file in tqdm(stanford_parses[:10]):
         try:
             ## parse
             people_and_doc = parsing_util.parse_people_and_docs(
@@ -299,5 +299,5 @@ if __name__=="__main__":
         cv=cv,
         doc_source_output=doc_outfile,
         vocab_source_output=vocab_outfile,
-        convert_words_to_idx=not args.map_text
+        convert_words_to_idx=args.map_text
     )
