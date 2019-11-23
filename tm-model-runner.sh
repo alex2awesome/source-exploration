@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --ntasks=1
 #SBATCH --time=24:00:00
-#SBATCH --job-name=parser
+#SBATCH --job-name=tm-with-labels
 
 cd  /home/rcf-proj/ef/spangher/source-exploration/models/topic_model
 
