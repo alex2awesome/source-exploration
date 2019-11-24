@@ -401,15 +401,17 @@ if __name__=="__main__":
     ##
     cached_files = glob.glob(os.path.join(output_dir, 'trained-sampled-iter*'))
     if not args.use_cached or (len(cached_files) == 0):
+        prev_iter = 0
         sampler.initialize()
     else:
         print('loading...')
         max_file = max(cached_files, key=lambda x: int(re.findall('iter-(\d+)', x)[0]))
         sampler = pickle.load(open(max_file, 'rb'))
+        prev_iter = int(re.findall('iter-(\d+)', max_file)[0])
 
     for i in tqdm(range(args.t), total=args.t):
         if i % 10 == 0:
-            pickle.dump(sampler, open(os.path.join(output_dir, 'trained-sampled-iter-%d.pkl' % i), 'wb'))
+            pickle.dump(sampler, open(os.path.join(output_dir, 'trained-sampled-iter-%d.pkl' % i+prev_iter), 'wb'))
         sampler.sample_pass()
 
     ## done

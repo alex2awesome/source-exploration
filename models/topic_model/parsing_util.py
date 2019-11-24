@@ -399,24 +399,31 @@ def parse_people_and_docs(stanford_parse_file, include_all_mentions=True, includ
     if include_all_mentions:
         for name, source_info in sources.items():
             sents = []
+            source_sent_ids = set()
             for mention in source_info['mentions']:
                 sent_id = mention.sentence
-                included_sent_ids.add(sent_id)
-                sents.append(' '.join(corpora[sent_id]))
+                if sent_id not in source_sent_ids:
+                    included_sent_ids.add(sent_id)
+                    source_sent_ids.add(sent_id)
+                    sents.append(' '.join(corpora[sent_id]))
             source_sentences[name] = ' '.join(sents)
 
     else:
         for name, source_info in sources.items():
+            source_sent_ids = set()
             ## get text and id for first mention
             first_mention_id = source_info['first_mention'].sentence
             first_mention = ' '.join(corpora[first_mention_id])
             included_sent_ids.add(first_mention_id)
+            source_sent_ids.add(first_mention_id)
             ## get text and ids for speaking sentences
             speaking_sents = []
             for speaking_vb in source_info['speaking_vbs']:
                 sent_id = speaking_vb['sentence']
-                speaking_sents.append(' '.join(corpora[sent_id]))
-                included_sent_ids.add(sent_id)
+                if sent_id not in source_sent_ids:
+                    speaking_sents.append(' '.join(corpora[sent_id]))
+                    included_sent_ids.add(sent_id)
+                    source_sent_ids.add(sent_id)
             source_sentences[name] = first_mention + ' ' + ' '.join(speaking_sents)
 
     ## parse sentences for doc

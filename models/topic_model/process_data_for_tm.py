@@ -27,7 +27,7 @@ def parse_sources_from_texts(
     """
     stanford_parses = glob.glob(os.path.join(stanford_input_dir, '*', '*'))
     parsed_texts = []
-    for xml_file in tqdm(stanford_parses[:10]):
+    for xml_file in tqdm(stanford_parses):
         try:
             ## parse
             people_and_doc = parsing_util.parse_people_and_docs(
@@ -87,9 +87,19 @@ def build_count_vectors(parsed_texts, source_min_df=.001, source_max_df=.5, doc_
 
 ###
 # read in roles
-def read_roles(parsed_texts, marked_file_dir, role_outfile):
+def read_roles(marked_file_dir, role_outfile):
     """
     Reads in labels applied by humans and maps them to doc_id/source_id for lookup later in processing.
+
+    output, for each document that's been labeled:
+        {
+         '<doc_id>': {
+            '<source_name_1>: label_id,
+            '<source_name_2>: label_id,
+            ...
+            },
+          ...
+        }
 
     :param parsed_texts:
     :param marked_file_glob:
@@ -126,31 +136,23 @@ def read_roles(parsed_texts, marked_file_dir, role_outfile):
     affil = legit_tagged_sources['affiliation']
     legit_tags = affil + '-' + role
 
-    ## cache role mapping
+    ## cache idx -> role mapping for later lookup
     with open(role_outfile, 'w') as f:
         for tag in legit_tags.unique():
             f.write(tag)
             f.write('\n')
 
+    # map label to label id so we can write source-type numbers
     label2l_id_map = {v: k for k,v in enumerate(legit_tags.unique())}
 
-    ## map document list to dict, {doc_id: data_chunk}
-    doc_idx_to_chunks = {}
-    for text_json in parsed_texts:
-        doc_idx_to_chunks[text_json['doc_id']] = text_json
+    doc_and_source_2_label_id = defaultdict(dict)
+    for (doc_id, source_name), label in legit_tags.iteritems():
+        doc_and_source_2_label_id[doc_id][source_name] = label2l_id_map[label]
 
-    ## map labels to doc_id/source_id
-    s_id2label = defaultdict(dict)
-    for doc_id, person, role in legit_tags.reset_index().itertuples(index=False):
-        s_id2source = doc_idx_to_chunks.get(doc_id, {}).get('source_map', {})
-        source2s_id = {v:k for k,v in s_id2source.items()}
-        if person in source2s_id:
-            s_id = source2s_id[person]
-            s_id2label[doc_id][s_id] = label2l_id_map[role]
-    return s_id2label
+    return doc_and_source_2_label_id
 
 def format_and_dump_text(
-        parsed_texts, s_id2label, cv,
+        parsed_texts, s_2_label_id, cv,
         doc_cutoff=200, source_cutoff=100,
         doc_source_output='doc_source.json',
         vocab_source_output='vocab.txt',
@@ -179,6 +181,9 @@ def format_and_dump_text(
     for doc_num, text in enumerate(parsed_texts):
         doc_chunk = {}
         doc_id = text['doc_id']
+        doc_chunk['doc_id'] = doc_id
+
+        ## map doc to doc word-idxs.
         if convert_words_to_idx:
             doc_chunk['doc_vec'] = parsing_util.map_words(text['doc_sentences'], cutoff=doc_cutoff, cv=cv)
             if len(doc_chunk['doc_vec']) < 4:
@@ -186,9 +191,8 @@ def format_and_dump_text(
         else:
             doc_chunk['doc_vec'] = text['doc_sentences']
 
-        doc_chunk['doc_id'] = doc_id
-
-        ## configure sources
+        ## map source_id to source-name.
+        ## map source-id to word idxs.
         source_map = {}
         source_vecs = {}
         for source_num, (name, source_text) in enumerate(text['source_sentences'].items()):
@@ -202,10 +206,16 @@ def format_and_dump_text(
         ## store source information in the document.
         doc_chunk['source_map'] = source_map
         doc_chunk['source_vecs'] = source_vecs
+
+        ## attach labels to document
         doc_chunk['source_labels'] = {}
-        ##
-        if doc_id in s_id2label:
-            doc_chunk['source_labels'] = s_id2label[doc_id]
+        if doc_id in s_2_label_id:
+            source_name_2_labels = s_2_label_id[doc_id]
+            source_name_2_id = {v:k for k,v in source_map.items()}
+            for source_name, label_id in source_name_2_labels.items():
+                if source_name in source_name_2_id:
+                    doc_chunk['source_labels'][source_name_2_id[source_name]] = label_id
+
         ##
         text_output.append(doc_chunk)
 
@@ -287,15 +297,18 @@ if __name__=="__main__":
 
     ## read labels
     print('reading labels...')
-    s_id2label = {}
+    s_2_label_id = {}
     if args.use_labels:
-        s_id2label = read_roles(parsed_texts=parsed_texts, marked_file_dir=label_dir, role_outfile=role_outfile)
+        s_id2label = read_roles(
+            marked_file_dir=label_dir,
+            role_outfile=role_outfile
+        )
 
     ## final formatting
     print('writing...')
     format_and_dump_text(
         parsed_texts=parsed_texts,
-        s_id2label=s_id2label,
+        s_2_label_id=s_2_label_id,
         cv=cv,
         doc_source_output=doc_outfile,
         vocab_source_output=vocab_outfile,
