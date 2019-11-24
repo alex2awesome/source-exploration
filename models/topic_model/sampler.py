@@ -411,7 +411,7 @@ if __name__=="__main__":
 
     for i in tqdm(range(args.t), total=args.t):
         if i % 10 == 0:
-            pickle.dump(sampler, open(os.path.join(output_dir, 'trained-sampled-iter-%d.pkl' % i+prev_iter), 'wb'))
+            pickle.dump(sampler, open(os.path.join(output_dir, 'trained-sampled-iter-%d.pkl' % (i+prev_iter)), 'wb'))
         sampler.sample_pass()
 
     ## done
