@@ -5,7 +5,7 @@
 
 cd  /home/rcf-proj/ef/spangher/source-exploration/models/topic_model
 
-python3.7 parser.py \
+python3.7 process_data_for_tm.py \
   -i ../../data/news-article-flatlist \
-  -o input_data_with_labels \
+  -o data_with_text \
   --use-labels

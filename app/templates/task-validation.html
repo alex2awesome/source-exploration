@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<style type="text/css">
+
+.hidden {
+    transition: opacity 1s ease-out;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}
+/*.visible {
+    opacity: 1;
+    height: auto;
+}
+*/
+</style>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<body>
+<h1>Labeling Task</h1>
+<p>There are {{ paper_count }} articles to tag and {{ sources_count }} sources.</p>
+<table class="table table-hover">
+  {% for task in input %}
+    <tr>
+    	<td style="width: 60%">{{ task.html |safe }}</td>
+    	<td style="width: 40%">
+<!--
+    Label correct
+-->
+        <div class="error {{loop.index}} question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+			<p>
+    		<h4>Is our model correct?</h4>
+    		<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-success btn-lg active" label="legit">
+					<input type="radio" name="options" autocomplete="off" checked>Correct!</label>
+				<label class="btn btn-outline-danger btn-lg" label="modelerror">
+					<input type="radio" name="options" autocomplete="off" checked>Model Error</label>
+				<label class="btn btn-outline-warning btn-lg" label="parsingerror">
+					<input type="radio" name="options" autocomplete="off" checked>Source is incorrectly parsed.</label>
+			</div>
+			</p>
+		</div>
+
+<!--
+	Overall affiliation
+-->
+		<div class="affiliation {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+			<p>
+    		<h4>Who is (or was) this source affiliated with?</h4>
+    		<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg" label="government">
+					<input type="radio" name="options" checked="checked" class="toggle">Government</label>
+				<label class="btn btn-outline-primary btn-lg" label="corporate">
+					<input type="radio" name="options" checked="checked" class="toggle">Corporate</label>
+				<label class="btn btn-outline-primary btn-lg" label="actor">
+					<input type="radio" name="options" checked="checked" class="toggle">Actor</label>
+				<label class="btn btn-outline-primary btn-lg" label="victim">
+					<input type="radio" name="options" checked="checked" class="toggle">Victim</label>
+				<label class="btn btn-outline-primary btn-lg" label="witness">
+					<input type="radio" name="options" checked="checked" class="toggle">Witness</label>
+				<label class="btn btn-outline-primary btn-lg" label="academic">
+					<input type="radio" name="options" checked="checked" class="toggle">Academic</label>
+				<label class="btn btn-outline-primary btn-lg" label="ngo">
+					<input type="radio" name="options" checked="checked" class="toggle">NGO</label>
+			</div>
+			</p>
+		</div>
+<!-- 
+	Government Path
+ -->
+		<div class="gov-person-role {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+    		<p>
+			<h4>Person's Role in Branch</h4>
+    		<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg" label="decision-maker">
+					<input type="radio" name="options" autocomplete="off" checked>Decision Maker</label>
+				<label class="btn btn-outline-primary btn-lg" label="spokesman">
+					<input type="radio" name="options" autocomplete="off" checked>Spokesman</label>
+				<label class="btn btn-outline-primary btn-lg" label="lawyer">
+					<input type="radio" name="options" autocomplete="off" checked>Lawyer</label>
+				<label class="btn btn-outline-primary btn-lg" label="advisor">
+					<input type="radio" name="options" autocomplete="off" checked>Advisor</label>
+				<label class="btn btn-outline-primary btn-lg" label="witness">
+					<input type="radio" name="options" autocomplete="off" checked>Witness</label>
+				<label class="btn btn-outline-primary btn-lg" label="expert">
+					<input type="radio" name="options" autocomplete="off" checked>Expert</label>
+				</div>
+			</p>
+		</div>
+
+<!--
+ Victim
+-->
+		<div class="victim-person-role {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+			<p>
+    		<h4>Victim Person Identity</h4>
+    		<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg active" label="individual">
+					<input type="radio" name="options" autocomplete="off" checked>Individual</label>
+				<label class="btn btn-outline-primary btn-lg" label="relative">
+					<input type="radio" name="options" autocomplete="off" checked>Relative</label>
+				<label class="btn btn-outline-primary btn-lg" label="lawyer">
+					<input type="radio" name="options" autocomplete="off" checked>Lawyer</label>
+				<label class="btn btn-outline-primary btn-lg" label="spokesman">
+					<input type="radio" name="options" autocomplete="off" checked>Spokesman</label>
+				<label class="btn btn-outline-primary btn-lg" label="other">
+					<input type="radio" name="options" autocomplete="off" checked>Other</label>
+				</div>
+			</p>
+		</div>
+<!-- 
+Academic
+-->
+		<div class="academic-person-role {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+			<p>
+    		<h4>Academic Person Identity</h4>
+    		<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg active" label="decision-maker">
+					<input type="radio" name="options" autocomplete="off" checked>Decision Maker</label>
+				<label class="btn btn-outline-primary btn-lg" label="other">
+					<input type="radio" name="options" autocomplete="expert" checked>Expert</label>
+				<label class="btn btn-outline-primary btn-lg" label="actor">
+					<input type="radio" name="options" autocomplete="off" checked>Actor</label>
+				<label class="btn btn-outline-primary btn-lg" label="other">
+					<input type="radio" name="options" autocomplete="off" checked>Other</label>
+				</div>
+			</p>
+		</div>
+<!-- 
+Witness
+-->
+		<div class="witness-person-role {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+			<p>
+    		<h4>Witness Person Identity</h4>
+    		<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg active" label="casual">
+					<input type="radio" name="options" autocomplete="off" checked>Casual/Bystander</label>
+				<label class="btn btn-outline-primary btn-lg" label="protestor">
+					<input type="radio" name="options" autocomplete="off" checked>Protestor</label>
+				<label class="btn btn-outline-primary btn-lg" label="lawyer">
+					<input type="radio" name="options" autocomplete="off" checked>Lawyer</label>
+				<label class="btn btn-outline-primary btn-lg" label="jury">
+					<input type="radio" name="options" autocomplete="off" checked>Jury Member</label>
+				<label class="btn btn-outline-primary btn-lg" label="other">
+					<input type="radio" name="options" autocomplete="off" checked>Other</label>
+				</div>
+			</p>
+		</div>
+<!-- 
+Actor
+-->
+		<div class="actor-affiliation-type {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+			<p>
+    		<h4>Actor Affiliation Type</h4>
+    		<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg active" label="individual">
+					<input type="radio" name="options" autocomplete="off" checked>Individual</label>
+				<label class="btn btn-outline-primary btn-lg" label="group">
+					<input type="radio" name="options" autocomplete="off" checked>Group</label>
+				</div>
+			</p>
+		</div>
+		<div class="actor-individual-person-role {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+			<p>
+    		<h4>Is the source the individual, or a proxy?</h4>
+    		<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg active" label="individual">
+					<input type="radio" name="options" autocomplete="off" checked>Individual</label>
+				<label class="btn btn-outline-primary btn-lg" label="lawyer">
+					<input type="radio" name="options" autocomplete="off" checked>Lawyer</label>
+				<label class="btn btn-outline-primary btn-lg" label="doctor">
+					<input type="radio" name="options" autocomplete="off" checked>Doctor</label>
+				<label class="btn btn-outline-primary btn-lg" label="doctor">
+					<input type="radio" name="options" autocomplete="off" checked>Family</label>
+				<label class="btn btn-outline-primary btn-lg" label="spokesman">
+					<input type="radio" name="options" autocomplete="off" checked>Spokesman</label>
+				</div>
+			</p>
+		</div>
+		<div class="actor-group-person-role {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+			<p>
+			<h4>What is (or was) this actor's role in the group?</h4>
+			<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg active" label="leader">
+					<input type="radio" name="options" autocomplete="off" checked>Leader</label>
+				<label class="btn btn-outline-primary btn-lg" label="member">
+					<input type="radio" name="options" autocomplete="off" checked>Member</label>
+				<label class="btn btn-outline-primary btn-lg" label="lawyer">
+					<input type="radio" name="options" autocomplete="off" checked>Lawyer</label>
+				<label class="btn btn-outline-primary btn-lg" label="spokesman">
+					<input type="radio" name="options" autocomplete="off" checked>Spokesman</label>
+				</div>
+			</p>
+			</div>
+<!-- 
+Corporate
+-->
+		<div class="corporate-person-role {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+	 		<p>
+			<h4>What is (or was) this person's role in the company?</h4>
+			<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg" label="decision-maker">
+					<input type="radio" name="options" autocomplete="off" checked>Decision Maker</label>
+				<label class="btn btn-outline-primary btn-lg" label="lawyer">
+					<input type="radio" name="options" autocomplete="off" checked>Lawyer</label>
+				<label class="btn btn-outline-primary btn-lg" label="analyst">
+					<input type="radio" name="options" autocomplete="off" checked>Analyst</label>
+				<label class="btn btn-outline-primary btn-lg" label="spokesman">
+					<input type="radio" name="options" autocomplete="off" checked>Spokesman</label>
+				<label class="btn btn-outline-primary btn-lg" label="victim">
+					<input type="radio" name="options" autocomplete="off" checked>Victim</label>
+				<label class="btn btn-outline-primary btn-lg" label="whistle-blower">
+					<input type="radio" name="options" autocomplete="off" checked>Whistle-Blower</label>
+				</div>
+			</p>
+		</div>
+
+<!--
+	NGO
+-->
+		<div class="ngo-person-role {{loop.index}} hidden question" doc_id={{task.doc_id}} person={{task.person | replace(" ","-")}}>
+			<p>
+			<h4>What role does this person play at the NGO or in the story?</h4>
+			<div class="btn-group btn-group-toggle" role="group" data-toggle="buttons">
+				<label class="btn btn-outline-primary btn-lg" label="actor">
+					<input type="radio" name="options" autocomplete="off" checked>Actor</label>
+				<label class="btn btn-outline-primary btn-lg" label="expert">
+					<input type="radio" name="options" autocomplete="off" checked>Expert</label>
+				<label class="btn btn-outline-primary btn-lg" label="other">
+					<input type="radio" name="options" autocomplete="off" checked>Other</label>
+				</div>
+			</p>
+		</div>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+
+<button type="button" class="btn btn-danger btn-lg submit">Submit</button>
+
+
+</body>
+
+<script type="text/javascript">
+	// change labeling
+	$('label').change(function(){
+		div_class = $(this).parent().parent().attr('class')
+		field_block = div_class.split(' ')[0]
+		idx_block = div_class.split(' ')[1]
+		label = $(this).attr('label')
+
+		lawyer = [
+			'.lawyer-role',
+			'.current'
+		]
+		stance = [
+			'.stance',
+			'.current'
+		]
+		gov_branch_children = [
+			'.gov-person-role',
+		].concat(lawyer).concat(stance)
+
+		actor_branch_children = [
+			'.actor-individual-person-role',
+			'.actor-group-person-role'
+		].concat(lawyer).concat(stance)
+		
+		affiliation_children = [
+			'.gov-branch',
+			'.corporate-person-role',
+			'.actor-affiliation-type',
+			'.victim-person-role',
+			'.witness-person-role',
+			'.academic-person-role',
+			'.ngo-person-role',
+		].concat(gov_branch_children).concat(actor_branch_children)
+
+		function toggle_children(turn_on_item, turn_off_list, idx){
+			$(turn_on_item + '.' + idx_block).removeClass('hidden')
+			// $(turn_on_item + '.' + idx_block).find('label').removeClass('active')
+			for (i in turn_off_list){
+				item = turn_off_list[i]
+				$(item + '.' + idx_block).find('label').removeClass('active')
+				if (item != turn_on_item)
+					$(item + '.' + idx_block).addClass('hidden')
+			}
+		}
+		if (field_block=='error' && label == 'modelerror'){
+		    toggle_children('.affiliation', [], idx_block)
+        }
+        if (field_block=='error' && label != 'modelerror'){
+		    toggle_children('.error', ['.affiliation'].concat(affiliation_children), idx_block)
+        }
+
+		if (field_block == "affiliation"){
+			if(label == "government"){
+				toggle_children('.gov-person-role', affiliation_children, idx_block)
+			}
+			if(label == 'corporate'){
+				toggle_children('.corporate-person-role', affiliation_children, idx_block)
+			}
+			if(label == "actor"){
+				toggle_children('.actor-affiliation-type', affiliation_children, idx_block)
+			}
+			if(label == "victim"){
+				toggle_children('.victim-person-role', affiliation_children, idx_block)
+			}
+			if(label == "witness"){
+				toggle_children('.witness-person-role', affiliation_children, idx_block)
+			}
+			if(label == "academic"){
+				toggle_children('.academic-person-role', affiliation_children, idx_block)
+			}
+			if(label == "ngo"){
+				toggle_children('.ngo-person-role', affiliation_children, idx_block)
+			}
+		}
+		if (field_block == "gov-branch"){
+			toggle_children('.gov-person-role', gov_branch_children, idx_block)
+		}
+
+		if (field_block == "actor-affiliation-type" && label == "group"){
+			toggle_children('.actor-group-person-role', actor_branch_children, idx_block)
+		}
+
+		if (field_block == "actor-affiliation-type" && label == "individual"){
+			toggle_children('.actor-individual-person-role', actor_branch_children, idx_block)
+		}
+
+		if (field_block == 'lawyer-role' || field_block == 'stance'){
+			toggle_children('.current', [], idx_block)
+		}
+
+	})
+
+
+	// submit answers
+	$('.submit').click(function() {
+		alert('submitting...')
+		output = []
+        incomplete = false
+		// gather questions
+		$('.question').not('.hidden').each(function(i, d) {
+			doc_id = $(d).attr('doc_id')
+			person = $(d).attr('person')
+			question_class = $(d).attr('class').split(' ')[0]
+			label = $(d).find('label.active')
+            if (label.length == 0){
+                alert('You left options unfilled. Please fill and click submit again!!')
+                incomplete = true
+			}
+            label = label.attr('label')
+			// 
+			output = output.concat({
+				"doc_id": doc_id,
+				"person": person,
+				"question_class": question_class,
+				"label": label
+			})
+		})
+        if (! incomplete ) {
+            $.ajax({
+                url: "/post_validation_experiment",
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({"data": output}),
+                // dataType: 'json'
+            });
+        }
+	})
+
+</script>
+</html>
