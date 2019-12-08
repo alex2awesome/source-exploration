@@ -275,7 +275,8 @@ public class DataReader {
 						jsonObject = (JSONObject) JSONValue.parse(labels);
 						for (String e : (Set<String>) jsonObject.keySet()) {
 							// String e = it.next();
-							int label = (int) jsonObject.get(e);
+							long label_input = (long) jsonObject.get(e);
+							int label = (int) label_input;
 							e = e.toLowerCase();
 							Entity entity = null;
 							if (entitiesByEID.containsKey(e)) {

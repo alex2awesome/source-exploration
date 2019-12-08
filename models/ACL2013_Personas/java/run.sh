@@ -17,7 +17,7 @@ uselabels=true
 #name=$1
 #input=$2
 name=newspapers.numtopics-$numtopics.numpersonas-$numpersonas.runreg-$runreg.uselabels-$uselabels
-input=../../../data/news-article-flatlist/preprocessed/all-data.data
+input=../../../data/news-article-flatlist/preprocessed_for_persona_model/my-data-processed.data
 heapsize=3000m
 
 echo "output dir: $name"
