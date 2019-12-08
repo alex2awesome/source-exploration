@@ -15,6 +15,7 @@ public class Entity {
 	public String id; 		// E1
 	public String name;	// Batman
 	public String fullname;	// Batman, who ...
+	public int label = -100;
 	public ArrayList<EventArg> agentArgs;
 	public ArrayList<EventArg> patientArgs;
 	public ArrayList<EventArg> modifieeArgs;
@@ -124,6 +125,13 @@ public class Entity {
 	}
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
+	}
+	public int getLabel(){ return label; }
+	public void setLabel(int label) {
+		this.label = label;
+	}
+	public boolean hasLabel(){
+		return this.label != -100;
 	}
 	
 	

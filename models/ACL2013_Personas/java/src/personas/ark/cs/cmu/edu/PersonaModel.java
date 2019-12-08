@@ -485,33 +485,37 @@ public class PersonaModel {
 		for (int i = 0; i < data.size(); i++) {
 			Doc doc = data.get(i);
 			for (Entity entity : doc.entities.values()) {
-				if (!first) {
-					doc.currentPersonaSamples[entity.currentType]--;
+				if (entity.hasLabel()) {
+
+				} else {
+					if (!first) {
+						doc.currentPersonaSamples[entity.currentType]--;
+					}
+
+					double[] regprobs = new double[A];
+					Arrays.fill(regprobs, 1.0);
+
+					for (int j = 0; j < A; j++) {
+						regprobs[j] *= doc.currentPersonaSamples[j] + alpha;
+
+						for (EventArg e : entity.agentArgs) {
+							regprobs[j] *= unaryLFactor(e, e.currentSample, j);
+						}
+						for (EventArg e : entity.patientArgs) {
+							regprobs[j] *= unaryLFactor(e, e.currentSample, j);
+						}
+						for (EventArg e : entity.modifieeArgs) {
+							regprobs[j] *= unaryLFactor(e, e.currentSample, j);
+						}
+					}
+
+					double sum = ArrayMath.sum(regprobs);
+					int new_z = random.nextDiscrete(regprobs, sum);
+
+					entity.lastType = entity.currentType;
+					entity.currentType = new_z;
+					doc.currentPersonaSamples[entity.currentType]++;
 				}
-
-				double[] regprobs = new double[A];
-				Arrays.fill(regprobs, 1.0);
-
-				for (int j = 0; j < A; j++) {
-					regprobs[j] *= doc.currentPersonaSamples[j] + alpha;
-
-					for (EventArg e : entity.agentArgs) {
-						regprobs[j] *= unaryLFactor(e, e.currentSample, j);
-					}
-					for (EventArg e : entity.patientArgs) {
-						regprobs[j] *= unaryLFactor(e, e.currentSample, j);
-					}
-					for (EventArg e : entity.modifieeArgs) {
-						regprobs[j] *= unaryLFactor(e, e.currentSample, j);
-					}
-				}
-
-				double sum = ArrayMath.sum(regprobs);
-				int new_z = random.nextDiscrete(regprobs, sum);
-
-				entity.lastType = entity.currentType;
-				entity.currentType = new_z;
-				doc.currentPersonaSamples[entity.currentType]++;
 			}
 		}
 
@@ -623,6 +627,7 @@ public class PersonaModel {
 			String characterMetadata = properties.getProperty("characterMetadata");
 			String characterPosteriorFile = properties.getProperty("characterPosteriorFile");
 			boolean personaRegression = Boolean.valueOf(properties.getProperty("runPersonaRegressionModel"));
+			boolean useLabels = Boolean.valueOf(properties.getProperty("useLabels"));
 			String outPhiWeights = properties.getProperty("outPhiWeights");
 			String featureMeans = properties.getProperty("featureMeans");
 			String personaFile = properties.getProperty("personaFile");
@@ -649,7 +654,7 @@ public class PersonaModel {
 
 			int numWordsToPrint = 20;
 
-			DataReader.read(characterMetadata, movieMetadata, dataFile, gibbs);
+			DataReader.read(characterMetadata, movieMetadata, dataFile, gibbs, useLabels);
 
 			gibbs.initialize();
 

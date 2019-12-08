@@ -45,12 +45,13 @@ public class DataReader {
 			String characterMetadata,
 			String movieMetadata,
 			String dataFile,
-			PersonaModel model
+			PersonaModel model,
+			boolean useLabels
 	) {
 		readCharacterMetadata(characterMetadata, model);
 		readMovieMetadata(movieMetadata, model);
 		finalizeFeatures(model);
-		read(dataFile, model);
+		read(dataFile, model, useLabels);
 	}
 	
 
@@ -199,7 +200,7 @@ public class DataReader {
 		}
 	}
 
-	private static void read(String infile, PersonaModel model) {
+	private static void read(String infile, PersonaModel model, boolean useLabels) {
 		System.err.println("Reading data...");
 		model.data = new ArrayList<Doc>();
 
@@ -217,6 +218,10 @@ public class DataReader {
 					String modifierLine = mainparts[3].trim();
 					String entityNameString = mainparts[4].trim();
 					String entityFullNameString = mainparts[5].trim();
+					String labels = "";
+					if (useLabels){
+						labels = mainparts[6].trim();
+					}
 
 					// key off entity ID for all of these.
 					HashMap<String, Entity> entitiesByEID = new HashMap<String, Entity>();
@@ -249,8 +254,7 @@ public class DataReader {
 					/*
 					 * Read entity full text mentions
 					 */
-					jsonObject = (JSONObject) JSONValue
-							.parse(entityFullNameString);
+					jsonObject = (JSONObject) JSONValue.parse(entityFullNameString);
 					for (String e : (Set<String>) jsonObject.keySet()) {
 						// String e = it.next();
 						String name = (String) jsonObject.get(e);
@@ -263,7 +267,25 @@ public class DataReader {
 						}
 						entity.setFullname(name);
 						entitiesByEID.put(e, entity);
-
+					}
+					/*
+					 * Read entity labels
+					 */
+					if (useLabels){
+						jsonObject = (JSONObject) JSONValue.parse(labels);
+						for (String e : (Set<String>) jsonObject.keySet()) {
+							// String e = it.next();
+							int label = (int) jsonObject.get(e);
+							e = e.toLowerCase();
+							Entity entity = null;
+							if (entitiesByEID.containsKey(e)) {
+								entity = entitiesByEID.get(e);
+							} else {
+								entity = new Entity(e, model.A);
+							}
+							entity.setLabel(label);
+							entitiesByEID.put(e, entity);
+						}
 					}
 
 					// read the tuple predarg fragments

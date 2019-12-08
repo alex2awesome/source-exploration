@@ -8,14 +8,15 @@ cd /home/rcf-proj/ef/spangher/source-exploration/models/ACL2013_Personas/java
 
 #!/bin/bash
 #####################################################
-numtopics=5
-maxvocab=1000
-numpersonas=50
+numtopics=25
+maxvocab=5000
+numpersonas=26
 runreg=true
+uselabels=true
 
 #name=$1
 #input=$2
-name=newspapers.numtopics-$numtopics.numpersonas-$numpersonas.runreg-$runreg
+name=newspapers.numtopics-$numtopics.numpersonas-$numpersonas.runreg-$runreg.uselabels-$uselabels
 input=../../../data/news-article-flatlist/preprocessed/all-data.data
 heapsize=3000m
 
@@ -41,10 +42,11 @@ gamma=1
 L2=.01
 
 # max number of iterations
-maxIterations=50000
+maxIterations=3000
 
 # true = run Persona Regression model; false = run Dirichlet Persona Model.
 runPersonaRegressionModel=$runreg
+useLabels=$uselabels
 
 # input
 data=$input

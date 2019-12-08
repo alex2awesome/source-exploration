@@ -184,7 +184,7 @@ public class PrintUtil {
 
 				for (Entity e : doc.entities.values()) {
 
-					double[] finalPosterior = e.perfinalSamples;
+					double[] finalPosterior = e.finalSamples;
 					ArrayMath.normalize(finalPosterior);
 
 					HashSet<Integer> fs = new HashSet<Integer>();
