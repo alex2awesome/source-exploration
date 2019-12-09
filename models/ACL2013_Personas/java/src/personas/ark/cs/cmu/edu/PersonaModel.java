@@ -486,7 +486,10 @@ public class PersonaModel {
 			Doc doc = data.get(i);
 			for (Entity entity : doc.entities.values()) {
 				if (entity.hasLabel()) {
-
+					if (first){
+						entity.currentType = entity.getLabel();
+						doc.currentPersonaSamples[entity.currentType]++;
+					}
 				} else {
 					if (!first) {
 						doc.currentPersonaSamples[entity.currentType]--;
