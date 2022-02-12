@@ -62,6 +62,7 @@ def extract_pers_ners(ner_tags, words):
 
 
 
+
 def is_quote(lemmas, pos_tags, deps, entity_mention):
     """For an entity mention, check if the sentence is a quote.
     

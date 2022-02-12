@@ -9,6 +9,8 @@ import logging
 import tqdm
 import re
 import unidecode
+import spacy
+
 
 def multiprocess(input_list, func, max_workers=-1):
     """Simple ThreadPoolExecutor Wrapper.
@@ -99,14 +101,41 @@ def get_quotes_method_1(doc):
                         is_quote = True
                 entities[ent.text][['background sentence', 'quote sentence'][is_quote]].append((s_idx, text_sentence))
     
-    return cluster_entities(entities)
+    return cluster_entities_method_1(entities)
 
 
-def get_quotes_method_2(doc):
+_nlp = None
+def get_nlp():
+    global _nlp
+    if _nlp is None:
+        _nlp = spacy.load('en_core_web_lg')
+    return _nlp
+
+
+_nlp_coref = None
+_greedyness = None
+_max_dist = None
+def get_coref_nlp(greedyness=0.5, max_dist=50):
+    global _nlp_coref
+    global _greedyness
+    global _max_dist
+    if (_nlp_coref is None) or (greedyness != _greedyness) or (max_dist != _max_dist):
+        import neuralcoref
+        _nlp_coref = spacy.load('en_core_web_lg')
+        neuralcoref.add_to_pipe(_nlp_coref, greedyness=greedyness, max_dist=max_dist)
+    return _nlp_coref
+
+
+def get_quotes_method_2(doc=None, text=None, cluster=True, resolve_coref=False, greedyness=0.5, max_dist=50):
     """Get quoted people by finding the nsubj of a 'say', 'said' or 'according to' verb."""
+    if text is not None and doc is None:
+        if resolve_coref:
+            doc = get_coref_nlp(greedyness=greedyness, max_dist=max_dist)(text)
+            text = doc._.coref_resolved
+        doc = get_nlp()(text)
+
     ## extract quotes
     entities = defaultdict(lambda: {'background sentence': [], 'quote sentence': []})
-
     signifiers = [' say ', ' said ', ' says ', ' according to ']
     seen = set()
     ## get quotes
@@ -116,7 +145,7 @@ def get_quotes_method_2(doc):
 
         ## hack to pick up common phrasal signifiers
         if 'according to' in text_sentence:
-            sent = nlp(text_sentence.replace('according to', 'said'))
+            sent = get_nlp()(text_sentence.replace('according to', 'said'))
 
         ## extract all nsubj of VERB if VERB is 'said', 'says' or 'say'
         nsubjs = []
@@ -128,6 +157,7 @@ def get_quotes_method_2(doc):
             ):
                 nsubjs.append(possible_subject.text)
                 entities[possible_subject.text]['quote sentence'].append((s_idx, text_sentence))
+                seen.add(s_idx)
                 
         for noun_phrase in sent.noun_chunks:
             for nsubj in nsubjs:
@@ -135,19 +165,34 @@ def get_quotes_method_2(doc):
                     entities[noun_phrase.text]['quote sentence'].append((s_idx, text_sentence))
                     seen.add(s_idx)
 
-    ## get background
+    # get background
     for s_idx, sent in enumerate(doc.sents):
         if s_idx not in seen:
-            ## get person-entities
+            # get person-entities
             for ent in sent.ents:
                 if ent.label_ == 'PERSON':
                     entities[ent.text]['background sentence'].append((s_idx, text_sentence))
-    
-    return cluster_entities(entities)
+
+    if not cluster:
+        return dedupe_sents_in_entities(entities)
+    return dedupe_sents_in_entities(cluster_entities_method_1(entities))
 
 
-def cluster_entities_method_1(entities, sim=.95):
-    """Append clusters of similar names together
+def dedupe_sents_in_entities(quotes):
+    deduped_output = {}
+    for person, sents in quotes.items():
+        person_output = {'background sentence': [], 'quote sentence': []}
+        for sent_type in ['background sentence', 'quote sentence']:
+            seen = set()
+            for idx, s in sents[sent_type]:
+                if idx not in seen:
+                    seen.add(idx)
+                    person_output[sent_type].append((idx, s))
+        deduped_output[person] = person_output
+    return deduped_output
+
+def cluster_by_name_overlap_jaro(entities, sim=.95):
+    """Append clusters of similar names together (fails when a first name is the same for different people.)
         Input:
             * entities: list of NER names extracted from text
 
@@ -157,7 +202,6 @@ def cluster_entities_method_1(entities, sim=.95):
     """
     name_mapper = defaultdict(set)
     mapped = defaultdict(bool)
-
     entity_list = list(entities)
     n_ent = len(entity_list)
 
@@ -166,34 +210,100 @@ def cluster_entities_method_1(entities, sim=.95):
         n1 = entity_list[i]
 
         if not mapped[n1]:
-            ## new cluster
+            # new cluster
             n_cluster = [n1]
             mapped[n1] = True
-            ## 
+            #
             for j in range(i, n_ent):
                 n2 = entity_list[j]
                 if not mapped[n2]:
-
-                    ## get similarites 
+                    # get similarites
                     name_parts = []
                     for w_i in n1.split():
                         for w_j in n2.split():
                             dist = jellyfish.jaro_winkler(w_i, w_j)
                             name_parts.append(dist)
 
-                    ## append to cluster
+                    # append to cluster
                     if max(name_parts) > sim:
                         n_cluster.append(n2)
                         mapped[n2] = True
-            ## record
+            # record
             clusters.append(n_cluster)
+    return clusters
 
+from copy import copy
+import string
+from unidecode import unidecode
+def remove_problematic_name_parts(s):
+    s = unidecode(s)
+    for p in ['Jr', 'Sr', 'III', '\'s']:
+        s = s.replace(p, '')
+    for p in string.punctuation:
+        s = s.replace(p, '')
+    return s.strip()
+
+def cluster_by_last_name_equality(entities, sim=.98):
+    """Append clusters of people by their last names.
+        Input:
+            * entities: list of NER names extracted from text
+
+        Output:
+            * list of clusters where each cluster is:
+                * a list of (idx, full-name) tuples
+    """
+    mapped = defaultdict(bool)
+    entity_list = list(entities)
+    n_ent = len(entity_list)
+    clusters = []
+    for i in range(n_ent):
+        n1 = entity_list[i]
+        if not mapped[i]:
+            # new cluster
+            n_cluster = [(i, n1)]
+            mapped[i] = True
+            temp_n1 = copy(n1)
+            temp_n1 = remove_problematic_name_parts(temp_n1)
+            for j in range(i, n_ent):
+                n2 = entity_list[j]
+                if not mapped[j]:
+                    temp_n2 = copy(n2)
+                    temp_n2 = remove_problematic_name_parts(temp_n2)
+                    # append to cluster
+                    if jellyfish.jaro_winkler(temp_n1.split()[-1], temp_n2.split()[-1]) > sim:
+                        n_cluster.append((j, n2))
+                        mapped[j] = True
+            # record
+            clusters.append(n_cluster)
+    return clusters
+
+
+def get_name_cluster_head_by_length(clusters):
+    head_to_cluster = {}
+    head_idx_to_cluster_idx = {}
+    cluster_to_head = {}
+    cluster_idx_to_head = {}
+    for c in clusters:
+        cluster_head = max(c, key=lambda x: len(x[1]))
+        head_to_cluster[cluster_head[1]] = list(map(lambda x: x[1], c))
+        head_idx_to_cluster_idx[cluster_head[0]] = list(map(lambda x: x[0], c))
+        for c_i in c:
+            cluster_to_head[c_i[1]] = cluster_head[1]
+            cluster_idx_to_head[c_i[0]] = cluster_head[0]
+    return head_to_cluster, head_idx_to_cluster_idx, cluster_to_head, cluster_idx_to_head
+
+
+def cluster_by_coref(entities):
+    pass
+
+
+def merge_clusters(entities, clusters):
     cluster_mapper = {}
     for cluster in clusters:
         key = max(cluster, key=lambda x: len(x))
         cluster_mapper[key] = cluster
 
-    ## group for output
+    # group for output
     entities_clustered = defaultdict(lambda: {'background sentence': [], 'quote sentence': []})
     for c_key, cluster in cluster_mapper.items():
         for c_i in cluster:
