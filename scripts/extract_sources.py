@@ -16,7 +16,7 @@ if __name__ == '__main__':
     db_path = '../data/newssniffer-nytimes.db'
     conn = sqlite3.connect(db_path)
     df = pd.read_sql('''
-        SELECT * FROM 
+        SELECT entry_id, version, summary FROM 
         entryversion 
         LIMIT %s
         OFFSET %s
