@@ -29,14 +29,17 @@ if __name__ == '__main__':
     ##
     output = []
     for idx, (entry_id, version, summary) in tqdm(df.iterrows(), total=len(df)):
-        summary = summary.replace('</p><p>', ' ')
-        quote_idxes, sent_words, _ = coref_resolution_util.perform_quote_extraction_and_clustering(summary)
-        output.append({
-            'entry_id': entry_id,
-            'version': version,
-            'quote_idxes': quote_idxes,
-            'sent_parse': sent_words
-        })
+        try:
+            summary = summary.replace('</p><p>', ' ')
+            quote_idxes, sent_words, _ = coref_resolution_util.perform_quote_extraction_and_clustering(summary)
+            output.append({
+                'entry_id': entry_id,
+                'version': version,
+                'quote_idxes': quote_idxes,
+                'sent_parse': sent_words
+            })
+        except:
+            pass
     s, e = args.start_row, args.start_row + args.n_rows
     with open('output/output_chunk__start-%s_end-%s.pkl' % (s, e), 'wb') as f:
         pickle.dump(output, f)
