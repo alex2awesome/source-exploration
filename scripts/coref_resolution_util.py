@@ -215,6 +215,13 @@ class FuzzyIntersectionStrategy(PartialIntersectionStrategy):
         return super().get_intersected_clusters()
 
 
+def get_device():
+    import torch
+    if torch.cuda.is_available():
+        return 'cuda'
+    else:
+        return 'cpu'
+
 ### model loaders
 _predictor = None
 def get_predictor():
@@ -224,6 +231,8 @@ def get_predictor():
         from allennlp.predictors.predictor import Predictor
         model_url = 'https://storage.googleapis.com/allennlp-public-models/coref-spanbert-large-2020.02.27.tar.gz'
         _predictor = Predictor.from_path(model_url)  # load the model
+        device = get_device()
+        _predictor._model = _predictor._model.to(device)
     return _predictor
 
 

@@ -1,4 +1,8 @@
+Cython
+jsonnet==0.17.0
 pandas
+matplotlib
+unidecode
 more_itertools
 allennlp
 allennlp-models
