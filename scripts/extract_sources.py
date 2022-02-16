@@ -14,14 +14,19 @@ if __name__ == '__main__':
     parser.add_argument('--n_rows', type=int)
     args = parser.parse_args()
 
+    ##
     db_path = '../data/newssniffer-nytimes.db'
     conn = sqlite3.connect(db_path)
     df = pd.read_sql('''
         SELECT entry_id, version, summary FROM 
         entryversion 
+        WHERE num_versions < 40
+        AND LENGTH(summary) < 9000
         LIMIT %s
         OFFSET %s
     ''' % (args.n_rows, args.start_row), con=conn)
+
+    ##
     output = []
     for idx, (entry_id, version, summary) in tqdm(df.iterrows(), total=len(df)):
         summary = summary.replace('</p><p>', ' ')
