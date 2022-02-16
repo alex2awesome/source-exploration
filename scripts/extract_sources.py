@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0, '../scripts/')
 import coref_resolution_util
 import pickle
+from tqdm.auto import tqdm
 
 
 if __name__ == '__main__':
@@ -22,7 +23,7 @@ if __name__ == '__main__':
         OFFSET %s
     ''' % (args.n_rows, args.start_row), con=conn)
     output = []
-    for idx, (entry_id, version, summary) in df.iterrows():
+    for idx, (entry_id, version, summary) in tqdm(df.iterrows(), total=len(df)):
         summary = summary.replace('</p><p>', ' ')
         quote_idxes, sent_words, _ = coref_resolution_util.perform_quote_extraction_and_clustering(summary)
         output.append({
