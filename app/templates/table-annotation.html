@@ -1,0 +1,348 @@
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/3.2.1/js/dataTables.fixedColumns.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+<link rel="https://cdn.datatables.net/fixedheader/3.2.1/css/fixedHeader.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+
+<style type="text/css">
+    .ten {
+      width: 10%;
+    }
+    .twenty {
+      width: 20%;
+    }
+    .thirty {
+      width: 30%;
+    }
+    .forty {
+      width: 40%;
+    }
+    #example thead th {
+        position: sticky;
+        top: 0;
+        border-bottom-color: black;
+        border-bottom-width: 1px;
+        background-color: white;
+    }
+
+    table.display {
+      margin: 0 auto;
+      width: 100%;
+      clear: both;
+      border-collapse: collapse;
+      table-layout: fixed;
+      word-wrap:break-word;
+    }
+    input {
+        width:inherit;
+        height:inherit;
+    }
+    select {
+        width:inherit;
+        height:inherit;
+    }
+
+    .hidden{
+        display: none;
+    }
+
+</style>
+
+<button type="submit" id='submitButton' value='Submit'>Submit form</button>
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Sentence</th>
+            <th>Source Head</th>
+            <th>Source Type</th>
+            <th>Errors</th>
+            {#            #}
+            <th>Affiliation</th>
+            <th>Role</th>
+            <th>Gender</th>
+            <th>Race</th>
+            <th>Age</th>
+            <th>Educational Status</th>
+        </tr>
+    </thead>
+    {% for row in data  %}
+        <tr>
+            {# sentence #}
+            {% if row.color %}
+                <td datatype='sentence' style="background-color: {{ row.color }}">{{ row.sent | safe }}</td>
+            {% else %}
+                <td datatype='sentence'>{{ row.sent }}</td>
+            {% endif %}
+            <td datatype="head">
+                <input type="text" value="{{ row.head }}">
+            </td>
+            <td datatype="quote_type">
+                <select type="text">
+                    {% if row.type == "QUOTE" %}
+                        <option value="quote" selected="selected">QUOTE</option>
+                    {% else %}
+                        <option value="quote">QUOTE</option>
+                    {% endif %}
+                    {% if row.type == "BACKGROUND" %}
+                        <option value="background" selected="selected">BACKGROUND</option>
+                    {% else %}
+                        <option value="background">BACKGROUND</option>
+                    {% endif %}
+                    {% if row.type == "" %}
+                        <option value="na" selected="selected"></option>
+                    {% else %}
+                        <option value="na"></option>
+                    {% endif %}
+                    {{ row.type }}
+                </select>
+            </td>
+            <td datatype="error">
+                <select size="1">
+                    <option value="no_errors" selected="selected">
+                        No Errors
+                    </option>
+                    {#                #}
+                    <option disabled role=separator>
+                    <option value="false_negative_sentence_quote">
+                        Found source elsewhere but missing quote sentence
+                    </option>
+                    <option value="false_negative_sentence_background">
+                        Found source elsewhere but missing background sentence
+                    </option>
+                    <option value="false_negative_source_named">
+                        Missed this named source
+                    </option>
+                    <option value="false_negative_source_unnamed">
+                        Missed unnamed source
+                    </option>
+                    {#                #}
+                    <option disabled role=separator>
+                    <option value="false_positive_sentence_quote">
+                        This shouldn't be tagged as a quote sentence.
+                    </option>
+                    <option value="false_positive_sentence_background">
+                        This shouldn't be tagged as a background sentence.
+                    </option>
+                    {#                #}
+                    <option disabled role=separator>
+                    <option value="other">
+                        Other
+                    </option>
+                </select>
+                <input class="hidden" type="text" datatype="other_error">
+            </td>
+            <td datatype="affiliation">
+                <select size="1">
+                    <option value="unknown" selected="selected"></option>
+                    <option value="government">
+                        Government
+                    </option>
+                    {#                #}
+                    <option value="corporate">
+                        Corporate
+                    </option>
+                    <option value="ngo">
+                        NGO
+                    </option>
+                    <option value="academic">
+                        Academic
+                    </option>
+                    <option value="other_group">
+                        Other Group
+                    </option>
+                    {#                #}
+                    <option disabled role=separator>
+                    <option value="actor">
+                        Actor
+                    </option>
+                    <option value="witness">
+                        Witness
+                    </option>
+                    <option value="Victim">
+                        Victim
+                    </option>
+                    <option value="Other">
+                        Other
+                    </option>
+                </select>
+                <input class="hidden" type="text" datatype="other_affiliation">
+            </td>
+            <td datatype="role">
+                <select size="1">
+                    <option value="unknown" selected="selected">
+                    </option>
+                    <option value="decision_maker">
+                        Decision Maker
+                    </option>
+                    <option value="representative">
+                        Representative
+                    </option>
+                    <option value="informational">
+                        Informational
+                    </option>
+                    <option value="other">
+                        Other
+                    </option>
+                </select>
+                <input class="hidden" type="text" datatype="other_role">
+            </td>
+            <td datatype="gender">
+                <select size="1">
+                    <option value="unknown" selected="selected">
+                    </option>
+                    <option value="male">
+                        Male
+                    </option>
+                    <option value="female">
+                        Female
+                    </option>
+                    <option value="other">
+                        Other
+                    </option>
+                </select>
+                <input class="hidden" type="text" datatype="other_gender">
+            </td>
+            <td datatype="race">
+                <select size="1">
+                    <option value="unknown" selected="selected">
+                    </option>
+                    <option value="white">
+                        White
+                    </option>
+                    <option value="black">
+                        Black
+                    </option>
+                    <option value="indigenous">
+                        Indigenous
+                    </option>
+                    <option value="latinx">
+                        Latinx
+                    </option>
+                    <option value="east_asian">
+                        East Asian
+                    </option>
+                    <option value="indian">
+                        Indian
+                    </option>
+                    <option value="arab">
+                        Arab
+                    </option>
+                    <option class="other" value="other">
+                        Other
+                    </option>
+                </select>
+                <input class="hidden" type="text" datatype="other_race">
+            </td>
+            <td datatype="age">
+                <input type="text">
+            </td>
+            <td datatype="education">
+                <input type="text">
+            </td>
+        </tr>
+
+
+    {%  endfor %}
+
+</table>
+
+<script>
+    $(document).ready(function() {
+    var data = {{ data | safe}}
+
+    var table = $('#example').DataTable({
+        paging: false,
+        ordering: false,
+        columnDefs: [
+            { "width": "40%" , "targets": 0},
+            { "width": "6%" , "targets": 1},
+            { "width": "6%" , "targets": 2},
+            { "width": "6%" , "targets": 3},
+            { "width": "6%" , "targets": 4},
+            { "width": "6%" , "targets": 5},
+            { "width": "6%" , "targets": 6},
+            { "width": "6%" , "targets": 7},
+            { "width": "6%" , "targets": 8},
+            { "width": "6%" , "targets": 9},
+        ],
+        fixedHeader: true,
+    });
+    {#$.fn.dataTable.FixedHeader( table );#}
+
+    function resize_input(){
+        $('input').css('width', function (i, d) {
+            return $(this).parent().width()
+        })
+        $('select').css('width', function (i, d) {
+            return $(this).parent().width()
+        })
+    }
+    resize_input()
+    $( window ).resize(resize_input)
+
+     $('select').on('change', function(e){
+         t = $(this).find("option:selected")
+         if (t.val().indexOf('other') != -1){
+            t.parents('td').find('input').removeClass('hidden')
+         }
+         else {
+             t.parents('td').find('input').addClass('hidden')
+         }
+     })
+
+     function process_row(i, tr){
+        var output = {}
+        output['s_idx'] = i
+        var td = $(tr).find('td')
+        td.map(function(i, d){
+            var key = $(d).attr('datatype')
+            var select = $(d).find('select')
+            var input = $(d).find('input')
+            if (select.length > 0){
+                var value = select.find('option:selected').text().trim()
+                if (value.indexOf('Other') != -1){
+                    var other_text = input.val()
+                    value = 'Other: ' + other_text
+                }
+            }
+            else if (input.length > 0) {
+                value = input.val()
+            }
+            else {
+                value = $(d).text().trim()
+            }
+            output[key] = value
+        })
+         return output
+     }
+
+     function record_data(output, submit_click_event){
+            {% if do_mturk %}
+            // submit mturk
+            $('#data').attr('value', JSON.stringify(output))
+            $('#submitButton').trigger(submit_click_event.type);
+            {% else %}
+            // submit AJAX
+            output['start_time'] = "{{ start_time }}"
+            $.ajax({
+                url: "/post_table",
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(output),
+                success: function (result) {
+                    if (result === "success") location.href = "/render_table"
+                }
+            })
+            {% endif %}
+        }
+
+    $('#submitButton').click( function(submit_click_event) {
+        var data = table.$('tr');
+        var output = data.map(process_row)
+        record_data(output, submit_click_event)
+    } );
+} );
+</script>

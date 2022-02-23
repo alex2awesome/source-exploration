@@ -429,23 +429,31 @@ def get_adjacent_quotes(already_extracted_quote_chunks, doc):
     return new_quote_sent_chunks
 
 ## helper functions
-def format_span_with_word_list(adj, sent, span, span_color):
+def format_span_with_word_list(adj, sent, span, span_color=None, bold=False):
     span_s, span_e = span[0] - adj, span[1] - adj
     if (span_s > 0) and (span_e > 0) and (span_s < len(sent)) and (span_e <= len(sent)):
         span_text = sent[span_s:span_e]
         span_str = ' '.join(span_text)
-        sent = (
-                sent[:span_s] +
-                ['<span style="background-color: %s">%s</span>' % (span_color, span_str)] +
-                sent[span_e:]
-        )
+        if span_color is not None:
+            sent = (
+                    sent[:span_s] +
+                    ['<span style="background-color: %s">%s</span>' % (span_color, span_str)] +
+                    sent[span_e:]
+            )
+        if bold:
+            sent = (
+                    sent[:span_s] +
+                    ['<span style="font-weight: bold">%s</span>' % span_str] +
+                    sent[span_e:]
+            )
         adj = adj - (len(span_text) - 1)
     return sent, adj
 
 
 def format_sent_with_word_list(sent, sent_color):
-    sent_str = ' '.join(sent)
-    return '<span style="background-color: %s">%s</span>' % (sent_color, sent_str)
+    if isinstance(sent, list):
+        sent = ' '.join(sent)
+    return '<span style="background-color: %s">%s</span>' % (sent_color, sent)
 
 
 import util

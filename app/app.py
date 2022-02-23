@@ -123,6 +123,22 @@ def post_validation():
         json.dump(crowd_data, open('data/batch-marked-t.json', 'w'))
     return "success"
 
+import time
+@app.route('/render_table', methods=['GET'])
+def make_table_html():
+    with open('data/test-json.json') as f:
+        input = json.load(f)
+    return render_template('table-annotation.html', data=input, do_mturk=False, start_time=time.time())
+
+@app.route('/post_table', methods=['POST'])
+def post_table_html():
+    output_data = request.get_json()
+    output_data.pop('prevObject', '')
+    output_data.pop('length', '')
+    output_data['end_time'] = time.time()
+    with open('data/output-json.json', 'w') as f:
+        json.dump(output_data, f)
+    return 'success'
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
