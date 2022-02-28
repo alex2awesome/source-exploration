@@ -354,6 +354,8 @@ def extract_quotes_from_nsubj(doc, return_dict=False):
                     possible_subject.head.pos_ == 'VERB' and
                     possible_subject.head.text in (
                     'say', 'says', 'said',
+                    'tell', 'told',
+                    'added', 'adds', 'adding',
                     'describe', 'describes', 'described',
                     'claims', 'claims', 'claimed',
                     'explained', 'explains', 'explain',
@@ -398,7 +400,7 @@ def extract_quotes_from_nsubj(doc, return_dict=False):
         return spans
 
 def get_adjacent_quotes(already_extracted_quote_chunks, doc):
-    # extract all quote sentences
+    # 1. extract all quote sentences
     in_quote = False
     word_idx_in_quote = []
     for word_idx, word in enumerate(doc):
@@ -407,11 +409,12 @@ def get_adjacent_quotes(already_extracted_quote_chunks, doc):
         if in_quote:
             word_idx_in_quote.append(word_idx)
 
+    # 2. get sent idx of quote sentences
     quote_sent = list(map(lambda x: doc[x].sent, word_idx_in_quote))
     quote_sent = list(unique_everseen(quote_sent))
     quote_sent_idxs = list(map(lambda x: get_sent_idx_from_sent(x, doc), quote_sent))
 
-    #
+    # 3.
     new_quote_sent_chunks = deepcopy(already_extracted_quote_chunks)
     if not isinstance(new_quote_sent_chunks, list):
         new_quote_sent_chunks = new_quote_sent_chunks.tolist()
@@ -419,10 +422,18 @@ def get_adjacent_quotes(already_extracted_quote_chunks, doc):
     seen_set = set(map(lambda x: x[0], seen_set))
     adjacent_candidates = list(set(quote_sent_idxs) - seen_set)
 
+    # 4. First, attribute candidates to the source preceeding them, if any.
     for i in adjacent_candidates:
         for q_idx, q in enumerate(new_quote_sent_chunks):
             for (q_sent_idx, q_span) in q:
                 if i == q_sent_idx + 1:
+                    new_quote_sent_chunks[q_idx].append((i, copy(q_span)))
+
+    # 5. Next, attribute candidates to the source succeeding them, if any.
+    for i in adjacent_candidates:
+        for q_idx, q in enumerate(new_quote_sent_chunks):
+            for (q_sent_idx, q_span) in q:
+                if i == q_sent_idx - 1:
                     new_quote_sent_chunks[q_idx].append((i, copy(q_span)))
 
     new_quote_sent_chunks = list(map(lambda x: list(set(x)), new_quote_sent_chunks))
@@ -482,7 +493,6 @@ def perform_quote_extraction_and_clustering(text):
     head_to_span_mapper_spacy_corr = {
         (k[0], k[1] + 1): list(map(lambda x: (x[0], x[1] + 1), v)) for k, v in head_to_span_mapper.items()
     }
-
     head_keys = list(head_to_span_mapper_spacy_corr.keys())
 
     # 4. Cluster NE's based on string matching
