@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request
 from google.cloud import datastore
 from collections import defaultdict
+import re
+import itertools
+import random
 
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 def get_client():
     try:
@@ -124,19 +127,74 @@ def post_validation():
     return "success"
 
 import time
+import glob, os
 @app.route('/render_table', methods=['GET'])
 def make_table_html():
-    with open('data/test-json.json') as f:
-        input = json.load(f)
-    return render_template('table-annotation.html', data=input, do_mturk=False, start_time=time.time())
+    task = request.args.get('task', 'full')
+    shuffle = request.args.get('shuffle', False)
+    to_annotate = glob.glob('../app/data/input_data/*/*')
+    to_annotate = list(map(lambda x: (x, re.findall('to-annotate-\d+', x)[0]), to_annotate))
+    to_annotate = sorted(map(lambda x: (x[0], x[1].replace('to-annotate', 'annotated')), to_annotate))
+    #
+    annotated = glob.glob('../app/data/output_data_%s/*/*' % task)
+    annotated_files = set(map(lambda x: re.findall('annotated-\d+', x)[0], annotated))
+    #
+    to_annotate = list(filter(lambda x: x[1] not in annotated_files, to_annotate))
+    if shuffle:
+        random.shuffle(to_annotate)
+
+    input = {}
+    if len(to_annotate) > 0:
+        while 'html_data' not in input:
+            fname, file_id = to_annotate[0]
+            with open(fname) as f:
+                input = json.load(f)
+            to_annotate = list(filter(lambda x: x[0] != fname, to_annotate))
+            random.shuffle(to_annotate)
+
+            if task == 'diversity':
+                annotated_sources = list(filter(lambda x: file_id in x, annotated))
+                annotated_sources = list(map(lambda x: int(re.findall('source-id-(\d+)', x)[1]), annotated_sources))
+                html_data = input.pop('html_data', [])
+                html_data = sorted(html_data, key=lambda x: x['source_idx'] if isinstance(x['source_idx'], int) else -1)
+                groups = {}
+                for k, g in itertools.groupby(html_data, key=lambda x: x['source_idx']):
+                    groups[k] = list(g)
+                keys = list(groups.keys())
+                keys = sorted(filter(lambda x: x not in annotated_sources and x != 'null', keys))
+                if len(keys) > 0:
+                    input['html_data'] = groups[keys[0]]
+                    file_id = '%s_%s' % (file_id, 'source-id-%s' % keys[0])
+
+        output_fn = fname.replace('input_data', 'output_data_%s' % task)
+        output_dir = os.path.dirname(output_fn)
+        output_fn = os.path.join(output_dir, file_id + '.json')
+        return render_template(
+            'table-annotation-slim-%s.html' % task,
+            data=input['html_data'],
+            entry_id=input['entry_id'],
+            version=input['version'],
+            label=input['label'],
+            url=input['url'],
+            headline=input['headline'],
+            published_date=input['published_date'],
+            do_mturk=False,
+            start_time=time.time(),
+            output_fname=output_fn
+        )
+    else:
+        return "No more data."
+
 
 @app.route('/post_table', methods=['POST'])
 def post_table_html():
     output_data = request.get_json()
-    output_data.pop('prevObject', '')
-    output_data.pop('length', '')
     output_data['end_time'] = time.time()
-    with open('data/output-json.json', 'w') as f:
+    output_fname = output_data['output_fname']
+    output_dir = os.path.dirname(output_fname)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    with open(output_fname, 'w') as f:
         json.dump(output_data, f)
     return 'success'
 

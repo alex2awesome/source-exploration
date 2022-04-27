@@ -1,0 +1,209 @@
+{##}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+{##}
+<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/3.2.1/js/dataTables.fixedColumns.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/js/bootstrap-multiselect.min.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+<link rel="https://cdn.datatables.net/fixedheader/3.2.1/css/fixedHeader.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/css/bootstrap-multiselect.css" type="text/css"/>
+
+{% if do_mturk %}
+<link href="">
+<script src=""></script>
+{% else %}
+<link rel="stylesheet" href="{{ url_for('static', filename='table-annotation.css') }}">
+<script src="{{ url_for('static', filename='table-annotation.js') }}"></script>
+{% endif %}
+
+<div class="table table-hover container">
+
+<div class="table table-hover container">
+    <div class="row instructions">
+        <div class="col-12">
+            <div id="accordion">
+              <div class="card">
+                <div class="card-header" id="hello_header">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#hello">
+                      Hello, about us, and thank you for your help!
+                    </button>
+                  </h5>
+                </div>
+                <div id="hello" class="collapse show" aria-labelledby="hello_header" data-parent="#accordion">
+                  <div class="card-body">
+                    Hello! We are small research lab in University of Southern California trying to build AI tools to help
+                    citizens better understand the work journalists do.
+                    <br><br>
+                    We are calibrating our payment scheme <b>to meet a $15 per hour wage and will reward workers who take time
+                    to give correct answers</b>.
+                    <br><br>
+                    If you perform well, we will invite you to participate in future, well-paying trials. If you speed through and give nonsense
+                    answers, <b>we will block you and report to Mechanical Turk</b>. We understand the pressures of Mechanical Turk, but we are a
+                    small lab and cannot afford to throw out too much data.
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingOne">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" type="button" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Instructions
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <h2>Goals and Overview</h2>
+                        <p>We'd like to compile diversity characteristics of the sources so we can study source diversity in news writing. To do this, you will answer questions about each source's
+                            race, gender, age, and education. You can use contextual clues from the article and external resources like Google and Wikipedia to answer these questions.</p>
+
+                        <h3>Diversity Categories</h3>
+                        <ul>
+                            <li>
+                                <b>Gender:</b>
+                                <ol>
+                                    <li><b>Male</b>: Someone born male and identifying as male at the time of publication.</li>
+                                    <li><b>Female</b>: Someone born female and identifying as female at the time of publication.</li>
+                                    <li><b>Other</b>: Another gender category not captured (e.g. a-gendered, trans female, trans male.) Please specify.</li>
+                                </ol>
+                            </li>
+                            <li>
+                                <b>Race:</b>
+                                <ol>
+                                    <li><b>White</b>: Someone with a predominantly European heritage, who would be viewed as white by society.</li>
+                                    <li><b>Black</b>: Someone with a predominantly African heritage.</li>
+                                    <li><b>Indigenous</b>: Someone with a heritage that is predominantly a native peoples, i.e. existing pre-colonization (e.g. American Indian, Pacific Islander, Haiwaiian, aboriginal, etc.).</li>
+                                    <li><b>Latin/South America</b>: Someone who does <i>not</i> identify as indigenous, but who's heritage is predominantly from Latin or South America.</li>
+                                    <li><b>East Asian</b>: Someone who's heritage is predominantly from an East Asian country (e.g. China, Thailand, Japan, etc.).</li>
+                                    <li><b>South Asian</b>: Someone who's heritage is predominantly from a South Asian country (e.g. India, Bangaladesh, Nepal, etc.).</li>
+                                    <li><b>Middle Eastern</b>: Someone who's heritage is predominantly from the Middle East (e.g. Israel, Saudi Arabia, Turkey).</li>
+                                    <li><b>Other</b>: Some other group not captured. Please specify.</li>
+                                </ol>
+                            </li>
+                            <li>
+                                <b>Age:</b> Please specify age in number of years, as of the publication date.
+                            </li>
+                            <li>
+                                <b>Educational Status:</b>
+                                <ol>
+                                    <li><b>Degree</b>: Please specify the degrees obtained by the individual (can select multiple).</li>
+                                    <li><b>University</b>: Please specify the universities attended by the individual (if multiple, separate them with commas.)</li>
+                                </ol>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+              </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+<div class="body">
+    <h1>{{ headline }}</h1>
+    <h3>Published: {{ published_date }}</h3>
+    <a href="{{ url }}">{{ url }}</a>
+    <p>Key: ({{ entry_id }} , {{ version }})</p>
+
+    <table id="example" class="display" style="width:100%">
+        <thead class="my-border-bottom">
+            <tr>
+                <th><b>Sentence</b></th>
+                <th>
+                    <b>Source</b>
+                    <br>
+                    <i>Full name</i>
+                </th>
+                <th>
+                    <b>Errors</b>
+                </th>
+                <th>
+                    <b>Gender</b>
+                </th>
+                <th>
+                    <b>Race</b>
+                </th>
+                <th>
+                    <b>Age</b>
+                    <br>
+                    <i>At publish-time</i>
+                </th>
+                <th>
+                    <b>Edu. Level</b>
+                    <br>
+                    <i>Check all applic.</i>
+                </th>
+                <th>
+                    <b>Edu. Institution(s)</b>
+                    <br>
+                    <i>Sep. by ";"</i>
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+    <button type="submit" id='submitButton' value='Submit'>Submit form</button>
+
+</div>
+<script>
+$(document).ready(function() {
+    var data = {{ data | safe }}
+    pm = new TablePageManager(data)
+    var table = pm.build_table_diversity($('#example'), data)
+
+    pm.resize_input()
+    $( window ).resize(function () {
+        return pm.resize_input()
+    })
+
+     {# Add in other-box popping up #}
+     $('select').on('change', function(e){
+         pm.handle_other_box($(this))
+     })
+
+    $('.error').on('change', function (e) {
+        pm.handle_error_toggle(this)
+    })
+
+    $('.head').find('input').blur(function(){
+        let row_idx = parseInt($(this).parents('tr').attr('id').split('_')[1])
+        let error_type = $(this).parents('tr').find('.error').find("option:selected").attr('value')
+        if ((error_type == 'false_negative_wrong_source_new') | (error_type == 'false_negative_source_named_uncaught')){
+            pm.check_typed_source(row_idx, false)
+        } else if ((error_type == 'false_negative_wrong_source_existing') | (error_type == 'false_negative_source_named_caught')){
+            pm.check_typed_source(row_idx, true)
+        } else if (error_type == 'false_negative_source_unnamed_uncaught'){
+            pm.check_typed_source(row_idx, false, true)
+        } else if (error_type == 'false_negative_source_unnamed_existing'){
+            pm.check_typed_source(row_idx, true, true)
+        }
+    })
+
+    $('#submitButton').click( function(submit_click_event) {
+        var data = table.find('tr');
+        var [output, to_continue] = pm.process_output(data)
+        {% if do_mturk %}
+            var do_mturk = true
+        {% else %}
+            var do_mturk = false
+        {% endif %}
+        output = {'data': output}
+        if (to_continue) {
+            console.log('Submitting!')
+            var start_time = "{{ start_time }}"
+            var output_fname = "{{ output_fname }}"
+            pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname)
+        }
+    } );
+} );
+</script>

@@ -342,7 +342,9 @@ def extract_quotes_from_nsubj(doc, return_dict=False):
         text_sentence = ' '.join([word.text for word in sent]).strip()
 
         # hack to pick up common phrasal signifiers
-        common_multiword_phrases = ['according to', 'pointed out', 'points out', 'called for', 'calls for']
+        common_multiword_phrases = [
+            'according to', 'pointed out', 'points out', 'called for', 'calls for', 'told me'
+        ]
         for c in common_multiword_phrases:
             if c in text_sentence:
                 sent = get_nlp()(text_sentence.replace(c, 'said'))
@@ -354,6 +356,7 @@ def extract_quotes_from_nsubj(doc, return_dict=False):
                     possible_subject.head.pos_ == 'VERB' and
                     possible_subject.head.text in (
                     'say', 'says', 'said',
+                    'echo', 'echoes', 'echoed',
                     'tell', 'told',
                     'added', 'adds', 'adding',
                     'describe', 'describes', 'described',
@@ -365,6 +368,8 @@ def extract_quotes_from_nsubj(doc, return_dict=False):
                     'declared', 'declares', 'declare',
                     'worried', 'worries', 'worry',
                     'asserted', 'asserts', 'assert',
+                    #
+                    'write', 'writes', 'wrote',
             )
             ):
                 # map subject to a noun phrase or named entity

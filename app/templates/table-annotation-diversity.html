@@ -128,58 +128,8 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                     <div class="card-body">
                         <h2>Goals and Overview</h2>
-                        <p>The goal of this exercise is twofold.</p>
-                            <ol>
-                                <li>We'd like check if we are correctly identifying all sources.</li>
-                                <li>We'd like to compile diversity characteristics of the sources so we can study source diversity in news writing.</li>
-                            </ol>
-
-                        <p>To do this, you will answer:
-                            <ul>
-                                <li><b>Sentence-Level Questions</b>: A series of questions you'll answer ONCE for <b>each sentence</b>, to see whether we have correctly identified sources or missed them</li>
-                                <li><b>Source-Level Questions</b>: A series of questions you'll answer ONCE for <b>each correctly identified source</b>. You can use external resources or contextual clues to determine diversity characteristics about the sources.</li>
-                            </ul>
-                    </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" id="headingTwo">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" type="button" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                      Sentence-Level Questions
-                    </button>
-                  </h5>
-                </div>
-                <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                    <div class="card-body">
-                        <h2>Answer these questions once per sentence.</h2>
-                        If the sentence is correct, do NOTHING.
-                        <ul>
-                            <li>
-                                <b>Source Head:</b> Full name of the source identified in this sentence. If it's correct, leave it. If we've missed a source sentence, please copy and paste the full name of the source where it appears in the piece, to the best of your ability.
-                            </li>
-                            <li>
-                                <b>Sentence Type:</b> If this sentence is attributed to a source, it is either:
-                                <ol>
-                                    <li><b>Quote</b>: A statement or a paraphrase that the source gives to the reporter.</li>
-                                    <li><b>Background</b>: A sentence describing or mentioning the source, that does <i>not</i> contain a quote.</li>
-                                </ol>
-                            </li>
-                            <li>
-                                <b>Errors:</b> Correct us if we are wrong! Either:
-                                <ol>
-                                    <li>We missed a source! In which case it's a false negative. This can mean:
-                                        <ol>
-                                            <li><b>False negative: Named source. Not found elsewhere.</b> We've completely missed this source and all quotes by them.</li>
-                                            <li><b>False negative: Named source. Found elsewhere.</b> We've found other quotes by this source, but missed this particular sentence.</li>
-                                            <li><b>False negative: Unnamed source.</b> We've missed an unnamed source (e.g. ``an anonymous official'', ``The department says'', etc.). {# We're not studying unnamed sources in this work, but we'd like to collect data for future work.#}</li>
-                                            <li><b>False negative: Wrong source identified</b> We've identified this sentence as a source sentence, but attributed it to the wrong person. Please correct the <b>Source Head</b> column too.</li>
-                                            <li><b>False negative: Background</b> We've missed an important background sentence describing a source.</li>
-                                        </ol>
-                                    </li>
-                                </ol>
-                            </li>
-                        </ul>
+                        <p>We'd like to compile diversity characteristics of the sources so we can study source diversity in news writing. To do this, you will answer questions about each source's
+                            race, gender, age, and education. You can use contextual clues from the article and external resources like Google and Wikipedia to answer these questions.</p>
                     </div>
                 </div>
               </div>
@@ -187,200 +137,46 @@
                 <div class="card-header" id="headingThree">
                   <h5 class="mb-0">
                     <button class="btn btn-link collapsed" data-toggle="collapse" type="button" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                      Source-Level Questions
+                      Diversity Categories
                     </button>
                   </h5>
                 </div>
                 <div id="collapseFour" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                    <div class="card-body">
-                        <h2>Answer these questions once per identified source.</h2>
-                        <div class="table table-hover container">
-                        <div class="row instructions">
-                            <div class="col-12">
-                                <div id="accordion">
-                                  <div class="card">
-                                    <div class="card-header" id="hello_header">
-                                      <h5 class="mb-0">
-                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#hello_sub">
-                                          Source-Type Questions
-                                        </button>
-                                      </h5>
-                                    </div>
-                                    <div id="hello_sub" class="collapse" aria-labelledby="hello_header">
-                                      <div class="card-body">
-                                        <p>
-                                            The following questions define the source's role in the article. We hope to use this to
-                                            understand what kinds of information the source contributes.
-                                        </p>
-                                        <p>You will answer three questions: a source's <b>Affiliation</b> (i.e. what broad ``group'' they belong to in society), their <b>Role</b> (i.e. within that group), and their <b>Status</b> (i.e. whether they currently belong to the group or not.)</p>
-                                        <p>This is intuitively demonstrated through examples. Please see the following table for examples of typical sources, and which <b>Affiliation/Role</b> they belong to.</p>
-                                        <h4>Examples of Source Role/Affiliation</h4>
-                                        <div class="instructional_table">
-                                          <table>
-                                              <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td colspan="3" class="centered" style="border-bottom: 1px solid black"><b>Role</b></td>
-                                              </tr>
-                                              <tr>
-                                                <td></td>
-                                                <td class="my-border-bottom"></td>
-                                                <td class="my-border-bottom"></td>
-                                                <td class="centered my-border-bottom my-border-left"><i>Participant</i></td>
-                                                <td class="centered my-border-bottom"><i>Representative</i></td>
-                                                <td class="centered my-border-bottom my-border-right"><i>Informational</i></td>
-                                              </tr>
-                                              <tr>
-                                                <td rowspan="8" class="rotated centered my-border-right"><b>Affiliation</b></td>
-                                                <td rowspan="5" class="rotated centered my-border-right my-border-bottom"><i>Institutional</i></td>
-                                                <td class="my-border-right"><i>Government</i></td>
-                                                <td>President, Senator...</td>
-                                                <td>Appointee, Advisor...</td>
-                                                <td class="my-border-right">Expert, Whistle-Blower...</td>
-                                              </tr>
-                                              <tr>
-                                                <td class="my-border-right"><i>Corporate</i></td>
-                                                <td>CEO, President...</td>
-                                                <td>Spokesman, Lawyer...</td>
-                                                <td class="my-border-right">Analyst, Researcher...</td>
-                                              </tr>
-                                              <tr>
-                                                <td class="my-border-right"><i>NGO</i></td>
-                                                <td>Director, Doctor...</td>
-                                                <td>Spokesman, Lawyer...</td>
-                                                <td class="my-border-right">Analyst, Researcher...</td>
-                                              </tr>
-                                              <tr>
-                                                <td class="my-border-right"><i>Academic</i></td>
-                                                <td>President, Research lead...</td>
-                                                <td>Spokesman, Lawyer...</td>
-                                                <td class="my-border-right">Expert, Scientist...</td>
-                                              </tr>
-                                              <tr>
-                                                <td class="my-border-bottom my-border-right"><i>Group</i></td>
-                                                <td class="my-border-bottom">Lead, Founder...</td>
-                                                <td class="my-border-bottom">Member, Militia...</td>
-                                                <td class="my-border-bottom my-border-right">Casual, Bystander...</td>
-                                              </tr>
-                                              <tr>
-                                                <td rowspan="3" class="rotated centered my-border-right my-border-bottom"><i>Individual</i></td>
-                                                <td class="my-border-right"><i>Actor</i></td>
-                                                <td>Individual...</td>
-                                                <td>Doctor, Lawyer...</td>
-                                                <td class="my-border-right">Family, friends...</td>
-                                              </tr>
-                                              <tr>
-                                                <td class="my-border-right"><i>Witness</i></td>
-                                                <td>Voter, Protestor...</td>
-                                                <td>Spokesman, Poll-respondent...</td>
-                                                <td class="my-border-right">Bystander...</td>
-                                              </tr>
-                                              <tr>
-                                                <td class="my-border-bottom my-border-right"><i>Victim</i></td>
-                                                <td class="my-border-bottom">Individual...</td>
-                                                <td class="my-border-bottom">Lawyer, Advocate...</td>
-                                                <td class="my-border-right my-border-bottom">Family, friends...</td>
-                                              </tr>
-                                            </table>
-                                        </div>
+                      <div class="card-body">
+                        <ul>
+                            <li>
+                                <b>Gender:</b>
+                                <ol>
+                                    <li><b>Male</b>: Someone born male and identifying as male at the time of publication.</li>
+                                    <li><b>Female</b>: Someone born female and identifying as female at the time of publication.</li>
+                                    <li><b>Other</b>: Another gender category not captured (e.g. a-gendered, trans female, trans male.) Please specify.</li>
+                                </ol>
+                            </li>
+                            <li>
+                                <b>Race:</b>
+                                <ol>
+                                    <li><b>White</b>: Someone with a predominantly European heritage, who would be viewed as white by society.</li>
+                                    <li><b>Black</b>: Someone with a predominantly African heritage.</li>
+                                    <li><b>Indigenous</b>: Someone with a heritage that is predominantly a native peoples, i.e. existing pre-colonization (e.g. American Indian, Pacific Islander, Haiwaiian, aboriginal, etc.).</li>
+                                    <li><b>Latin/South America</b>: Someone who does <i>not</i> identify as indigenous, but who's heritage is predominantly from Latin or South America.</li>
+                                    <li><b>East Asian</b>: Someone who's heritage is predominantly from an East Asian country (e.g. China, Thailand, Japan, etc.).</li>
+                                    <li><b>South Asian</b>: Someone who's heritage is predominantly from a South Asian country (e.g. India, Bangaladesh, Nepal, etc.).</li>
+                                    <li><b>Middle Eastern</b>: Someone who's heritage is predominantly from the Middle East (e.g. Israel, Saudi Arabia, Turkey).</li>
+                                    <li><b>Other</b>: Some other group not captured. Please specify.</li>
+                                </ol>
+                            </li>
+                            <li>
+                                <b>Age:</b> Please specify age in number of years, as of the publication date.
+                            </li>
+                            <li>
+                                <b>Educational Status:</b>
+                                <ol>
+                                    <li><b>Degree</b>: Please specify the degrees obtained by the individual (can select multiple).</li>
+                                    <li><b>University</b>: Please specify the universities attended by the individual (if multiple, separate them with commas.)</li>
+                                </ol>
+                            </li>
 
-                                        <h4>Definitions</h4>
-                                        <ul>
-                                            <li>
-                                                <b>Affiliation:</b> Which group the source belongs to.
-                                                <ul>
-                                                    <li> <b>Institutional:</b> The source belongs to a larger institution.
-                                                        <ol>
-                                                            <li><b>Government</b>: Any source who executes the functions of or represents a government entity. <i>(E.g. a politician, regulator, judge, polticial spokesman etc.)</i></li>
-                                                            <li><b>Corporate</b>: Any source who belongs to an organization in the private sector. <i>(E.g. a corporate executive, worker, etc.)</i></li>
-                                                            <li><b>Non-Governmental Organization (NGO)</b>: If the source belongs to nonprofit organization that operates independently of a government. <i>(E.g. a charity, think tank, non-academic research group.)</i></li>
-                                                            <li><b>Academic</b>: If the source belongs to an academic institution. Typically, these are professors or students and they serve an informational role, but they can be university administrators, provosts etc. if the story is specifically about academia.</li>
-                                                            <li><b>Other Group</b>: If the source belongs or is acting on behalf of some group not captured by the above categories (please specify the group).</li>
-                                                        </ol>
-                                                    </li>
-                                                    <li>
-                                                        <b>Indvidiual:</b> The source does <b>NOT</b> belong to a larger institution.
-                                                        <ol>
-                                                            <li><b>Actor</b>: If the source is an individual acting on their own. <i>(E.g. an entrepreneur, main character, solo-acting terrorist.)</i></li>
-                                                            <li><b>Witness</b>: A source that is ancillary to events, but bears witness in either an active <i>(e.g. protestor, voter)</i> or inactive <i>(i.e. bystander)</i> way.</li>
-                                                            <li><b>Victim</b>: A source that is affected by events in the story, typically negatively.</li>
-                                                            <li><b>Other</b>: Some other individual (please specify).</li>
-                                                        </ol>
-
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <b>Role:</b>
-                                                <ol>
-                                                    <li><b>Participant</b>: A source who is either directly making decisions on behalf of the entity they are affiliated with, or taking an active role somehow in the decision-making process.</li>
-                                                    <li><b>Representative</b>: A source who is speaking on behalf of a <i>Participant</i>.</li>
-                                                    <li><b>Informational</b>: A source who is giving information on ongoing decisions or events in the world, but is not directly involved in them.</li>
-                                                    <li><b>Other</b>: Some other role that we have not captured (please specify).</li>
-                                                </ol>
-                                            </li>
-                                            <li>
-                                                <b>Role Status:</b>
-                                                <ol>
-                                                    <li><b>Current</b>: A source who is currently occupying the role and affiliation.</li>
-                                                    <li><b>Former</b>: A source who <i>used</i> to occupy the role and affilition.</li>
-                                                    <li><b>Other</b>: Some other status that we have not captured (please specify).</li>
-                                                </ol>
-                                            </li>
-                                        </ul>
-                                      </div>
-                                    </div>
-                                      </div>
-                                  <div class="card">
-                                    <div class="card-header" id="diversity_header">
-                                      <h5 class="mb-0">
-                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#diversity_sub">
-                                          Diversity Questions
-                                        </button>
-                                      </h5>
-                                    </div>
-                                    <div id="diversity_sub" class="collapse" aria-labelledby="diversity_header">
-                                      <div class="card-body">
-                                        <ul>
-                                            <li>
-                                                <b>Gender:</b>
-                                                <ol>
-                                                    <li><b>Male</b>: Someone born male and identifying as male at the time of publication.</li>
-                                                    <li><b>Female</b>: Someone born female and identifying as female at the time of publication.</li>
-                                                    <li><b>Other</b>: Another gender category not captured (e.g. a-gendered, trans female, trans male.) Please specify.</li>
-                                                </ol>
-                                            </li>
-                                            <li>
-                                                <b>Race:</b>
-                                                <ol>
-                                                    <li><b>White</b>: Someone with a predominantly European heritage, who would be viewed as white by society.</li>
-                                                    <li><b>Black</b>: Someone with a predominantly African heritage.</li>
-                                                    <li><b>Indigenous</b>: Someone with a heritage that is predominantly a native peoples, i.e. existing pre-colonization (e.g. American Indian, Pacific Islander, Haiwaiian, aboriginal, etc.).</li>
-                                                    <li><b>Latin/South America</b>: Someone who does <i>not</i> identify as indigenous, but who's heritage is predominantly from Latin or South America.</li>
-                                                    <li><b>East Asian</b>: Someone who's heritage is predominantly from an East Asian country (e.g. China, Thailand, Japan, etc.).</li>
-                                                    <li><b>South Asian</b>: Someone who's heritage is predominantly from a South Asian country (e.g. India, Bangaladesh, Nepal, etc.).</li>
-                                                    <li><b>Middle Eastern</b>: Someone who's heritage is predominantly from the Middle East (e.g. Israel, Saudi Arabia, Turkey).</li>
-                                                    <li><b>Other</b>: Some other group not captured. Please specify.</li>
-                                                </ol>
-                                            </li>
-                                            <li>
-                                                <b>Age:</b> Please specify age in number of years, as of the publication date.
-                                            </li>
-                                            <li>
-                                                <b>Educational Status:</b>
-                                                <ol>
-                                                    <li><b>Degree</b>: Please specify the degrees obtained by the individual (can select multiple).</li>
-                                                    <li><b>University</b>: Please specify the universities attended by the individual (if multiple, separate them with commas.)</li>
-                                                </ol>
-                                            </li>
-
-                                        </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                            </div>
-                        </div>
+                        </ul>
                     </div>
                 </div>
               </div>

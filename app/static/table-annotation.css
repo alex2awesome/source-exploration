@@ -1,0 +1,80 @@
+.ten {
+  width: 10%;
+}
+.twenty {
+  width: 20%;
+}
+.thirty {
+  width: 30%;
+}
+.forty {
+  width: 40%;
+}
+.rotated {
+  writing-mode: tb-rl;
+  transform: rotate(-180deg);
+}
+.centered {
+  text-align: center
+}
+
+#example thead th {
+    position: sticky;
+    top: 0;
+    font-weight:400;
+    border-bottom-color: black;
+    border-bottom-width: 1px;
+    background-color: white;
+}
+
+table.display {
+  margin: 0 auto;
+  width: 100%;
+  clear: both;
+  border-collapse: collapse;
+  table-layout: fixed;
+  word-wrap:break-word;
+}
+input {
+    width:inherit;
+    height:inherit;
+}
+select {
+    width:inherit;
+    height:inherit;
+}
+
+.hidden{
+    display: none;
+}
+
+.body {
+    padding: 15px;
+}
+
+.my-border-bottom {
+    border-bottom: 1px solid black;
+}
+
+.my-border-right {
+    border-right: 1px solid black;
+}
+
+.my-border-left {
+    border-left: 1px solid black;
+}
+
+.instructional_table {
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.knowledge_source{
+    margin-top: 10px;
+}
+
+.placeholder {
+    /*display: none;*/
+    color: gray;
+}

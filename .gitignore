@@ -5,7 +5,14 @@
 models/ACL2013_Personas/input*
 models/ACL2013_Personas/output/slurm*
 models/ACL2013_Personas/stanford-corenlp-full-2018-10-05/*
-data
+papers/
+models/
+app/data
+tmp/
+notebooks/.ipynb_checkpoints
+data/
+data/news-article-flatlist/
+app/demo
 latex
 tmp
 *.xml.gz
@@ -16,3 +23,4 @@ tmp
 *.tar.gz
 *.tsv
 *.ss
+*.pdf
