@@ -1,4 +1,17 @@
 
+<HTMLQuestion xmlns="http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2011-11-11/HTMLQuestion.xsd">
+<HTMLContent><![CDATA[
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+
+<script type='text/javascript' src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>
+
+</head>
+
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 
@@ -17,8 +30,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/css/bootstrap-multiselect.css" type="text/css"/>
 
 
-<link href="">
-<script src=""></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation.css">
+<script src="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation.js"></script>
 
 
 <div class="table table-hover container">
@@ -195,10 +208,16 @@ $(document).ready(function() {
         output = {'data': output}
         if (to_continue) {
             console.log('Submitting!')
-            var start_time = "1651022129.571223"
+            var start_time = "1651092132.251285"
             var output_fname = "../app/data/output_data_diversity/18/annotated-907__source-idx-3.json"
             pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname)
         }
     } );
 } );
 </script>
+
+
+]]>
+</HTMLContent>
+<FrameHeight>600</FrameHeight>
+</HTMLQuestion>

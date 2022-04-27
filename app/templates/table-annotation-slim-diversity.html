@@ -1,4 +1,17 @@
+{%  if do_mturk %}
+<HTMLQuestion xmlns="http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2011-11-11/HTMLQuestion.xsd">
+<HTMLContent><![CDATA[
+{% endif %}
 {##}
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+{% if do_mturk %}
+<script type='text/javascript' src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>
+{% endif %}
+</head>
+
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 
@@ -17,8 +30,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/css/bootstrap-multiselect.css" type="text/css"/>
 
 {% if do_mturk %}
-<link href="">
-<script src=""></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation.css">
+<script src="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation.js"></script>
 {% else %}
 <link rel="stylesheet" href="{{ url_for('static', filename='table-annotation.css') }}">
 <script src="{{ url_for('static', filename='table-annotation.js') }}"></script>
@@ -124,9 +137,9 @@
                     <br>
                     <i>Full name</i>
                 </th>
-                <th>
-                    <b>Errors</b>
-                </th>
+{#                <th>#}
+{#                    <b>Errors</b>#}
+{#                </th>#}
                 <th>
                     <b>Gender</b>
                 </th>
@@ -207,3 +220,10 @@ $(document).ready(function() {
     } );
 } );
 </script>
+
+{% if do_mturk %}
+]]>
+</HTMLContent>
+<FrameHeight>600</FrameHeight>
+</HTMLQuestion>
+{% endif %}

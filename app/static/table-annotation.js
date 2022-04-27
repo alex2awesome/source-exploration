@@ -883,7 +883,6 @@ class TablePageManager {
             table_row += `<td datatype="head" class="head my-border-left">
                             <input type="text" value="` + row.head + `" disabled>
                           </td>`
-            table_row += DIVERSITY_ERROR_ONLY
             table_row += DIVERSITY_HTML
             table_row += "</tr>"
             table_body_html += table_row
@@ -899,12 +898,11 @@ class TablePageManager {
             columnDefs: [
                 { "width": "34%" , "targets": 0},   // sentence
                 { "width": "6%" , "targets":  1},   // source head
-                { "width": "6%" , "targets":  2},   // error
-                { "width": "6%" , "targets":  3},   // gender
-                { "width": "6%" , "targets":  4},   // race
-                { "width": "6%" , "targets":  5},   // age
-                { "width": "6%" , "targets":  6},   // educational level
-                { "width": "6%" , "targets":  7},   // institutions
+                { "width": "6%" , "targets":  2},   // gender
+                { "width": "6%" , "targets":  3},   // race
+                { "width": "6%" , "targets":  4},   // age
+                { "width": "6%" , "targets":  5},   // educational level
+                { "width": "6%" , "targets":  6},   // institutions
             ],
             fixedHeader: true,
         });
