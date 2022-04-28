@@ -725,23 +725,59 @@ class TablePageManager {
         }
     }
 
+    knowledge_cell_check(d, row_selector, field_name){
+        let to_continue = true
+        let k_output = null
+        let k = $(d).find('.knowledge_source')
+        if ($(k).length > 0){
+            let k_val = $(k).find(':selected:not(.placeholder)')
+            if ($(k_val).length == 0){
+                to_continue = false
+                if (this.task_type != 'diversity') {
+                    alert('Please tell us where you found the information for the "' + field_name + '" field in row ' + (row_selector + 1) + ', using the dropdown below it.')
+                } else {
+                    alert('Please tell us where you found the information for the "' + field_name + '" field, using the dropdown below it.')
+                }
+            } else {
+                k_output = $(k_val).val()
+            }
+        }
+        return [to_continue, k_output]
+    }
+
     input_cell_check(d, source_selector, field_name, other_field_class) {
         let to_continue = true
-        let is_disabled = $(d).find('select').prop('disabled')
-        let value = $(d).find(':selected').text().trim()
+        let d_sel = $(d).find('select:not(.knowledge_source)')
+        let is_disabled = $(d_sel).prop('disabled') | $(d_sel).hasClass('hidden')
+        let value = null
         if (!is_disabled) {
-            if (value == '') {
-                alert('Make sure the "' + field_name + '" field for row ' + (source_selector + 1) + ' is filled.')
+            let field_value = $(d_sel).find(':selected').text().trim()
+            if (field_value == '') {
+                if (this.task_type != 'diversity') {
+                    alert('Make sure the "' + field_name + '" field in row ' + (source_selector + 1) + ' is filled.')
+                } else {
+                    alert('Make sure the "' + field_name + '" field is filled.')
+                }
                 to_continue = false
             }
-            if (value == 'Other') {
+            if (field_value == 'Other') {
                 let other_value = $(d).find(other_field_class).val()
                 if (other_value == '') {
-                    alert('You selected "Other" for the "' + field_name + '" field in row ' + (source_selector + 1) + '. Make sure it is filled.')
+                    if (this.task_type != 'diversity') {
+                        alert('You selected "Other" for the "' + field_name + '" field in row ' + (source_selector + 1) + '. Make sure the "Other" text box is filled.')
+                    } else {
+                        alert('You selected "Other" for the "' + field_name + '" field. Make sure the "Other" text box is filled.')
+                    }
                     to_continue = false
                 } else {
-                    value = 'Other: ' + other_value
+                    field_value = 'Other: ' + other_value
                 }
+            }
+            let [to_continue_k, k_value] = this.knowledge_cell_check(d, source_selector, field_name)
+            to_continue = (to_continue & to_continue_k)
+            value = {
+                'field_value': field_value,
+                'knowledge_source': k_value,
             }
         }
         return [to_continue, value]
@@ -749,11 +785,47 @@ class TablePageManager {
 
     text_cell_check(d, source_selector, field_name) {
         let to_continue = true
-        let value = $(d).find('input').val()
+        let value = null
         let is_disabled = $(d).find('input').prop('disabled')
-        if ((!is_disabled) & (value == undefined | value == '')) {
-            alert('Make sure the "' + field_name + '" field for row ' + (source_selector + 1) + ' is filled.')
-            to_continue = true
+        if (!is_disabled) {
+            let field_value = $(d).find('input').val()
+            if (field_value == undefined | field_value == '') {
+                alert('Make sure the "' + field_name + '" field in row ' + (source_selector + 1) + ' is filled.')
+                to_continue = false
+            }
+            let [to_continue_k, k_value] = this.knowledge_cell_check(d, source_selector, field_name)
+            to_continue = (to_continue & to_continue_k)
+            value = {
+                'field_value': field_value,
+                'knowledge_source': k_value,
+            }
+        }
+        return [to_continue, value]
+    }
+
+    multi_select_check(d, source_selector, field_name){
+        let to_continue = true
+        let value = null
+        let d_sel = $(d).find('select:not(.knowledge_source)')
+        let is_disabled = ($(d_sel).prop('disabled') | $(d_sel).hasClass('hidden'))
+        if (!is_disabled) {
+            let field_value = $(d_sel).find(':selected').map(function (i, d) { return d.value })
+            if (field_value.length == 0) {
+                if (this.task_type != 'diversity') {
+                    alert('Please select at least one option for the "' + field_name + '" field in row ' + (source_selector + 1) + '.')
+                } else {
+                    alert('Please select at least one option for the "' + field_name + '" field.')
+                }
+                to_continue = false
+            } else {
+                field_value = field_value.toArray()
+                let [to_continue_k, k_value] = this.knowledge_cell_check(d, source_selector, field_name)
+                to_continue = (to_continue & to_continue_k)
+                value = {
+                    'field_value': field_value,
+                    'knowledge_source': k_value,
+                }
+            }
         }
         return [to_continue, value]
     }
@@ -794,22 +866,12 @@ class TablePageManager {
                 [to_continue_item, value] = that.input_cell_check(d, source_selector, 'Age')
             }
             if (key == 'education_level') {
-                is_disabled = $(d).find('select').prop('disabled')
-                value = $(d).find(':selected').map(function (i, d) {
-                    return d.value
-                })
-                if ((!is_disabled) & (value.length == 0)) {
-                    alert('Please selected at least one option for "Education Level" for row ' + (source_selector + 1) + '.')
-                    to_continue_item = false
-                } else {
-                    to_continue_item = true
-                    value = value.toArray()
-                }
-
+                [to_continue_item, value] = that.multi_select_check(d, source_selector, 'Education Level')
             }
             if (key == 'university') {
                 [to_continue_item, value] = that.text_cell_check(d, source_selector, 'Educational Institution')
             }
+
             if ((key != undefined) & (key != 'sentence') & (key != 'error')) {
                 output[key] = value
                 to_continue = (to_continue & to_continue_item)
