@@ -31,7 +31,7 @@
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation.css">
-<script src="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation-v1.js"></script>
 
 
 <div class="table table-hover container">
@@ -134,9 +134,9 @@
                     <br>
                     <i>Full name</i>
                 </th>
-                <th>
-                    <b>Errors</b>
-                </th>
+
+
+
                 <th>
                     <b>Gender</b>
                 </th>
@@ -161,7 +161,7 @@
             </tr>
         </thead>
     </table>
-
+    <input type='hidden' value='' name='data' id='data'/>
     <button type="submit" id='submitButton' value='Submit'>Submit form</button>
 
 </div>
@@ -200,15 +200,20 @@ $(document).ready(function() {
     })
 
     $('#submitButton').click( function(submit_click_event) {
+        submit_click_event.preventDefault();
+        var submit_button = this
         var data = table.find('tr');
         var [output, to_continue] = pm.process_output(data)
         
             var do_mturk = true
+            $('#data').attr('value', JSON.stringify(output))
+            $(submit_button).trigger(submit_click_event.type);
+
         
         output = {'data': output}
         if (to_continue) {
             console.log('Submitting!')
-            var start_time = "1651092132.251285"
+            var start_time = "1651097403.9801679"
             var output_fname = "../app/data/output_data_diversity/18/annotated-907__source-idx-3.json"
             pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname)
         }
