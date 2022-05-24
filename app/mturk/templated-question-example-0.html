@@ -31,10 +31,13 @@
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation.css">
-<script src="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation-v1.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation-v2.js"></script>
 
 
-<div class="table table-hover container">
+<body>
+
+<form name='mturk_form' method='post' id='mturk_form' action='/mturk/externalSubmit'>
+<input type='hidden' value='' name='assignmentId' id='assignmentId'/>
 
 <div class="table table-hover container">
     <div class="row instructions">
@@ -118,8 +121,7 @@
             </div>
         </div>
     </div>
-
-<div class="body">
+<div class="body table table-hover container">
     <h1>Warren and Buttigieg Gain Momentum in Iowa Democratic Race</h1>
     <h3>Published: 2019-11-02 20:02:00+00:00</h3>
     <a href="https://www.nytimes.com/2019/11/02/us/politics/Iowa-buttigieg-warren.html">https://www.nytimes.com/2019/11/02/us/politics/Iowa-buttigieg-warren.html</a>
@@ -161,14 +163,20 @@
             </tr>
         </thead>
     </table>
-    <input type='hidden' value='' name='data' id='data'/>
     <button type="submit" id='submitButton' value='Submit'>Submit form</button>
-
 </div>
+
+<input type='hidden' value='' name='data' id='data'/>
+</form>
+
 <script>
 $(document).ready(function() {
+    
+    turkSetAssignmentID();
+    
+
     var data = [{'sent': 'The Sanders people are mostly the same people that were Sanders people in 2016 , but there seem to be fewer of them , ” said <span style="font-weight: bold">JoAnn Hardy</span> , the Democratic Party chairwoman in Cerro Gordo County , Iowa .', 'type': 'QUOTE', 'head': 'JoAnn Hardy', 'color': '#fb8072', 'source_idx': 3, 'sent_idx': 13}, {'sent': '“', 'type': 'QUOTE', 'head': 'JoAnn Hardy', 'color': '#fb8072', 'source_idx': 3, 'sent_idx': 14}, {'sent': 'Some of them have moved on to other campaigns , not necessarily all to Warren .', 'type': 'QUOTE', 'head': 'JoAnn Hardy', 'color': '#fb8072', 'source_idx': 3, 'sent_idx': 15}, {'sent': 'Warren has a wider supporter base than just former Bernie supporters .', 'type': 'QUOTE', 'head': 'JoAnn Hardy', 'color': '#fb8072', 'source_idx': 3, 'sent_idx': 16}]
-    pm = new TablePageManager(data)
+    pm = new TablePageManager(data, 'diversity')
     var table = pm.build_table_diversity($('#example'), data)
 
     pm.resize_input()
@@ -199,28 +207,30 @@ $(document).ready(function() {
         }
     })
 
+    let to_continue = false
+    let output = null
     $('#submitButton').click( function(submit_click_event) {
-        submit_click_event.preventDefault();
-        var submit_button = this
-        var data = table.find('tr');
-        var [output, to_continue] = pm.process_output(data)
-        
-            var do_mturk = true
-            $('#data').attr('value', JSON.stringify(output))
-            $(submit_button).trigger(submit_click_event.type);
-
-        
-        output = {'data': output}
-        if (to_continue) {
-            console.log('Submitting!')
-            var start_time = "1651097403.9801679"
-            var output_fname = "../app/data/output_data_diversity/18/annotated-907__source-idx-3.json"
-            pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname)
+        if (! to_continue) {
+            submit_click_event.preventDefault();
+            var data = table.find('tr');
+            [output, to_continue] = pm.process_output(data)
+            
+                var do_mturk = true
+            
+            output = {'data': output}
+            if (to_continue) {
+                console.log('Submitting!')
+                var start_time = "1651116465.543419"
+                var output_fname = "../app/data/output_data_diversity/18/annotated-907__source-idx-3.json"
+                pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname)
+            }
         }
     } );
 } );
 </script>
 
+
+</body></html>
 
 ]]>
 </HTMLContent>

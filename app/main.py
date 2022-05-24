@@ -186,6 +186,55 @@ def make_table_html():
         return "No more data."
 
 
+@app.route('/check_table', methods=['GET'])
+def check_table():
+    task = request.args.get('task', 'full')
+    shuffle = request.args.get('shuffle', False)
+
+    to_check = glob.glob('../app/data/output_data_%s/*/*' % task)
+    to_check = list(map(lambda x: (x, re.findall('annotated-\d+', x)[0]), to_check))
+    to_check = sorted(map(lambda x: (x[0], x[1].replace('annotated', 'checked')), to_check))
+
+    checked = glob.glob('../app/data/checked_data_%s/*/*' % task)
+    checked_files = set(map(lambda x: re.findall('checked-\d+', x)[0], checked))
+
+    to_check = list(filter(lambda x: x[1] not in checked_files, to_check))
+
+    if len(to_check) > 0:
+        fname, file_id = to_check[0]
+        output_fn = fname.replace('output_data', 'checked_data')
+        output_dir = os.path.dirname(output_fn)
+        output_fn = os.path.join(output_dir, file_id + '.json')
+
+        with open(fname) as f:
+            data_to_check = json.load(f)
+            data_to_check = data_to_check['data']
+            if isinstance(data_to_check, dict):
+                data_to_check = data_to_check['row_data']
+
+        orig_input_fname = fname.replace('output_data_%s' % task, 'input_data').replace('annotated', 'to-annotate')
+        with open(orig_input_fname) as f:
+            orig_input_data = json.load(f)
+
+        return render_template(
+            'check-%s.html' % task,
+            annotated_data=data_to_check,
+            orig_input_data=orig_input_data['html_data'],
+            entry_id=orig_input_data['entry_id'],
+            version=orig_input_data['version'],
+            label=orig_input_data['label'],
+            url=orig_input_data['url'],
+            headline=orig_input_data['headline'],
+            published_date=orig_input_data['published_date'],
+            do_mturk=False,
+            start_time=time.time(),
+            output_fname=output_fn
+        )
+
+    else:
+        return 'No more data.'
+
+
 @app.route('/post_table', methods=['POST'])
 def post_table_html():
     output_data = request.get_json()

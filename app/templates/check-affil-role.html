@@ -1,0 +1,146 @@
+{##}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+{##}
+<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/3.2.1/js/dataTables.fixedColumns.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/js/bootstrap-multiselect.min.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+<link rel="https://cdn.datatables.net/fixedheader/3.2.1/css/fixedHeader.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/css/bootstrap-multiselect.css" type="text/css"/>
+
+{% if do_mturk %}
+<link href="">
+<script src=""></script>
+{% else %}
+<link rel="stylesheet" href="{{ url_for('static', filename='table-annotation.css') }}">
+<script src="{{ url_for('static', filename='table-annotation-v2.js') }}"></script>
+{% endif %}
+
+<div class="table table-hover container">
+
+<div class="body">
+    <h1>{{ headline }}</h1>
+    <h3>Published: {{ published_date }}</h3>
+    <a href="{{ url }}">{{ url }}</a>
+    <p>Key: ({{ entry_id }} , {{ version }})</p>
+
+    <h3>Category: {{ label }}</h3>
+    <h4>Q1: Does the content of the article accurately reflect this category?</h4>
+    <div style="width: 10%">
+        <select id="category_error">
+            <option value="category_error_yes" selected="selected">
+                Yes
+            </option>
+            <option value="category_error_no">
+                No
+            </option>
+        </select>
+    </div>
+
+    <table id="example" class="display" style="width:100%">
+        <thead class="my-border-bottom">
+            <tr>
+                <th></th>
+                <th><b>Sentence</b></th>
+                <th>
+                    <b>Source Head</b>
+                    <br>
+                    <i>Full name</i>
+                </th>
+                <th>
+                    <b>Sentence Type</b>
+                    <br>
+                    <i></i>
+                </th>
+                <th>
+                    <b>Errors</b>
+                </th>
+                <th>
+                    <b>Tag Line</b>
+                </th>
+                <th>
+                    <b>Source Type</b>
+                </th>
+                <th>
+                    <b>Affiliation</b>
+                    <br>
+                    <i>Source's Group</i>
+                </th>
+                <th>
+                    <b>Role</b>
+                    <br>
+                    <i>Position in Group</i>
+                </th>
+                <th>
+                    <b>Role Status</b>
+                    <br>
+                    <i>Current/Former</i>
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+    <button type="submit" id='submitButton' value='Submit'>Submit form</button>
+
+</div>
+<script>
+$(document).ready(function() {
+    var orig_input_data = {{ orig_input_data | safe }}
+    var annotated_data = {{ annotated_data | replace("None", "null") | safe }}
+    var table_sel = $('#example')
+    pm = new TablePageManager(orig_input_data, 'affil-role')
+    var table = pm.build_table(table_sel, orig_input_data)
+    pm.populate_data_to_check(annotated_data)
+    $('.degree-multiselect').multiselect();
+
+
+    {# auxiliary stuff. Not really sure why it's here #}
+    pm.resize_input()
+    $( window ).resize(function () {
+        return pm.resize_input()
+    })
+
+     {# Add in other-box popping up #}
+     $('select').on('change', function(e){pm.handle_other_box($(this))})
+
+    {# disable/enable rows based on error state change. #}
+    $('.error').on('change', function (e) {
+        pm.handle_error_toggle(this)
+    })
+
+    $('.head').find('input').blur(function(){
+        let row_idx = parseInt($(this).parents('tr').attr('id').split('_')[1])
+        let error_type = $(this).parents('tr').find('.error').find("option:selected").attr('value')
+        if ((error_type == 'false_negative_wrong_source_new') | (error_type == 'false_negative_source_uncaught')){
+            pm.check_typed_source(row_idx, false)
+        } else if ((error_type == 'false_negative_wrong_source_existing') | (error_type == 'false_negative_source_caught')){
+            pm.check_typed_source(row_idx, true)
+        }
+    })
+
+    $('#submitButton').click( function(submit_click_event) {
+        var data = table.find('tr');
+        var [output, to_continue] = pm.process_output(data)
+        {% if do_mturk %}
+            var do_mturk = true
+        {% else %}
+            var do_mturk = false
+        {% endif %}
+        output = {'data': output}
+        if (to_continue) {
+            console.log('Submitting!')
+            var start_time = "{{ start_time }}"
+            var output_fname = "{{ output_fname }}"
+            pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname, '/check_table')
+        }
+    } );
+} );
+</script>

@@ -1,4 +1,5 @@
-let DIVERSITY_HTML = `<td datatype="gender" class="gender my-border-left">
+let DIVERSITY_HTML = `
+<td datatype="gender" class="gender my-border-left">
                             <select size="1" disabled>
                                 <option value="unknown" selected="selected">
                                 </option>
@@ -124,7 +125,45 @@ let DIVERSITY_HTML = `<td datatype="gender" class="gender my-border-left">
                             </select>
                         </td>`
 
-let AFFIL_ROLE_HTML = `<td datatype="affiliation" class="affiliation">
+let TAGLINE_HTML = `<td datatype="tagline" class="tagline">
+    <input class="tagline_text" type="text" datatype="tagline" disabled>
+</td>`
+
+let AFFIL_ROLE_HTML = `
+    <td datatype="source_type" class="source_type">
+                            <select size="1" disabled>
+                                <option value="unknown" selected="selected"></option>
+                                <option value="named">
+                                    Named Individual
+                                </option>
+                                <option value="unnamed">
+                                    Unnamed Individual
+                                </option>
+                                <option value="named_group">
+                                    Named Group
+                                </option>
+                                <option value="unnamed_group">
+                                    Unnamed Group
+                                </option>
+                                <option value="document">
+                                    Report/Document
+                                </option>
+                                <option value="vote_poll_group">
+                                    Vote/Poll
+                                </option>  
+                                <option value="database">
+                                    Database
+                                </option>                                                                
+                                <option value="other">
+                                    Other
+                                </option>
+                                <option value="cant_tell">
+                                    Cannot Determine
+                                </option>
+                            </select>
+                            <input class="hidden other other_source_type" type="text" datatype="other_source_type">
+                        </td>
+                        <td datatype="affiliation" class="affiliation">
                             <select size="1" disabled>
                                 <option value="unknown" selected="selected"></option>
                                 <option value="government">
@@ -137,9 +176,24 @@ let AFFIL_ROLE_HTML = `<td datatype="affiliation" class="affiliation">
                                 <option value="ngo">
                                     NGO
                                 </option>
+                                <option value="industry_group">
+                                    Industry Group
+                                </option>                                
+                                <option value="religious_group">
+                                    Religious Group
+                                </option>                                
                                 <option value="academic">
                                     Academic
                                 </option>
+                                <option value="media">
+                                    Media
+                                </option>
+                                <option value="political_group">
+                                    Political Group
+                                </option> 
+                                <option value="union">
+                                    Union
+                                </option>                                
                                 <option value="other_group">
                                     Other Group
                                 </option>
@@ -165,11 +219,13 @@ let AFFIL_ROLE_HTML = `<td datatype="affiliation" class="affiliation">
                         </td>
                         <td datatype="role" class="role">
                             <select size="1" disabled>
-                                <option value="unknown" selected="selected">
+                                <option value="unknown" selected="selected"></option>
+                                <option value="decision_maker">
+                                    Decision Maker
                                 </option>
                                 <option value="participant">
                                     Participant
-                                </option>
+                                </option>                                
                                 <option value="representative">
                                     Representative
                                 </option>
@@ -204,7 +260,71 @@ let AFFIL_ROLE_HTML = `<td datatype="affiliation" class="affiliation">
                             <input class="hidden other other_status" type="text" datatype="other_status">
                         </td>`
 
-let ERROR_HTML = `<td datatype="error" class="error my-border-right">
+let affil_field_name_mapper = {
+    "quote_type": {
+        "QUOTE":"quote",
+        "BACKGROUND": "background",
+        "": "na",
+        "PUBLIC SPEECH, NOT TO JOURNO": "speech",
+        "COMMUNICATION, NOT TO JOURNO": "written_comms",
+        "PUBLISHED WORK": "published_work",
+        "STATEMENT": "statement",
+        "LAWSUIT": 'lawsuit',
+        "vote_poll": "VOTE/POLL",
+        "DOCUMENT": "document",
+        "PRESS REPORT": "press_report",
+        "TWEET": "tweet",
+        "PROPOSAL/ORDER/LAW": "proposal",
+        "Data Analysis": "data_analysis",
+        "DECLINED COMMENT": "declined_comment",
+        "Other": "other"
+    },
+    "source_type" : {
+        "Named Individual": "named",
+        "Unnamed Individual": "unnamed",
+        "Named Group": "named_group",
+        "Unnamed Group": "unnamed_group",
+        "Report/Document": "document",
+        "Database": "database",
+        "Other": "other",
+        "Cannot Determine": "cant_tell",
+    },
+    "affiliation": {
+        "": "unknown",
+        "Government": "government",
+        "Corporate": "corporate",
+        "NGO": "ngo",
+        "Industry Group": "industry_group",
+        "Religious Group": "religious_group",
+        "Academic": "academic",
+        "Union": "union",
+        "Media": "media",
+        "Political Group": "political_group",
+        "Other Group": "other_group",
+        "Actor": "actor",
+        "Witness": "witness",
+        "Victim": "Victim",
+        "Other": "other",
+        "Cannot Determine": "cant_tell",
+    },
+    "role": {
+        "": "unknown",
+        "Decision Maker": "decision_maker",
+        "Participant": "participant",
+        "Representative": "representative",
+        "Informational": "informational",
+        "Other": "other",
+        "Cannot Determine": "cant_tell",
+    },
+    "role_status": {
+        "Current": "current",
+        "Former": "former",
+        "Other": "other",
+        "Cannot Determine": "cant_tell",
+    },
+}
+
+let FULL_ERROR_HTML = `<td datatype="error" class="error my-border-right">
                             <select size="1">
                                 <option value="no_errors" selected="selected">
                                     No Errors
@@ -224,18 +344,48 @@ let ERROR_HTML = `<td datatype="error" class="error my-border-right">
                                 </option>
                                 <!-- -->
                                 <option disabled role=separator>
-                                <option value="false_positive_sentence_quote" class="false_positive_sentence_quote">
-                                    False positive: We said this was a QUOTE but it doesn't mention any source.
-                                </option>
-                                <option value="false_positive_sentence_background" class="false_positive_sentence_background">
-                                    False positive: We said this was BACKGROUND but it doesn't mention any source.
+                                <option value="false_positive_sentence" class="false_positive_sentence">
+                                    False positive: This sentence does not mention any source.
                                 </option>
                                 <option disabled role=separator>
-                                <option value="mixed_roles_quote" class="mixed_roles_quote">
-                                    Type mixed: We tagged this BACKGROUND, but it should be tagged QUOTE.
+                                <option value="wrong_sentence_role" class="wrong_sentence_role">
+                                    Type mixed: This sentence is tagged with the wrong role.
                                 </option>
-                                <option value="mixed_roles_background" class="mixed_roles_background">
-                                    Type mixed: We tagged this QUOTE, should be tagged BACKGROUND.
+                                <option value="false_negative_wrong_source_existing" class="false_negative_wrong_source_existing">
+                                    Wrong source: We attributed the quote to the WRONG source. The true source has been found elsewhere.
+                                </option>
+                                <option value="false_negative_wrong_source_new" class="false_negative_wrong_source_new">
+                                    Wrong source: We attributed the quote to the WRONG source. The true source has NOT been found elsewhere.
+                                </option>
+                                <!--                          -->
+                                <option disabled role=separator>
+                                <option value="other" class="other">
+                                    Other
+                                </option>
+                            </select>
+                            <input class="hidden" type="text" datatype="other_error">
+                        </td>`
+
+let ERROR_HTML = `<td datatype="error" class="error my-border-right">
+                            <select size="1">
+                                <option value="no_errors" selected="selected">
+                                    No Errors
+                                </option>
+                                <option disabled role=separator>
+                                <option value="false_negative_source_uncaught" class="false_negative_source_uncaught">
+                                    False negative: This is a source sentence we failed to label. The source is NOT found elsewhere.
+                                </option>
+                                <option value="false_negative_source_caught" class="false_negative_source_caught">
+                                    False negative: This is a source sentence we failed to label. The source IS found elsewhere.
+                                </option>
+                                <!-- -->
+                                <option disabled role=separator>
+                                <option value="false_positive_sentence" class="false_positive_sentence">
+                                    False positive: This sentence does not mention any source.
+                                </option>
+                                <option disabled role=separator>
+                                <option value="wrong_sentence_role" class="wrong_sentence_role">
+                                    Type mixed: This sentence is tagged with the wrong role.
                                 </option>
                                 <option value="false_negative_wrong_source_existing" class="false_negative_wrong_source_existing">
                                     Wrong source: We attributed the quote to the WRONG source. The true source has been found elsewhere.
@@ -258,8 +408,8 @@ let DIVERSITY_ERROR_ONLY = `<td datatype="error" class="error my-border-right">
                                     No Errors
                                 </option>
                                 <option disabled role=separator>
-                                <option value="false_positive_sentence_quote" class="false_positive_sentence_quote">
-                                    This shouldn't be tagged as a source sentence. No source mentioned.
+                                <option value="false_positive_sentence" class="false_positive_sentence">
+                                    False positive: This sentence does not mention any source.
                                 </option>
                                 <option value="false_negative_wrong_source_new" class="false_negative_wrong_source_new">
                                     Wrong source: We attributed the quote to the WRONG source.
@@ -274,11 +424,46 @@ let DIVERSITY_ERROR_ONLY = `<td datatype="error" class="error my-border-right">
                         </td>`
 
 
+function unique(list) {
+    let result = [];
+    $.each(list, function (i, e) {
+        if ($.inArray(e, result) == -1) result.push(e);
+    });
+    return result;
+}
+
+function get_enable_switch(command) {
+    if (command == 'enable') {
+        return false
+    } else {
+        return true
+    }
+}
+
+function get_avail_colors(taken_colors){
+    let all_colors = d3.schemeCategory20
+                    .concat(d3.schemeCategory20b)
+                    .concat(d3.schemeCategory20c)
+    all_colors = unique(all_colors)
+    return all_colors.filter(function (d) { return taken_colors.indexOf(d) == -1 })
+}
+
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
+
 class TablePageManager {
     constructor(data, task_type) {
-        this.source_label_row_num = {}
+        this.source_row_nums = {}
         this.error_state_dict = {}
-        this.source_label_state_dict = {}
+        this.row_source_state_dict = {}
         this.source_head_to_idx = {}
         this.source_idx_to_color = {}
         this.data = data
@@ -301,12 +486,20 @@ class TablePageManager {
             let source_head = source_group['values'][0]['head']
             that.source_head_to_idx[source_head] = source_idx
             that.source_idx_to_color[source_idx] = source_group['values'][0]['color']
-            that.source_label_state_dict[sent_idx] = 'selected'
-            that.source_label_row_num[source_idx] = {
+            let source_sent_idxs = source_group['values'].map( function(d){ return d.sent_idx })
+            source_sent_idxs.forEach(function(d) { 
+                that.row_source_state_dict[d] = {
+                    'status': '',
+                    'source_idx': source_idx
+                }
+            })
+            that.row_source_state_dict[sent_idx] = {
+                'status': 'selected',
+                'source_idx': source_idx
+            }
+            that.source_row_nums[source_idx] = {
                 'selected': sent_idx,
-                'vals': source_group['values'].map( function(d){
-                    return d.sent_idx
-                })
+                'vals': source_sent_idxs
             }
         })
 
@@ -323,51 +516,64 @@ class TablePageManager {
         let old_selection = that.error_state_dict[row_idx]
         that.error_state_dict[row_idx] = error_selected
         let source_idx = that.data[row_idx]['source_idx']
-        if (error_selected == 'false_negative_source_named_uncaught') {
-            that.change_source_questions(row_idx, 'enable') // turn them on
-            that.change_source_head_question(row_idx, 'enable')
-            that.change_sent_type_question(row_idx, 'enable')
-        }
-        if (error_selected == 'false_negative_source_named_caught') {
-            that.change_source_head_question(row_idx, 'enable')
-            that.change_sent_type_question(row_idx, 'enable')
-            that.change_source_questions(row_idx, 'disable')
-        }
-        if (error_selected == 'false_negative_source_unnamed_uncaught') {
-            that.change_source_head_question(row_idx, 'enable')
-            that.change_sent_type_question(row_idx, 'enable')
-            that.change_affil_questions(row_idx, 'enable')
-        }
-        if (error_selected == 'false_negative_source_unnamed_existing') {
-            that.change_source_head_question(row_idx, 'enable')
-            that.change_sent_type_question(row_idx, 'enable')
+        if (that.task_type == 'full') {
+            if (error_selected == 'false_negative_source_named_uncaught') {
+                that.change_source_questions(row_idx, 'enable') // turn them on
+                that.change_source_head_question(row_idx, 'enable')
+                that.change_sent_type_question(row_idx, 'enable')
+            }
+            if (error_selected == 'false_negative_source_named_caught') {
+                that.change_source_head_question(row_idx, 'enable')
+                that.change_sent_type_question(row_idx, 'enable')
+                that.change_source_questions(row_idx, 'disable')
+            }
+            if (error_selected == 'false_negative_source_unnamed_uncaught') {
+                that.change_source_head_question(row_idx, 'enable')
+                that.change_sent_type_question(row_idx, 'enable')
+                that.change_affil_questions(row_idx, 'enable')
+            }
+            if (error_selected == 'false_negative_source_unnamed_existing') {
+                that.change_source_head_question(row_idx, 'enable')
+                that.change_sent_type_question(row_idx, 'enable')
+            }
+        } else {
+            if (error_selected == 'false_negative_source_uncaught') {
+                that.change_source_questions(row_idx, 'enable') // turn them on
+                that.change_source_head_question(row_idx, 'enable')
+                that.change_sent_type_question(row_idx, 'enable')
+            }
+            if (error_selected == 'false_negative_source_caught') {
+                that.change_source_head_question(row_idx, 'enable')
+                that.change_sent_type_question(row_idx, 'enable')
+                that.change_source_questions(row_idx, 'disable')
+            }
         }
         if (error_selected == 'false_negative_wrong_source_new') {
+            that.assign_next_source(row_idx, source_idx)
             that.change_source_head_question(row_idx, 'enable')
             that.change_sent_type_question(row_idx, 'enable')
             that.change_source_questions(row_idx, 'enable')
-            that.assign_next_source(row_idx, source_idx)
         }
         if (error_selected == 'false_negative_wrong_source_existing') {
+            that.assign_next_source(row_idx, source_idx)
             that.change_source_head_question(row_idx, 'enable')
             that.change_sent_type_question(row_idx, 'enable')
             that.change_source_questions(row_idx, 'disable')
         }
-        if (error_selected.indexOf('false_positive_sentence') != -1){
+        if (error_selected == 'false_positive_sentence'){
             that.clear_source_head(row_idx)
             that.clear_color(row_idx)
             that.assign_next_source(row_idx, source_idx)
         }
-        if (error_selected == 'mixed_roles_quote'){
+        if (error_selected == 'wrong_sentence_role'){
             that.change_source_head_question(row_idx, 'enable')
             that.change_sent_type_question(row_idx, 'enable')
-            that.change_sent_type_question_type(row_idx, 'quote')
         }
-        if (error_selected == 'mixed_roles_background'){
-            that.change_source_head_question(row_idx, 'enable')
-            that.change_sent_type_question(row_idx, 'enable')
-            that.change_sent_type_question_type(row_idx, 'background')
-        }
+        // if (error_selected == 'mixed_roles_background'){
+        //     that.change_source_head_question(row_idx, 'enable')
+        //     that.change_sent_type_question(row_idx, 'enable')
+        //     that.change_sent_type_question_type(row_idx, 'background')
+        // }
 
         // change to no_error
         if (error_selected == 'no_errors') {
@@ -377,11 +583,15 @@ class TablePageManager {
 
             let to_disable = true
             // if the old error was some form of false positive
-            if (( old_selection.indexOf('false_positive_sentence') != -1 ) | ( old_selection == 'false_negative_wrong_source_new' )) {
+            let is_false_positive = ( old_selection == 'false_positive_sentence') | ( old_selection == 'false_negative_wrong_source_new' )
+            if (is_false_positive) {
                 // if the source had previously been completely unselected.
-                if (that.source_label_row_num[source_idx]['selected'] == undefined) {
-                    that.source_label_row_num[source_idx]['selected'] = parseInt(row_idx)
-                    that.source_label_state_dict[row_idx] = 'selected'
+                if (that.source_row_nums[source_idx]['selected'] == undefined) {
+                    that.source_row_nums[source_idx]['selected'] = parseInt(row_idx)
+                    that.row_source_state_dict[row_idx] = {
+                        'status': 'selected',
+                        'source_idx': source_idx
+                    }
                     that.change_source_questions(row_idx, 'enable')
                     to_disable = false
                 }
@@ -393,31 +603,17 @@ class TablePageManager {
                 that.clear_color(row_idx)
             }
             if (to_disable) {
-                that.source_label_state_dict[row_idx] = ''
+                that.row_source_state_dict[row_idx] = {'status': '', 'source_idx': ''}
                 that.change_source_questions(row_idx, 'disable')
             }
         }
     }
 
-    unique(list) {
-        let result = [];
-        $.each(list, function (i, e) {
-            if ($.inArray(e, result) == -1) result.push(e);
-        });
-        return result;
-    }
-
-    get_enable_switch(command) {
-        if (command == 'enable') {
-            return false
-        } else {
-            return true
-        }
-    }
-
     change_affil_questions(row_number, command) {
         let sel = '#row_' + row_number
-        let bool = this.get_enable_switch(command)
+        let bool = get_enable_switch(command)
+        $(sel).find('.tagline').find('input').prop("disabled", bool)
+        $(sel).find('.source_type').find('select').prop("disabled", bool)
         $(sel).find('.affiliation').find('select').prop("disabled", bool)
         $(sel).find('.role').find('select').prop("disabled", bool)
         $(sel).find('.role_status').find('select').prop("disabled", bool)
@@ -425,7 +621,7 @@ class TablePageManager {
 
     change_sent_type_question(row_number, command) {
         let sel = '#row_' + row_number
-        let bool = this.get_enable_switch(command)
+        let bool = get_enable_switch(command)
         $(sel).find('.quote_type').find('select').prop("disabled", bool)
     }
 
@@ -436,7 +632,7 @@ class TablePageManager {
 
     change_source_head_question(row_number, command) {
         let sel = '#row_' + row_number
-        let bool = this.get_enable_switch(command)
+        let bool = get_enable_switch(command)
         $(sel).find('.head').find('input').prop("disabled", bool)
     }
 
@@ -451,7 +647,7 @@ class TablePageManager {
             $(sel).find('.university').find('input').addClass('hidden')
             $(sel).find('.knowledge_source').find('select').addClass('hidden')
         } else {
-            let bool = this.get_enable_switch(command)
+            let bool = get_enable_switch(command)
             $(sel).find('.gender').find('select').removeClass('hidden').prop("disabled", bool)
             $(sel).find('.race').find('select').removeClass('hidden').prop("disabled", bool)
             $(sel).find('.age').find('select').removeClass('hidden').prop("disabled", bool)
@@ -480,30 +676,34 @@ class TablePageManager {
 
     set_error_source_background(row_number) {
         let sel = '#row_' + row_number
-        $(sel).find('.error').find('.false_positive_sentence_quote').prop('disabled', true)
-        $(sel).find('.error').find('.mixed_roles_background').prop('disabled', true)
-        $(sel).find('.error').find('.false_negative_source_named_uncaught').prop('disabled', true)
-        $(sel).find('.error').find('.false_negative_source_named_caught').prop('disabled', true)
-        $(sel).find('.error').find('.false_negative_source_unnamed_uncaught').prop('disabled', true)
-        $(sel).find('.error').find('.false_negative_source_unnamed_existing').prop('disabled', true)
+        if (this.task_type == 'full') {
+            $(sel).find('.error').find('.false_negative_source_named_uncaught').prop('disabled', true)
+            $(sel).find('.error').find('.false_negative_source_named_caught').prop('disabled', true)
+            $(sel).find('.error').find('.false_negative_source_unnamed_uncaught').prop('disabled', true)
+            $(sel).find('.error').find('.false_negative_source_unnamed_existing').prop('disabled', true)
+        } else {
+            $(sel).find('.error').find('.false_negative_source_uncaught').prop('disabled', true)
+            $(sel).find('.error').find('.false_negative_source_caught').prop('disabled', true)
+        }
     }
 
     set_error_source_quote(row_number) {
         let sel = '#row_' + row_number
-        $(sel).find('.error').find('.false_positive_sentence_background').prop('disabled', true)
-        $(sel).find('.error').find('.mixed_roles_quote').prop('disabled', true)
-        $(sel).find('.error').find('.false_negative_source_named_uncaught').prop('disabled', true)
-        $(sel).find('.error').find('.false_negative_source_named_caught').prop('disabled', true)
-        $(sel).find('.error').find('.false_negative_source_unnamed_uncaught').prop('disabled', true)
-        $(sel).find('.error').find('.false_negative_source_unnamed_existing').prop('disabled', true)
+        if (this.task_type == 'full') {
+            $(sel).find('.error').find('.false_negative_source_named_uncaught').prop('disabled', true)
+            $(sel).find('.error').find('.false_negative_source_named_caught').prop('disabled', true)
+            $(sel).find('.error').find('.false_negative_source_unnamed_uncaught').prop('disabled', true)
+            $(sel).find('.error').find('.false_negative_source_unnamed_existing').prop('disabled', true)
+        } else {
+            $(sel).find('.error').find('.false_negative_source_uncaught').prop('disabled', true)
+            $(sel).find('.error').find('.false_negative_source_caught').prop('disabled', true)
+        }
     }
 
     set_error_nothing(row_number) {
         let sel = '#row_' + row_number
-        $(sel).find('.error').find('.false_positive_sentence_quote').prop('disabled', true)
-        $(sel).find('.error').find('.false_positive_sentence_background').prop('disabled', true)
-        $(sel).find('.error').find('.mixed_roles_quote').prop('disabled', true)
-        $(sel).find('.error').find('.mixed_roles_background').prop('disabled', true)
+        $(sel).find('.error').find('.false_positive_sentence').prop('disabled', true)
+        $(sel).find('.error').find('.wrong_sentence_role').prop('disabled', true)
         $(sel).find('.error').find('.false_negative_wrong_source_existing').prop('disabled', true)
         $(sel).find('.error').find('.false_negative_wrong_source_new').prop('disabled', true)
     }
@@ -568,14 +768,10 @@ class TablePageManager {
 
     get_possible_source_rows(curr_row, source_idx) {
         let that = this
-        let all_possible_rows = this.source_label_row_num[source_idx]['vals']
+        let all_possible_rows = this.source_row_nums[source_idx]['vals']
         return all_possible_rows
-            .filter(function (d) {
-                return d != curr_row
-            })
-            .filter(function (d) {
-                return that.source_label_state_dict[d] != 'unselected'
-            })
+            .filter(function (d) { return d != curr_row })
+            .filter(function (d) { return that.row_source_state_dict[d]['status'] != 'unselected' })
     }
 
     clear_source_head(row_idx) {
@@ -584,12 +780,13 @@ class TablePageManager {
     }
 
     assign_next_source(row_idx, source_idx) {
-        let active_source_row = parseInt(this.source_label_row_num[source_idx]['selected'])
+        let active_source_row = parseInt(this.source_row_nums[source_idx]['selected'])
         let open_source_rows = this.get_possible_source_rows(row_idx, source_idx)
         let to_close;
         let next_row_idx;
 
-        // If the source row is currently actively collecting diversity information, we need to look for another row associated with this source.
+        // If the source row is currently actively collecting information,
+        // we need to look for another row associated with this source.
         if (active_source_row == row_idx) {
             // if there aren't other source rows, check to make sure the user wants to eliminate the source.
             if (open_source_rows.length == 0) {
@@ -614,13 +811,15 @@ class TablePageManager {
 
             // 2. turn on the next source questions
             this.change_source_questions(next_row_idx, 'enable')
-            this.source_label_state_dict[row_idx] = 'unselected'
-            this.source_label_state_dict[next_row_idx] = 'selected'
-            this.source_label_row_num[source_idx]['selected'] = next_row_idx
+            this.row_source_state_dict[row_idx]['status'] = 'unselected'
+            if (next_row_idx != undefined) {
+                this.row_source_state_dict[next_row_idx]['status'] = 'selected'
+            }
+            this.source_row_nums[source_idx]['selected'] = next_row_idx
         }
         // otherwise, just mark that this row is unavailable for some future collection effort.
         else {
-            this.source_label_state_dict[row_idx] = 'unselected'
+            this.row_source_state_dict[row_idx]['status'] = 'unselected'
         }
     }
 
@@ -647,37 +846,44 @@ class TablePageManager {
     }
 
     max_source_idx() {
-        return parseInt(d3.max(d3.keys(this.source_label_row_num)))
+        return parseInt(d3.max(d3.keys(this.source_row_nums)))
+    }
+
+    get_source_color(source_idx){
+        let taken_colors = Object.values(this.source_idx_to_color)
+        let avail_colors = get_avail_colors(taken_colors)
+        return avail_colors[0]
     }
 
     register_typed_source(row_idx) {
-        let max_source_idx = this.max_source_idx()
         let source_head = $('#row_' + row_idx).find('.head').find('input').val()
-        if (this.source_head_to_idx[source_head] === undefined) {
-            max_source_idx++
-            this.source_head_to_idx[source_head] = max_source_idx
-            this.source_label_row_num[max_source_idx] = {
-                'selected': row_idx,
-                'vals': [row_idx]
+        let source_idx;
+        // if we're changing sources, remove row from the old source
+        if (this.row_source_state_dict[row_idx] != undefined){
+            if (this.row_source_state_dict[row_idx]['source_idx'] != '') {
+                let old_source_idx = this.row_source_state_dict[row_idx]['source_idx']
+                this.source_row_nums[old_source_idx]['vals'].remove(row_idx)
             }
-            this.source_label_state_dict[row_idx] = 'selected'
+        }
 
-            let taken_colors = Object.values(this.source_idx_to_color)
-            let avail_colors = this.unique(
-                d3.schemeCategory20
-                    .concat(d3.schemeCategory20b)
-                    .concat(d3.schemeCategory20c)
-            ).filter(function (d) {
-                return taken_colors.indexOf(d) == -1
-            })
-
-            let chosen_color = avail_colors[0]
-            this.source_idx_to_color[max_source_idx] = chosen_color
-            this.add_color(row_idx, max_source_idx)
+        // if it's a new source, assign it a new id and generate new colors
+        if (this.source_head_to_idx[source_head] === undefined) {
+            let max_source_idx = this.max_source_idx()
+            source_idx = max_source_idx + 1
+            this.source_head_to_idx[source_head] = source_idx
+            this.source_row_nums[source_idx] = { 'selected': row_idx, 'vals': [] }
+            this.source_idx_to_color[source_idx] = this.get_source_color(source_idx)
+        // otherwise, get source_idx from the dicts
         } else {
-            let source_idx = this.source_head_to_idx[source_head]
-            this.source_label_row_num[source_idx]['vals'].push(row_idx)
-            this.add_color(row_idx, source_idx)
+            source_idx = this.source_head_to_idx[source_head]
+        }
+
+        // update state dicts
+        this.add_color(row_idx, source_idx)
+        this.source_row_nums[source_idx]['vals'].push(row_idx)
+        this.row_source_state_dict[row_idx] = {
+            'source_idx': source_idx,
+            'status': 'selected'
         }
     }
 
@@ -698,23 +904,24 @@ class TablePageManager {
         if (final_check) {
             if (this.source_head_to_idx[source_head] === undefined) {
                 alert(
-                    'Typed ' + str_inj + ' source "' + source_head + '" in row ' + (row_idx + 1) + ' DOESN\'T MATCH any existing sources. ' +
+                    'You typed source "' + source_head + '" in row ' + (row_idx + 1) + ', which DOESN\'T MATCH any existing sources. ' +
                     'Please double check. If NEW source, please choose the appropriate error-type and retry.'
                 )
             } else {
                 let source_idx = this.source_head_to_idx[source_head]
                 this.add_color(row_idx, source_idx)
+                this.register_typed_source(row_idx)
             }
         } else {
             if (this.source_head_to_idx[source_head] != undefined) {
                 alert(
-                    'Typed ' + str_inj + ' source "' + source_head + '" in row ' + (row_idx + 1) + ' MATCHES existing sources. ' +
+                    'You typed source "' + source_head + '" in row ' + (row_idx + 1) + ', which MATCHES existing sources. ' +
                     'Please double check. If EXISTING source, please choose the appropriate error-type and retry.' + opt_add
                 )
             } else {
                 // check with the person
                 let add_source = confirm(
-                    'You entered ' + str_inj + ' source ' + source_head + ' into row ' + (row_idx + 1) + '. ' +
+                    'You entered source ' + source_head + ' into row ' + (row_idx + 1) + '. ' +
                     'Please confirm that you\'d like to add this source. Press OK to confirm.'
                 )
                 if (add_source) {
@@ -745,16 +952,17 @@ class TablePageManager {
         return [to_continue, k_output]
     }
 
-    input_cell_check(d, source_selector, field_name, other_field_class) {
+    input_cell_check(d, row_idx, field_name, other_field_class, is_source_head_row) {
         let to_continue = true
         let d_sel = $(d).find('select:not(.knowledge_source)')
-        let is_disabled = $(d_sel).prop('disabled') | $(d_sel).hasClass('hidden')
+        // let is_disabled = $(d_sel).prop('disabled') |
+        let is_disabled = $(d_sel).hasClass('hidden')
         let value = null
         if (!is_disabled) {
             let field_value = $(d_sel).find(':selected').text().trim()
-            if (field_value == '') {
+            if ((field_value == '') & (is_source_head_row)) {
                 if (this.task_type != 'diversity') {
-                    alert('Make sure the "' + field_name + '" field in row ' + (source_selector + 1) + ' is filled.')
+                    alert('Make sure the "' + field_name + '" field in row ' + (row_idx + 1) + ' is filled.')
                 } else {
                     alert('Make sure the "' + field_name + '" field is filled.')
                 }
@@ -764,7 +972,7 @@ class TablePageManager {
                 let other_value = $(d).find(other_field_class).val()
                 if (other_value == '') {
                     if (this.task_type != 'diversity') {
-                        alert('You selected "Other" for the "' + field_name + '" field in row ' + (source_selector + 1) + '. Make sure the "Other" text box is filled.')
+                        alert('You selected "Other" for the "' + field_name + '" field in row ' + (row_idx + 1) + '. Make sure the "Other" text box is filled.')
                     } else {
                         alert('You selected "Other" for the "' + field_name + '" field. Make sure the "Other" text box is filled.')
                     }
@@ -773,7 +981,7 @@ class TablePageManager {
                     field_value = 'Other: ' + other_value
                 }
             }
-            let [to_continue_k, k_value] = this.knowledge_cell_check(d, source_selector, field_name)
+            let [to_continue_k, k_value] = this.knowledge_cell_check(d, row_idx, field_name)
             to_continue = (to_continue & to_continue_k)
             value = {
                 'field_value': field_value,
@@ -783,17 +991,18 @@ class TablePageManager {
         return [to_continue, value]
     }
 
-    text_cell_check(d, source_selector, field_name) {
+    text_cell_check(d, row_idx, field_name, is_source_head_row) {
         let to_continue = true
         let value = null
-        let is_disabled = $(d).find('input').prop('disabled')
+        // let is_disabled = $(d).find('input').prop('disabled')
+        let is_disabled = $(d).hasClass('hidden')
         if (!is_disabled) {
             let field_value = $(d).find('input').val()
-            if (field_value == undefined | field_value == '') {
-                alert('Make sure the "' + field_name + '" field in row ' + (source_selector + 1) + ' is filled.')
+            if ((field_value == undefined | field_value == '') & is_source_head_row) {
+                alert('Make sure the "' + field_name + '" field in row ' + (row_idx + 1) + ' is filled.')
                 to_continue = false
             }
-            let [to_continue_k, k_value] = this.knowledge_cell_check(d, source_selector, field_name)
+            let [to_continue_k, k_value] = this.knowledge_cell_check(d, row_idx, field_name)
             to_continue = (to_continue & to_continue_k)
             value = {
                 'field_value': field_value,
@@ -803,23 +1012,23 @@ class TablePageManager {
         return [to_continue, value]
     }
 
-    multi_select_check(d, source_selector, field_name){
+    multi_select_check(d, row_idx, field_name, is_source_head_row){
         let to_continue = true
         let value = null
         let d_sel = $(d).find('select:not(.knowledge_source)')
         let is_disabled = ($(d_sel).prop('disabled') | $(d_sel).hasClass('hidden'))
         if (!is_disabled) {
             let field_value = $(d_sel).find(':selected').map(function (i, d) { return d.value })
-            if (field_value.length == 0) {
+            if ((field_value.length == 0) & is_source_head_row) {
                 if (this.task_type != 'diversity') {
-                    alert('Please select at least one option for the "' + field_name + '" field in row ' + (source_selector + 1) + '.')
+                    alert('Please select at least one option for the "' + field_name + '" field in row ' + (row_idx + 1) + '.')
                 } else {
                     alert('Please select at least one option for the "' + field_name + '" field.')
                 }
                 to_continue = false
             } else {
                 field_value = field_value.toArray()
-                let [to_continue_k, k_value] = this.knowledge_cell_check(d, source_selector, field_name)
+                let [to_continue_k, k_value] = this.knowledge_cell_check(d, row_idx, field_name)
                 to_continue = (to_continue & to_continue_k)
                 value = {
                     'field_value': field_value,
@@ -830,46 +1039,63 @@ class TablePageManager {
         return [to_continue, value]
     }
 
-    process_source_row(source_idx) {
+    process_row(row_idx) {
         let that = this
         let to_continue = true
-        let to_continue_item, value, is_disabled;
-        let source_selector = this.source_label_row_num[source_idx]['selected']
+        let to_continue_item, value;
+        let is_source_head_row = false
         let output = {}
-        output['s_idx'] = source_selector
-        let tr = $('#row_' + source_selector)
+        output['row_idx'] = row_idx
+        if (this.row_source_state_dict[row_idx] != undefined) {
+            if (this.row_source_state_dict[row_idx]['source_idx'] != '') {
+                let source_idx = this.row_source_state_dict[row_idx]['source_idx']
+                let source_head_row = this.source_row_nums[source_idx]['selected']
+                output['s_idx'] = source_idx
+                is_source_head_row = (source_head_row == row_idx)
+            }
+        }
+        let tr = $('#row_' + row_idx)
         let td = $(tr).find('td')
         td.map(function (i, d) {
             let key = $(d).attr('datatype')
             if (key == 'head') {
-                [to_continue_item, value] = that.text_cell_check(d, source_selector, 'Source Head')
+                [to_continue_item, value] = that.text_cell_check(d, row_idx, 'Source Head', is_source_head_row)
+            }
+            if (key == 'error') {
+                [to_continue_item, value] = that.input_cell_check(d, row_idx, 'Error Type')
             }
             if (key == 'quote_type') {
-                [to_continue_item, value] = that.input_cell_check(d, source_selector, 'Sentence Type', '.other_sentence_type')
+                [to_continue_item, value] = that.input_cell_check(d, row_idx, 'Sentence Type', '.other_sentence_type', is_source_head_row)
+            }
+            if (key == 'source_type') {
+                [to_continue_item, value] = that.input_cell_check(d, row_idx, 'Source Type', '.other_source_type', is_source_head_row)
+            }
+            if (key == 'tagline') {
+                [to_continue_item, value] = that.text_cell_check(d, row_idx, 'Tag Line', is_source_head_row)
             }
             if (key == 'affiliation') {
-                [to_continue_item, value] = that.input_cell_check(d, source_selector, 'Affiliation', '.other_affiliation')
+                [to_continue_item, value] = that.input_cell_check(d, row_idx, 'Affiliation', '.other_affiliation', is_source_head_row)
             }
             if (key == 'role') {
-                [to_continue_item, value] = that.input_cell_check(d, source_selector, 'Role', '.other_role')
+                [to_continue_item, value] = that.input_cell_check(d, row_idx, 'Role', '.other_role', is_source_head_row)
             }
             if (key == 'role_status') {
-                [to_continue_item, value] = that.input_cell_check(d, source_selector, 'Role Status', '.other_status')
+                [to_continue_item, value] = that.input_cell_check(d, row_idx, 'Role Status', '.other_status', is_source_head_row)
             }
             if (key == 'race') {
-                [to_continue_item, value] = that.input_cell_check(d, source_selector, 'Race', '.other_race')
+                [to_continue_item, value] = that.input_cell_check(d, row_idx, 'Race', '.other_race', is_source_head_row)
             }
             if (key == 'gender') {
-                [to_continue_item, value] = that.input_cell_check(d, source_selector, 'Gender', '.other_gender')
+                [to_continue_item, value] = that.input_cell_check(d, row_idx, 'Gender', '.other_gender', is_source_head_row)
             }
             if (key == 'age') {
-                [to_continue_item, value] = that.input_cell_check(d, source_selector, 'Age')
+                [to_continue_item, value] = that.input_cell_check(d, row_idx, 'Age', is_source_head_row)
             }
             if (key == 'education_level') {
-                [to_continue_item, value] = that.multi_select_check(d, source_selector, 'Education Level')
+                [to_continue_item, value] = that.multi_select_check(d, row_idx, 'Education Level', is_source_head_row)
             }
             if (key == 'university') {
-                [to_continue_item, value] = that.text_cell_check(d, source_selector, 'Educational Institution')
+                [to_continue_item, value] = that.text_cell_check(d, row_idx, 'Educational Institution', is_source_head_row)
             }
 
             if ((key != undefined) & (key != 'sentence') & (key != 'error')) {
@@ -883,17 +1109,23 @@ class TablePageManager {
     process_output(output) {
         let all_output = []
         let all_to_continue = true
-        let selected = Object.values(this.source_label_row_num)
         let that = this
-        d3.keys(this.source_label_row_num).forEach(function (d) {
-            let [to_continue, output] = that.process_source_row(d)
+        this.data.map(function(d){return d.sent_idx}).forEach(function (d) {
+            let [to_continue, output] = that.process_row(d)
             all_to_continue = (all_to_continue & to_continue)
             all_output.push(output)
         })
-        return [all_output, all_to_continue]
+        let data = {
+            'row_data': all_output,
+            'source_dict': this.source_row_nums,
+            'source_heads': this.source_head_to_idx,
+            'error_dict': this.error_state_dict
+        }
+
+        return [data, all_to_continue]
     }
 
-    record_data(output, submit_click_event, do_mturk, start_time, output_fname) {
+    record_data(output, submit_click_event, do_mturk, start_time, output_fname, loc) {
         if (do_mturk) {            // submit mturk
             $('#data').attr('value', JSON.stringify(output))
             $('#submitButton').trigger(submit_click_event.type);
@@ -901,6 +1133,11 @@ class TablePageManager {
             // submit AJAX
             output['start_time'] = start_time
             output['output_fname'] = output_fname
+            if (output_fname.indexOf('affil-role') != -1){
+                loc = loc + "?task=affil-role"
+            } else if (output_fname.indexOf('diversity') != -1){
+                loc = loc + "?task=diversity"
+            }
             //
             $.ajax({
                 url: "/post_table",
@@ -908,7 +1145,7 @@ class TablePageManager {
                 contentType: 'application/json',
                 data: JSON.stringify(output),
                 success: function (result) {
-                    if (result === "success") location.href = "/render_table"
+                    if (result === "success") location.href = loc
                 }
             })
         }
@@ -971,7 +1208,7 @@ class TablePageManager {
         this.resize_input()
 
         // activate all the right source entries
-        Object.entries(this.source_label_row_num)
+        Object.entries(this.source_row_nums)
             .forEach(function(d){
                 var selected_sent_idx = d[1]['selected']
                 var not_selected_idxs = d[1]['vals'].filter(function(e){return e != d[1]['selected']})
@@ -991,6 +1228,33 @@ class TablePageManager {
         return table_sel
     }
 
+    set_select_field(s_idx, data_row, cell_selector){
+        if (data_row[cell_selector] != undefined){
+            let stored_value = data_row[cell_selector]
+            if (stored_value != null) {
+                if (typeof (stored_value) == 'object'){
+                    stored_value = stored_value['field_value']
+                }
+                let select_val = affil_field_name_mapper[cell_selector][stored_value]
+                $('#row_' + s_idx).find('.' + cell_selector).find('select').val(select_val)
+            }
+        }
+    }
+
+    populate_data_to_check(annotated_data){
+        let that = this
+        annotated_data.forEach(function(row, i ){
+            let s_idx = row['s_idx']
+            that.change_all_questions(s_idx, 'enable')
+
+            that.set_select_field(s_idx, row, 'quote_type',)
+            that.set_select_field(s_idx, row, 'source_type',)
+            that.set_select_field(s_idx, row, 'affiliation',)
+            that.set_select_field(s_idx, row, 'role',)
+            that.set_select_field(s_idx, row, 'role_status')
+        })
+
+    }
 
     build_table(table_sel, data, filter_rows) {
         // table body
@@ -1002,14 +1266,9 @@ class TablePageManager {
         }
         let that = this
         data.forEach(function (row, i) {
-
             let table_row = ''
-            if (['full', 'affil-role'].indexOf(that.task_type) != -1) {
-                table_row += `
-                    <tr id="row_` + i + `">
-                        <td>` + (i + 1) + `</td>
-                `
-            }
+            table_row += `<tr id="row_` + i + `">
+                            <td>` + (i + 1) + `</td>`
             // sentence
             if (row.color) {
                 table_row += `<td datatype='sentence' class="sentence" style="background-color: ` + row.color + `">` + row.sent + `</td>`
@@ -1044,38 +1303,71 @@ class TablePageManager {
             } else {
                 table_row += `<option value="na" class="na"></option>`
             }
-            table_row += `{{ row.type }}
-                            </select>
-                        </td>`
+            table_row += `<option value="speech">PUBLIC SPEECH, NOT TO JOURNO</option>
+                          <option value="written_comms">COMMUNICATION, NOT TO JOURNO</option>
+                          <option value="published_work">PUBLISHED WORK</option>
+                          <option value="statement">STATEMENT</option>
+                          <option value="lawsuit">LAWSUIT</option>
+                          <option value="vote_poll">VOTE/POLL</option>
+                          <option value="document">DOCUMENT</option>
+                          <option value="press_report">PRESS REPORT</option>
+                          <option value="tweet">TWEET</option>
+                          <option value="proposal">PROPOSAL/ORDER/LAW</option>
+                          <option value="declined_comment">DECLINED COMMENT</option>
+                          <option value="other">Other</option>
+                    </select>
+                    <input class="hidden other other_sentence_type" type="text" datatype="other_sentence_type" placeholder="Please specify">
+                </td>`
+
             table_row += ERROR_HTML
+            if (that.task_type == 'affil-role'){
+                table_row += TAGLINE_HTML
+            }
             table_row += AFFIL_ROLE_HTML
-            table_row += DIVERSITY_HTML
+            if (that.task_type == 'full') {
+                table_row += DIVERSITY_HTML
+            }
             table_row += "</tr>"
             table_body_html += table_row
         })
 
         // append it all to the selector
         table_sel.append(table_body_html)
-        table_sel.DataTable({
-            paging: false,
-            ordering: false,
-            searching: false,
-            info: false,
-            columnDefs: [
+        let table_col_defs = [
                 { "width": "1%" ,  "targets": 0},  // sentence idx
                 { "width": "34%" , "targets": 1},  // sentence
                 { "width": "6%" , "targets":  2},   // source head
                 { "width": "5%" , "targets":  3},   // sentence-type
                 { "width": "5%" , "targets":  4},   // errors
-                { "width": "7%" , "targets":  5},   // affiliation
-                { "width": "6%" , "targets":  6},   // role
-                { "width": "6%" , "targets":  7},   // role status
-                { "width": "6%" , "targets":  8},   // gender
-                { "width": "6%" , "targets":  9},   // race
-                { "width": "6%" , "targets":  10},   // age
-                { "width": "6%" , "targets":  11},  // educational level
-                { "width": "6%" , "targets":  12},  // institutions
-            ],
+                { "width": "7%" , "targets":  5},   // source-type
+                { "width": "7%" , "targets":  6},   // affiliation
+                { "width": "6%" , "targets":  7},   // role
+                { "width": "6%" , "targets":  8},   // role status
+        ]
+        let addit_affil_role_col_defs = [
+                { "width": "6%" , "targets":  9},   // tagline
+        ]
+        let addit_diversity_col_defs = [
+                { "width": "6%" , "targets":  9},   // gender
+                { "width": "6%" , "targets":  10},  // race
+                { "width": "6%" , "targets":  11},  // age
+                { "width": "6%" , "targets":  12},  // educational level
+                { "width": "6%" , "targets":  13},  // institutions
+        ]
+
+        if (that.task_type == 'full'){
+            table_col_defs = table_col_defs.concat(addit_diversity_col_defs)
+        }
+        if (that.task_type == 'affil-role'){
+            table_col_defs = table_col_defs.concat(addit_affil_role_col_defs)
+        }
+
+        table_sel.DataTable({
+            paging: false,
+            ordering: false,
+            searching: false,
+            info: false,
+            columnDefs: table_col_defs,
             fixedHeader: true,
         });
         this.resize_input()
@@ -1084,7 +1376,7 @@ class TablePageManager {
         })
 
         // activate all the right source entries
-        Object.entries(this.source_label_row_num)
+        Object.entries(this.source_row_nums)
             .forEach(function(d){
                 var selected_sent_idx = d[1]['selected']
                 that.change_source_questions(selected_sent_idx, 'enable')

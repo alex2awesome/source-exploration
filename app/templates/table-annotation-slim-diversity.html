@@ -34,10 +34,13 @@
 <script src="https://cdn.jsdelivr.net/gh/alex2awesome/source-exploration/app/static/table-annotation-v2.js"></script>
 {% else %}
 <link rel="stylesheet" href="{{ url_for('static', filename='table-annotation.css') }}">
-<script src="{{ url_for('static', filename='table-annotation-v1.js') }}"></script>
+<script src="{{ url_for('static', filename='table-annotation-v2.js') }}"></script>
 {% endif %}
 
-<div class="table table-hover container">
+<body>
+
+<form name='mturk_form' method='post' id='mturk_form' action='/mturk/externalSubmit'>
+<input type='hidden' value='' name='assignmentId' id='assignmentId'/>
 
 <div class="table table-hover container">
     <div class="row instructions">
@@ -121,8 +124,7 @@
             </div>
         </div>
     </div>
-
-<div class="body">
+<div class="body table table-hover container">
     <h1>{{ headline }}</h1>
     <h3>Published: {{ published_date }}</h3>
     <a href="{{ url }}">{{ url }}</a>
@@ -164,12 +166,18 @@
             </tr>
         </thead>
     </table>
-    <input type='hidden' value='' name='data' id='data'/>
     <button type="submit" id='submitButton' value='Submit'>Submit form</button>
-
 </div>
+
+<input type='hidden' value='' name='data' id='data'/>
+</form>
+
 <script>
 $(document).ready(function() {
+    {% if do_mturk %}
+    turkSetAssignmentID();
+    {% endif %}
+
     var data = {{ data | safe }}
     pm = new TablePageManager(data, 'diversity')
     var table = pm.build_table_diversity($('#example'), data)
@@ -202,30 +210,32 @@ $(document).ready(function() {
         }
     })
 
+    let to_continue = false
+    let output = null
     $('#submitButton').click( function(submit_click_event) {
-        submit_click_event.preventDefault();
-        var submit_button = this
-        var data = table.find('tr');
-        var [output, to_continue] = pm.process_output(data)
-        {% if do_mturk %}
-            var do_mturk = true
-            $('#data').attr('value', JSON.stringify(output))
-            $(submit_button).trigger(submit_click_event.type);
-
-        {% else %}
-            var do_mturk = false
-        {% endif %}
-        output = {'data': output}
-        if (to_continue) {
-            console.log('Submitting!')
-            var start_time = "{{ start_time }}"
-            var output_fname = "{{ output_fname }}"
-            pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname)
+        if (! to_continue) {
+            submit_click_event.preventDefault();
+            var data = table.find('tr');
+            [output, to_continue] = pm.process_output(data)
+            {% if do_mturk %}
+                var do_mturk = true
+            {% else %}
+                var do_mturk = false
+            {% endif %}
+            output = {'data': output}
+            if (to_continue) {
+                console.log('Submitting!')
+                var start_time = "{{ start_time }}"
+                var output_fname = "{{ output_fname }}"
+                pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname, '/render_table')
+            }
         }
     } );
 } );
 </script>
 
+
+</body></html>
 {% if do_mturk %}
 ]]>
 </HTMLContent>

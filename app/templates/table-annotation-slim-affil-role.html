@@ -1,3 +1,5 @@
+
+{% if do_mturk %}
 {##}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
@@ -16,12 +18,28 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/css/bootstrap-multiselect.css" type="text/css"/>
 
-{% if do_mturk %}
 <link href="">
 <script src=""></script>
 {% else %}
 <link rel="stylesheet" href="{{ url_for('static', filename='table-annotation.css') }}">
-<script src="{{ url_for('static', filename='table-annotation.js') }}"></script>
+<script src="{{ url_for('static', filename='table-annotation-v2.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/jquery-3.5.1.js') }}"></script>
+<script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dataTables.fixedColumns.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/d3.v4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fixedHeader.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-multiselect.css') }}">
+
 {% endif %}
 
 <div class="table table-hover container">
@@ -96,20 +114,38 @@
                                 <ol>
                                     <li><b>Quote</b>: A statement or a paraphrase that the source gives to the reporter.</li>
                                     <li><b>Background</b>: A sentence describing or mentioning the source, that does <i>not</i> contain a quote.</li>
+                                    <li><b>Background</b>: A sentence describing or mentioning the source, that does <i>not</i> contain a quote.</li>
                                 </ol>
                             </li>
                             <li>
                                 <b>Errors:</b> Correct us if we are wrong! Either:
                                 <ol>
-                                    <li>We missed a source! In which case it's a false negative. This can mean:
+                                    <li>We missed a source! In which case it's a false negative. A false negative can be one of the following:
                                         <ol>
-                                            <li><b>False negative: Named source. Not found elsewhere.</b> We've completely missed this source and all quotes by them.</li>
-                                            <li><b>False negative: Named source. Found elsewhere.</b> We've found other quotes by this source, but missed this particular sentence.</li>
-                                            <li><b>False negative: Unnamed source.</b> We've missed an unnamed source (e.g. ``an anonymous official'', ``The department says'', etc.). {# We're not studying unnamed sources in this work, but we'd like to collect data for future work.#}</li>
-                                            <li><b>False negative: Wrong source identified</b> We've identified this sentence as a source sentence, but attributed it to the wrong person. Please correct the <b>Source Head</b> column too.</li>
-                                            <li><b>False negative: Background</b> We've missed an important background sentence describing a source.</li>
+                                            <li><b>False negative: This is a named source sentence we failed to label. The source is NOT found elsewhere.</b> This means there's a sentence that either contains a quote from, or references a NAMED person. We've missed it, and there are no other times that this source is mentioned.</li>
+                                            <li><b>False negative: This is a named source sentence we failed to label. The source IS found elsewhere.</b> Similar to the above error, except we've found other quotes by this source, but missed this particular sentence.</li>
+                                            <li><b>False negative: This is an unnamed source sentence we failed to label. The source is NOT found elsewhere.</b> This means there's a sentence that either contains a quote from, or references an UNNAMED SOURCE. An UNNAMED SOURCE can be either a statement put out by an agency or group, or a person who wishes to remain anonymous. Examples of unnamed sources are: ``an anonymous official'', ``The department says'', etc.</li>
+                                            <li><b>False negative: This is an unnamed source sentence we failed to label. The source IS found elsewhere.</b> Similar to the above error.</li>
                                         </ol>
+                                        Once you've tagged a negative, if the source has not yet been found, you'll be asked to fill out the <b>Source-Level</b> questions.
                                     </li>
+                                    <li>We identified a source where none exists. This means it's a false positive. The false positive error is the following:</li>
+                                        <ol>
+                                            <li><b>False positive: This sentence does not mention any source.</b></li>
+                                        </ol>
+                                         Once you've tagged this, you don't have to do anything else.
+                                    <li>We correctly identified a source, but the sentence is of the wrong type (i.e. the "Source-Type" field is wrong). The mixed-type error is the following:
+                                        <ol>
+                                            <li><b>Type mixed: This sentence is tagged with the wrong role.</b></li>
+                                        </ol>
+                                        Once you've identified a mixed-type, please select the correct <i>Sentence Type</i> from the list of options in the dropdown. The list of options are defined below.
+                                    </li>
+                                    <li>We identified that a source was in this sentence, but we attributed it to the wrong person (i.e. noted the "Source Head").</li>
+                                        <ol>
+                                            <li><b>Wrong source: We attributed the quote to the WRONG source. The true source has been found elsewhere.</b></li> Similar to the errors in the <b>False Negative</b> section.
+                                            <li><b>Wrong source: We attributed the quote to the WRONG source. The true source has NOT been found elsewhere.</b></li>
+                                        </ol>
+                                        If you have identified a "Wrong Source", fill in the "Source Head" with the correct source. If the source hasn't been found, then please fill out the <b>Source-Level</b> questions.
                                 </ol>
                             </li>
                         </ul>
@@ -217,7 +253,6 @@
                                               </tr>
                                             </table>
                                         </div>
-
                                         <h4>Definitions</h4>
                                         <ul>
                                             <li>
@@ -263,54 +298,7 @@
                                         </ul>
                                       </div>
                                     </div>
-                                      </div>
-                                  <div class="card">
-                                    <div class="card-header" id="diversity_header">
-                                      <h5 class="mb-0">
-                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#diversity_sub">
-                                          Diversity Questions
-                                        </button>
-                                      </h5>
-                                    </div>
-                                    <div id="diversity_sub" class="collapse" aria-labelledby="diversity_header">
-                                      <div class="card-body">
-                                        <ul>
-                                            <li>
-                                                <b>Gender:</b>
-                                                <ol>
-                                                    <li><b>Male</b>: Someone born male and identifying as male at the time of publication.</li>
-                                                    <li><b>Female</b>: Someone born female and identifying as female at the time of publication.</li>
-                                                    <li><b>Other</b>: Another gender category not captured (e.g. a-gendered, trans female, trans male.) Please specify.</li>
-                                                </ol>
-                                            </li>
-                                            <li>
-                                                <b>Race:</b>
-                                                <ol>
-                                                    <li><b>White</b>: Someone with a predominantly European heritage, who would be viewed as white by society.</li>
-                                                    <li><b>Black</b>: Someone with a predominantly African heritage.</li>
-                                                    <li><b>Indigenous</b>: Someone with a heritage that is predominantly a native peoples, i.e. existing pre-colonization (e.g. American Indian, Pacific Islander, Haiwaiian, aboriginal, etc.).</li>
-                                                    <li><b>Latin/South America</b>: Someone who does <i>not</i> identify as indigenous, but who's heritage is predominantly from Latin or South America.</li>
-                                                    <li><b>East Asian</b>: Someone who's heritage is predominantly from an East Asian country (e.g. China, Thailand, Japan, etc.).</li>
-                                                    <li><b>South Asian</b>: Someone who's heritage is predominantly from a South Asian country (e.g. India, Bangaladesh, Nepal, etc.).</li>
-                                                    <li><b>Middle Eastern</b>: Someone who's heritage is predominantly from the Middle East (e.g. Israel, Saudi Arabia, Turkey).</li>
-                                                    <li><b>Other</b>: Some other group not captured. Please specify.</li>
-                                                </ol>
-                                            </li>
-                                            <li>
-                                                <b>Age:</b> Please specify age-range in number of years, as of the publication date.
-                                            </li>
-                                            <li>
-                                                <b>Educational Status:</b>
-                                                <ol>
-                                                    <li><b>Degree</b>: Please specify the degrees obtained by the individual (can select multiple).</li>
-                                                    <li><b>University</b>: Please specify the universities attended by the individual (if multiple, separate them with commas.)</li>
-                                                </ol>
-                                            </li>
-
-                                        </ul>
-                                    </div>
                                   </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -360,6 +348,12 @@
                     <b>Errors</b>
                 </th>
                 <th>
+                    <b>Tag Line</b>
+                </th>
+                <th>
+                    <b>Source Type</b>
+                </th>
+                <th>
                     <b>Affiliation</b>
                     <br>
                     <i>Source's Group</i>
@@ -374,27 +368,6 @@
                     <br>
                     <i>Current/Former</i>
                 </th>
-                <th>
-                    <b>Gender</b>
-                </th>
-                <th>
-                    <b>Race</b>
-                </th>
-                <th>
-                    <b>Age</b>
-                    <br>
-                    <i>At publish-time</i>
-                </th>
-                <th>
-                    <b>Edu. Level</b>
-                    <br>
-                    <i>Check all applic.</i>
-                </th>
-                <th>
-                    <b>Edu. Institution(s)</b>
-                    <br>
-                    <i>Sep. by ";"</i>
-                </th>
             </tr>
         </thead>
     </table>
@@ -405,7 +378,7 @@
 <script>
 $(document).ready(function() {
     var data = {{ data | safe }}
-    pm = new TablePageManager(data)
+    pm = new TablePageManager(data, 'affil-role')
 
     var table = pm.build_table($('#example'), data)
 
@@ -427,14 +400,10 @@ $(document).ready(function() {
     $('.head').find('input').blur(function(){
         let row_idx = parseInt($(this).parents('tr').attr('id').split('_')[1])
         let error_type = $(this).parents('tr').find('.error').find("option:selected").attr('value')
-        if ((error_type == 'false_negative_wrong_source_new') | (error_type == 'false_negative_source_named_uncaught')){
+        if ((error_type == 'false_negative_wrong_source_new') | (error_type == 'false_negative_source_uncaught')){
             pm.check_typed_source(row_idx, false)
-        } else if ((error_type == 'false_negative_wrong_source_existing') | (error_type == 'false_negative_source_named_caught')){
+        } else if ((error_type == 'false_negative_wrong_source_existing') | (error_type == 'false_negative_source_caught')){
             pm.check_typed_source(row_idx, true)
-        } else if (error_type == 'false_negative_source_unnamed_uncaught'){
-            pm.check_typed_source(row_idx, false, true)
-        } else if (error_type == 'false_negative_source_unnamed_existing'){
-            pm.check_typed_source(row_idx, true, true)
         }
     })
 
@@ -451,7 +420,7 @@ $(document).ready(function() {
             console.log('Submitting!')
             var start_time = "{{ start_time }}"
             var output_fname = "{{ output_fname }}"
-            pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname)
+            pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname, '/render_table')
         }
     } );
 } );
