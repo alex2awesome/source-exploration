@@ -1,28 +1,25 @@
 {##}
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-{##}
-<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/fixedcolumns/3.2.1/js/dataTables.fixedColumns.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/js/bootstrap-multiselect.min.js"></script>
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
-<link rel="https://cdn.datatables.net/fixedheader/3.2.1/css/fixedHeader.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/css/bootstrap-multiselect.css" type="text/css"/>
-
-{% if do_mturk %}
-<link href="">
-<script src=""></script>
-{% else %}
 <link rel="stylesheet" href="{{ url_for('static', filename='table-annotation.css') }}">
 <script src="{{ url_for('static', filename='table-annotation-v2.js') }}"></script>
-{% endif %}
+
+<script src="{{ url_for('static', filename='js/jquery-3.5.1.js') }}"></script>
+<script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dataTables.fixedColumns.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/d3.v4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fixedHeader.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-multiselect.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='table-annotation.css') }}">
+<script src="{{ url_for('static', filename='table-annotation-v2.js') }}"></script>
 
 <div class="table table-hover container">
 
@@ -126,21 +123,23 @@ $(document).ready(function() {
         }
     })
 
-    $('#submitButton').click( function(submit_click_event) {
-        var data = table.find('tr');
-        var [output, to_continue] = pm.process_output(data)
-        {% if do_mturk %}
-            var do_mturk = true
-        {% else %}
-            var do_mturk = false
-        {% endif %}
-        output = {'data': output}
-        if (to_continue) {
-            console.log('Submitting!')
-            var start_time = "{{ start_time }}"
-            var output_fname = "{{ output_fname }}"
-            pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname, '/check_table')
-        }
-    } );
+    {% if submit %}
+        $('#submitButton').click( function(submit_click_event) {
+            var data = table.find('tr');
+            var [output, to_continue] = pm.process_output(data)
+            {% if do_mturk %}
+                var do_mturk = true
+            {% else %}
+                var do_mturk = false
+            {% endif %}
+            output = {'data': output}
+            if (to_continue) {
+                console.log('Submitting!')
+                var start_time = "{{ start_time }}"
+                var output_fname = "{{ output_fname }}"
+                pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname, '/check_table')
+            }
+        } );
+    {% endif %}
 } );
 </script>

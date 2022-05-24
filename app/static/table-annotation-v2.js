@@ -858,6 +858,7 @@ class TablePageManager {
     register_typed_source(row_idx) {
         let source_head = $('#row_' + row_idx).find('.head').find('input').val()
         let source_idx;
+
         // if we're changing sources, remove row from the old source
         if (this.row_source_state_dict[row_idx] != undefined){
             if (this.row_source_state_dict[row_idx]['source_idx'] != '') {
@@ -1228,7 +1229,7 @@ class TablePageManager {
         return table_sel
     }
 
-    set_select_field(s_idx, data_row, cell_selector){
+    set_select_field(row_idx, data_row, cell_selector, change_value){
         if (data_row[cell_selector] != undefined){
             let stored_value = data_row[cell_selector]
             if (stored_value != null) {
@@ -1236,22 +1237,82 @@ class TablePageManager {
                     stored_value = stored_value['field_value']
                 }
                 let select_val = affil_field_name_mapper[cell_selector][stored_value]
-                $('#row_' + s_idx).find('.' + cell_selector).find('select').val(select_val)
+                $('#row_' + row_idx).find('.' + cell_selector).find('select').val(select_val)
             }
+        }
+    }
+
+    set_input_text_field(row_idx, data_row, cell_selector){
+        if (data_row[cell_selector] != undefined){
+            let stored_value = data_row[cell_selector]
+            if (stored_value != null) {
+                if (typeof (stored_value) == 'object'){
+                    stored_value = stored_value['field_value']
+                }
+                $('#row_' + row_idx).find('.' + cell_selector).find('input').val(stored_value)
+            }
+        }
+    }
+
+    set_background_color_white(row_idx){
+        $('#row_' + row_idx).find('.sentence').css('background-color', 'white')
+    }
+
+    determine_error_type(input_row, annotated_row){
+        let s_idx = annotated_row['s_idx']
+        if ((input_row['head'] == undefined) & (annotated_row['head']['field_value'] == '')) {
+            return "no_error"
+        }
+
+        else if ((input_row['head'] == undefined) & (annotated_row['head']['field_value'] != '')){
+            if (this.source_row_nums[s_idx]['selected'] == annotated_row['row_idx'])
+                return "false_negative_source_uncaught"
+            else
+                return "false_negative_source_caught"
+        }
+
+        else if ((input_row['head'] != undefined) & (annotated_row['head']['field_value'] == '')){
+            return 'false_positive_sentence'
+        }
+
+        else if ((input_row['head'] != annotated_row['head']['field_value'])){
+            if (this.source_row_nums[s_idx]['selected'] == annotated_row['row_idx'])
+                return "false_negative_wrong_source_new"
+            else
+                return "false_negative_wrong_source_existing"
+        }
+        
+        else if (input_row['type'] != annotated_row['quote_type']['field_value'])
+            return "wrong_sentence_role"
+
+        else {
+            return "no_error"
         }
     }
 
     populate_data_to_check(annotated_data){
         let that = this
         annotated_data.forEach(function(row, i ){
+            let row_idx = row['row_idx']
+            that.set_background_color_white(row_idx)
             let s_idx = row['s_idx']
-            that.change_all_questions(s_idx, 'enable')
-
-            that.set_select_field(s_idx, row, 'quote_type',)
-            that.set_select_field(s_idx, row, 'source_type',)
-            that.set_select_field(s_idx, row, 'affiliation',)
-            that.set_select_field(s_idx, row, 'role',)
-            that.set_select_field(s_idx, row, 'role_status')
+            if (s_idx != undefined) {
+                that.change_all_questions(row_idx, 'enable')
+                // select fields
+                that.set_select_field(row_idx, row, 'quote_type',)
+                that.set_select_field(row_idx, row, 'source_type',)
+                that.set_select_field(row_idx, row, 'affiliation',)
+                that.set_select_field(row_idx, row, 'role',)
+                that.set_select_field(row_idx, row, 'role_status')
+                // input text fields
+                that.set_input_text_field(row_idx, row, 'tagline')
+                that.set_input_text_field(row_idx, row, 'head')
+                // coloring
+                that.register_typed_source(row_idx)
+            }
+            // error
+            let error_type = that.determine_error_type(that.data[i], row)
+            $('#row_' + row_idx).find('.error').find('select').val(error_type)
         })
 
     }

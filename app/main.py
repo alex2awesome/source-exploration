@@ -236,12 +236,26 @@ def check_table():
             headline=orig_input_data['headline'],
             published_date=orig_input_data['published_date'],
             do_mturk=False,
+            submit=True,
             start_time=time.time(),
             output_fname=output_fn
         )
-
     else:
         return 'No more data.'
+
+@app.route('/check_table_no_submit')
+def check_specific_file():
+    task = request.args.get('task', 'full')
+    file_id = request.args.get('file_id')
+    entry_id = request.args.get('entry_id')
+    version = request.args.get('version')
+
+    if file_id is not None:
+        pass
+    elif (entry_id is not None and version is not None):
+        pass
+    else:
+        return 'File incorrectly specific, no identifiers'
 
 
 @app.route('/post_table', methods=['POST'])
