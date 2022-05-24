@@ -19,6 +19,7 @@ service: source-finding
 handlers:
 - url: /data
   static_dir: data
+
 - url: /static
   static_dir: static
 # [END getting_started_app_yaml]

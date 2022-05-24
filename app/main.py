@@ -3,10 +3,12 @@ from collections import defaultdict
 import re
 import itertools
 import random
-
+import os
 import json
 
 app = Flask(__name__, static_url_path='/static')
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 
 def get_client():
     from google.cloud import datastore
@@ -134,11 +136,14 @@ import glob, os
 def make_table_html():
     task = request.args.get('task', 'full')
     shuffle = request.args.get('shuffle', False)
-    to_annotate = glob.glob('../app/data/input_data/*/*')
+    input_data_filepattern = os.path.join(basedir, 'data/input_data/*/*')
+    to_annotate = glob.glob(input_data_filepattern)
     to_annotate = list(map(lambda x: (x, re.findall('to-annotate-\d+', x)[0]), to_annotate))
     to_annotate = sorted(map(lambda x: (x[0], x[1].replace('to-annotate', 'annotated')), to_annotate))
     #
-    annotated = glob.glob('../app/data/output_data_%s/*/*' % task)
+
+    output_data_filepattern = os.path.join(basedir, 'data/output_data_%s/*/*' % task)
+    annotated = glob.glob(output_data_filepattern)
     annotated_files = set(map(lambda x: re.findall('annotated-\d+', x)[0], annotated))
     #
     to_annotate = list(filter(lambda x: x[1] not in annotated_files, to_annotate))
@@ -193,11 +198,13 @@ def check_table():
     task = request.args.get('task', 'full')
     shuffle = request.args.get('shuffle', False)
 
-    to_check = glob.glob('../app/data/output_data_%s/*/*' % task)
+    to_check_filepattern = os.path.join(basedir, 'data/output_data_%s/*/*' % task)
+    to_check = glob.glob(to_check_filepattern)
     to_check = list(map(lambda x: (x, re.findall('annotated-\d+', x)[0]), to_check))
     to_check = sorted(map(lambda x: (x[0], x[1].replace('annotated', 'checked')), to_check))
 
-    checked = glob.glob('../app/data/checked_data_%s/*/*' % task)
+    checked_filepattern = os.path.join(basedir, 'data/checked_data_%s/*/*' % task)
+    checked = glob.glob(checked_filepattern)
     checked_files = set(map(lambda x: re.findall('checked-\d+', x)[0], checked))
 
     to_check = list(filter(lambda x: x[1] not in checked_files, to_check))
