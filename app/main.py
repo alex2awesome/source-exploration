@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-from google.cloud import datastore
 from collections import defaultdict
 import re
 import itertools
@@ -10,6 +9,7 @@ import json
 app = Flask(__name__, static_url_path='/static')
 
 def get_client():
+    from google.cloud import datastore
     try:
         return datastore.Client()
     except:
@@ -24,6 +24,7 @@ def hello():
 
 def get_user(email, client):
     """Get user. Create new entity if doesn't exist."""
+    from google.cloud import datastore
     user_key = client.key('user', email)
     user = client.get(user_key)
     if user:
@@ -63,6 +64,7 @@ def render_annotation():
 
 @app.route('/post_annotation_experiment', methods=['POST'])
 def post():
+    from google.cloud import datastore
     client = get_client()
     output_data = request.get_json()
     ##
