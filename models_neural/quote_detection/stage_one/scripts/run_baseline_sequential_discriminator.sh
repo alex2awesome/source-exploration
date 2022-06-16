@@ -37,7 +37,7 @@ katie compute run \
         --compute-framework $DEFAULT_FRAMEWORK \
         --node-size $DEFAULT_JOB_SIZE \
         $worker_args \
-        --python-module discriminator.model_runner \
+        --python-module models_neural.quote_detection.stage_one.model_runner \
         --identities hadoop=$DEFAULT_HADOOP_IDENTITY bcs=$DEFAULT_BCS_IDENTITY git=$DEFAULT_GIT_IDENTIY \
         --pip-packages $DEFAULT_PACKAGE \
         --tensorboard-log-dir hdfs:///projects/ai_classification/aspangher/source-finding/tensorboard \
@@ -60,6 +60,7 @@ katie compute run \
         --warmup_steps 0 \
         --use_x \
 
+#models_neural/quote_detection/stage_one/model_runner
 
 #       --pretrained_files_s3 $pretrained_model \
 #        --freeze_encoder_layers $frozen_layers \
