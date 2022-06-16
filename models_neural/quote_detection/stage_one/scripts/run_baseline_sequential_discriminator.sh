@@ -1,4 +1,4 @@
-DEFAULT_REPO='git+https://bbgithub.dev.bloomberg.com/aspangher/controlled-sequence-gen.git'
+DEFAULT_REPO='git+https://bbgithub.dev.bloomberg.com/aspangher/source-finding.git'
 DEFAULT_BRANCH='master'
 DEFAULT_PACKAGE=$DEFAULT_REPO@$DEFAULT_BRANCH
 
