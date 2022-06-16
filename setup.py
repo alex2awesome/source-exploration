@@ -11,6 +11,8 @@ block_list = {
 with open('requirements.txt') as requirements:
     INSTALL_REQUIRES = [s.strip() for s in requirements if s.split('=')[0] not in block_list]
 
+INSTALL_REQUIRES = list(filter(lambda x: 'github' not in x, INSTALL_REQUIRES))
+
 setup(
     name="source-exploration",
     version="0.0.1",
