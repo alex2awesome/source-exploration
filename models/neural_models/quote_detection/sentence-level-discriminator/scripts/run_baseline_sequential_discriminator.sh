@@ -40,19 +40,18 @@ katie compute run \
         --python-module discriminator.model_runner \
         --identities hadoop=$DEFAULT_HADOOP_IDENTITY bcs=$DEFAULT_BCS_IDENTITY git=$DEFAULT_GIT_IDENTIY \
         --pip-packages $DEFAULT_PACKAGE \
-        --namespace s-ai-classification \
-        --tensorboard-log-dir hdfs:///projects/ai_classification/aspangher/controlled-sequence-gen/tensorboard \
+        --tensorboard-log-dir hdfs:///projects/ai_classification/aspangher/source-finding/tensorboard \
         --env NCCL_ASYNC_ERROR_HANDLING=1 NCCL_LL_THRESHOLD=0 NCCL_DEBUG=INFO env=$ENV \
         -- \
         --model_type $model_type \
         --pretrained_files_s3 $pretrained_model \
-        --experiment baseline_non-sequential \
+        --experiment lstm_sequential \
         --batch_size 1 \
         --num_train_epochs 3 \
         --do_train \
         --do_eval \
         --train_data_file_s3 data/polnear-training-data-stage-1.tsv \
-        --notes "Flat Discriminator with Augmented/Balanced Training data" \
+        --notes "Stage 1: Quote Detection. First run, Polnear dataset only." \
         --freeze_transformer \
         --sentence_embedding_method 'attention' \
         --dropout .1 \
