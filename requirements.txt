@@ -31,4 +31,4 @@ pytorch-lightning==1.4.1
 pytorch-transformers==1.1.0
 torch==1.9.1
 torchmetrics==0.5.0
-
+ipython==3.2.1
