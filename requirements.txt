@@ -1,5 +1,5 @@
 ipython==3.2.1
-notebook==6.4.12
+notebook==6.0.3
 six==1.14.0
 srsly==2.4.3
 scipy==1.4.1
