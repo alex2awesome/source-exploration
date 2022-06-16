@@ -277,6 +277,7 @@ def extract_and_merge_ners(named_ents_list, sents_list, stanford_corefs):
     named_entity_clusters = merge_coref_and_ner_clusters(named_entity_clusters, person_list, stanford_corefs)
     return named_entity_clusters
 
+
 def merge_coref_and_ner_clusters(named_entity_clusters, person_list, stanford_corefs):
     """Enhance each NER cluster with coreferents."""
 

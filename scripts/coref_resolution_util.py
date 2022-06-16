@@ -1,16 +1,34 @@
 from collections import defaultdict
-from spacy.tokens import Token, Span
+from spacy.tokens import Token
 from more_itertools import unique_everseen
-from copy import deepcopy, copy
+from copy import copy
 import pandas as pd
 from unidecode import unidecode
 from copy import deepcopy
-import neuralcoref
 from abc import ABC, abstractmethod
-from os import environ
-from warnings import warn
-from typing import Dict, List
+from typing import List
 from spacy.tokens import Doc, Span
+
+import sys, os
+
+here = os.path.dirname(__file__)
+sys.path.insert(0, here)
+
+from util import clean_multiword_phrases, get_nlp
+from params import speaking_lexicon, ner_list
+
+_nlp_coref = None
+def get_nlp_coref():
+    global _nlp_coref
+    if _nlp_coref is None:
+        import neuralcoref
+        import spacy
+        try:
+            _nlp_coref = spacy.load('en_core_web_lg')
+        except:
+            _nlp_coref = spacy.load('en_core_web_sm')
+        neuralcoref.add_to_pipe(_nlp_coref, max_dist=500)
+    return _nlp_coref
 
 def core_logic_part(document: Doc, coref: List[int], resolved: List[str], mention_span: Span):
     final_token = document[coref[1]]
@@ -236,32 +254,6 @@ def get_predictor():
     return _predictor
 
 
-_nlp_coref = None
-def get_nlp_coref():
-    global _nlp_coref
-    if _nlp_coref is None:
-        import neuralcoref
-        import spacy
-        try:
-            _nlp_coref = spacy.load('en_core_web_lg')
-        except:
-            _nlp_coref = spacy.load('en_core_web_sm')
-        neuralcoref.add_to_pipe(_nlp_coref, max_dist=500)
-    return _nlp_coref
-
-
-_nlp = None
-def get_nlp():
-    global _nlp
-    if _nlp is None:
-        import spacy
-        try:
-            _nlp = spacy.load('en_core_web_lg')
-        except:
-            _nlp = spacy.load('en_core_web_sm')
-    return _nlp
-
-
 _fuzzy = None
 def get_cluster_model():
     global _fuzzy
@@ -340,37 +332,14 @@ def extract_quotes_from_nsubj(doc, return_dict=False):
     for s_idx, sent in enumerate(doc.sents):
         ##
         text_sentence = ' '.join([word.text for word in sent]).strip()
-
-        # hack to pick up common phrasal signifiers
-        common_multiword_phrases = [
-            'according to', 'pointed out', 'points out', 'called for', 'calls for', 'told me'
-        ]
-        for c in common_multiword_phrases:
-            if c in text_sentence:
-                sent = get_nlp()(text_sentence.replace(c, 'said'))
+        sent, text_sentence = clean_multiword_phrases(sent, text_sentence)
 
         ## extract all nsubj of VERB if VERB is 'said', 'says' or 'say'
         for possible_subject in sent:
             if (
                     possible_subject.dep_ == 'nsubj' and
                     possible_subject.head.pos_ == 'VERB' and
-                    possible_subject.head.text in (
-                    'say', 'says', 'said',
-                    'echo', 'echoes', 'echoed',
-                    'tell', 'told',
-                    'added', 'adds', 'adding',
-                    'describe', 'describes', 'described',
-                    'claims', 'claims', 'claimed',
-                    'explained', 'explains', 'explain',
-                    'mentioned', 'mentions', 'mention',
-                    'articulated', 'articulates', 'articulate',
-                    'called', 'calls', 'call',
-                    'declared', 'declares', 'declare',
-                    'worried', 'worries', 'worry',
-                    'asserted', 'asserts', 'assert',
-                    #
-                    'write', 'writes', 'wrote',
-            )
+                    possible_subject.head.text in speaking_lexicon
             ):
                 # map subject to a noun phrase or named entity
                 found = False
@@ -484,7 +453,7 @@ def perform_quote_extraction_and_clustering(text):
     for s_idx, sent in enumerate(doc.sents):
         # get person-entities
         for ent in sent.ents:
-            if ent.label_ == 'PERSON':
+            if ent.label_ in ner_list:
                 person_ents.append({
                     's_idx': s_idx,
                     'ent': ent.text,
@@ -527,12 +496,12 @@ def perform_quote_extraction_and_clustering(text):
             .drop('coref_heads', axis=1)
             .assign(all_corefs=lambda df: df['all_corefs'].apply(flatten_list_of_lists))
             .rename(columns={
-            's_idx': 'ne_sent_idxs',
-            'sent': 'ne_sent',
-            'span': 'ne_span',
-            'all_corefs': 'coref_span',
-            'ent': 'ne_ent'
-        })
+                's_idx': 'ne_sent_idxs',
+                'sent': 'ne_sent',
+                'span': 'ne_span',
+                'all_corefs': 'coref_span',
+                'ent': 'ne_ent'
+            })
             .assign(coref_sent_idxs=lambda df: df['coref_span'].apply(
             lambda x: list(set(map(lambda y: get_sent_idx_from_sent(doc[y[0]:y[1]].sent, doc), x))))
                     )

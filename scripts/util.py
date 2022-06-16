@@ -10,6 +10,44 @@ import tqdm
 import re
 import unidecode
 import spacy
+import sys
+
+here = os.path.dirname(__file__)
+sys.path.insert(0, here)
+from params import (
+    orig_speaking_lexicon,
+    full_speaking_lexicon,
+    orig_ner_list,
+    full_ner_list,
+    multiword_phrases_present_tense,
+    multiword_phrases_past_tense,
+    desired_checklist_of_anonymous_sources,
+    desired_checklist_of_documents
+)
+
+
+_nlp = None
+def get_nlp():
+    global _nlp
+    if _nlp is None:
+        import spacy
+        try:
+            _nlp = spacy.load('en_core_web_lg')
+        except:
+            _nlp = spacy.load('en_core_web_sm')
+    return _nlp
+
+def clean_multiword_phrases(sent, text_sentence=None):
+    # hack to pick up common phrasal signifiers
+    for c in multiword_phrases_past_tense:
+        if c in text_sentence:
+            sent = get_nlp()(text_sentence.replace(c, 'said'))
+
+    for c in multiword_phrases_present_tense:
+        if c in text_sentence:
+            sent = get_nlp()(text_sentence.replace(c, 'says'))
+
+    return sent, text_sentence
 
 
 def multiprocess(input_list, func, max_workers=-1):
@@ -82,26 +120,36 @@ def clean(doc):
 
     return doc
 
-def get_quotes_method_1(doc):
-    ## extract quotes
-    entities = defaultdict(lambda: {'background sentence': [], 'quote sentence': []})
+def is_background_or_quote(text_sentence, speaking_lexicon):
+    background_or_quote = 'background sentence'
+    if any(list(map(lambda sig: ' %s ' % sig in text_sentence, speaking_lexicon))):
+        background_or_quote = 'quote sentence'
+    return background_or_quote
 
-    signifiers = [' say ', ' said ', ' says ', ' according to ', ' described ', ' describes ']
+def get_quotes_method_1(doc, orig_speaking=True, orig_ner=True, find_anon=True, find_docs=True):
+    ## extract quotes
+    speaking_lexicon = orig_speaking_lexicon if orig_speaking else full_speaking_lexicon
+    ner_list = orig_ner_list if orig_ner else full_ner_list
+    extra_source_list = (desired_checklist_of_anonymous_sources if find_anon else []) + (desired_checklist_of_documents if find_docs else [])
+
+    entities = defaultdict(lambda: {'background sentence': [], 'quote sentence': []})
     for s_idx, sent in enumerate(doc.sents):
         ## 
         text_sentence = ' '.join([word.text for word in sent]).strip()
+        sent, text_sentence = clean_multiword_phrases(sent, text_sentence)
 
-        ## get person-entities
+        # get person-entities
         for ent in sent.ents:
-            if ent.label_ == 'PERSON':
-                is_quote = False
-                ## find quote sentence
-                for sig in signifiers:
-                    if sig in text_sentence:
-                        is_quote = True
-                entities[ent.text][['background sentence', 'quote sentence'][is_quote]].append((s_idx, text_sentence))
-    
-    return cluster_entities_method_1(entities)
+            if ent.label_ in ner_list:
+                background_or_quote = is_background_or_quote(text_sentence, speaking_lexicon)
+                entities[ent.text][background_or_quote].append((s_idx, text_sentence))
+
+        for anon_source_sig in extra_source_list:
+            if anon_source_sig in text_sentence:
+                background_or_quote = is_background_or_quote(text_sentence, speaking_lexicon)
+                entities[anon_source_sig][background_or_quote].append((s_idx, text_sentence))
+
+    return entities
 
 
 _nlp = None
@@ -126,8 +174,15 @@ def get_coref_nlp(greedyness=0.5, max_dist=50):
     return _nlp_coref
 
 
-def get_quotes_method_2(doc=None, text=None, cluster=True, resolve_coref=False, greedyness=0.5, max_dist=50):
+def get_quotes_method_2(
+        doc=None, text=None, cluster=True,
+        resolve_coref=False, dedupe_sents=False,
+        greedyness=0.5, max_dist=50, orig_ner=True, orig_speaking=True
+):
     """Get quoted people by finding the nsubj of a 'say', 'said' or 'according to' verb."""
+    ner_list = orig_ner_list if orig_ner else full_ner_list
+    speaking_lexicon = orig_speaking_lexicon if orig_speaking else full_speaking_lexicon
+
     if text is not None and doc is None:
         if resolve_coref:
             doc = get_coref_nlp(greedyness=greedyness, max_dist=max_dist)(text)
@@ -136,16 +191,14 @@ def get_quotes_method_2(doc=None, text=None, cluster=True, resolve_coref=False, 
 
     ## extract quotes
     entities = defaultdict(lambda: {'background sentence': [], 'quote sentence': []})
-    signifiers = [' say ', ' said ', ' says ', ' according to ']
     seen = set()
     ## get quotes
     for s_idx, sent in enumerate(doc.sents):
-        ## 
+        #
         text_sentence = ' '.join([word.text for word in sent]).strip()
 
-        ## hack to pick up common phrasal signifiers
-        if 'according to' in text_sentence:
-            sent = get_nlp()(text_sentence.replace('according to', 'said'))
+        # hack to pick up common phrasal signifiers
+        sent, text_sentence = clean_multiword_phrases(sent, text_sentence)
 
         ## extract all nsubj of VERB if VERB is 'said', 'says' or 'say'
         nsubjs = []
@@ -153,7 +206,7 @@ def get_quotes_method_2(doc=None, text=None, cluster=True, resolve_coref=False, 
             if (
                 possible_subject.dep_ == 'nsubj' and 
                 possible_subject.head.pos_ == 'VERB' and 
-                possible_subject.head.text in ('say', 'says', 'said')
+                possible_subject.head.text in speaking_lexicon
             ):
                 nsubjs.append(possible_subject.text)
                 entities[possible_subject.text]['quote sentence'].append((s_idx, text_sentence))
@@ -170,12 +223,14 @@ def get_quotes_method_2(doc=None, text=None, cluster=True, resolve_coref=False, 
         if s_idx not in seen:
             # get person-entities
             for ent in sent.ents:
-                if ent.label_ == 'PERSON':
-                    entities[ent.text]['background sentence'].append((s_idx, text_sentence))
+                if ent.label_ in ner_list:
+                    entities[ent.text]['background sentence'].append((s_idx, sent.text))
 
-    if not cluster:
-        return dedupe_sents_in_entities(entities)
-    return dedupe_sents_in_entities(cluster_entities_method_1(entities))
+    if cluster:
+        entities = cluster_by_name_overlap_jaro(entities)
+    if dedupe_sents:
+        entities = dedupe_sents_in_entities(entities)
+    return entities
 
 
 def dedupe_sents_in_entities(quotes):
@@ -211,7 +266,7 @@ def cluster_by_name_overlap_jaro(entities, sim=.95):
 
         if not mapped[n1]:
             # new cluster
-            n_cluster = [n1]
+            n_cluster = [(i, n1)]
             mapped[n1] = True
             #
             for j in range(i, n_ent):
@@ -226,7 +281,7 @@ def cluster_by_name_overlap_jaro(entities, sim=.95):
 
                     # append to cluster
                     if max(name_parts) > sim:
-                        n_cluster.append(n2)
+                        n_cluster.append((j, n2))
                         mapped[n2] = True
             # record
             clusters.append(n_cluster)
@@ -297,18 +352,16 @@ def cluster_by_coref(entities):
     pass
 
 
-def merge_clusters(entities, clusters):
-    cluster_mapper = {}
-    for cluster in clusters:
-        key = max(cluster, key=lambda x: len(x))
-        cluster_mapper[key] = cluster
-
+def merge_clusters(entities, cluster_mapper):
     # group for output
     entities_clustered = defaultdict(lambda: {'background sentence': [], 'quote sentence': []})
     for c_key, cluster in cluster_mapper.items():
         for c_i in cluster:
             for part in ['background sentence', 'quote sentence']:
-                entities_clustered[c_key][part].extend(entities[c_i][part])
+                for s_idx, s in entities[c_i][part]:
+                    existing_s_ids = set(map(lambda x: x[0], entities_clustered[c_key][part]))
+                    if s_idx not in existing_s_ids:
+                        entities_clustered[c_key][part].append((s_idx, s))
     
     ## 
     return entities_clustered

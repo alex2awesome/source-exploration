@@ -1281,7 +1281,7 @@ class TablePageManager {
             else
                 return "false_negative_wrong_source_existing"
         }
-        
+
         else if (input_row['type'] != annotated_row['quote_type']['field_value'])
             return "wrong_sentence_role"
 
