@@ -1,6 +1,7 @@
 six==1.14.0
 srsly==2.4.3
 scipy==1.4.1
+protobuf==3.20.0
 mesh-tensorflow==0.1.16
 tensorflow==2.3.0
 tensorflow-addons==0.11.1
