@@ -3,8 +3,8 @@ DEFAULT_BRANCH='master'
 DEFAULT_PACKAGE=$DEFAULT_REPO@$DEFAULT_BRANCH
 
 DEFAULT_JOB_SIZE='Custom'
-DEFAULT_FRAMEWORK='pytorch-1.6-python-3.7'
-#DEFAULT_FRAMEWORK='python-3.7-rhel-cuda-10.2'
+#DEFAULT_FRAMEWORK='pytorch-1.6-python-3.7'
+DEFAULT_FRAMEWORK='python-3.7-rhel-cuda-10.2'
 DEFAULT_GIT_IDENTIY='spectro-oauth-aspangher'
 DEFAULT_HADOOP_IDENTITY='aspangher-cluster-test'
 DEFAULT_BCS_IDENTITY='aspangher-cluster-test'
