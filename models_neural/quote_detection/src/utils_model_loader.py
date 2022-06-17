@@ -2,9 +2,9 @@ import logging
 
 from transformers import GPT2Tokenizer, AutoTokenizer, AutoConfig, GPT2LMHeadModel
 
-from .utils_general import reformat_model_path
-from .baseline_discriminator import BaselineDiscriminator
-from .models_full import Discriminator as SequentialLSTMDiscriminator
+from . utils_general import reformat_model_path
+from . baseline_discriminator import BaselineDiscriminator
+from . models_full import Discriminator as SequentialLSTMDiscriminator
 # from attrdict import AttrDict
 # import torch
 

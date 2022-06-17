@@ -5,9 +5,7 @@ import torch.utils.data as data
 import pytorch_lightning as pl
 from transformers import BertTokenizer, GPT2Tokenizer, RobertaTokenizer
 
-# import sys, os
-# here = os.path.dirname(__file__)
-# sys.path.insert(0, here)
+import os
 from .utils_general import (
     reformat_model_path,
     get_idx2class,

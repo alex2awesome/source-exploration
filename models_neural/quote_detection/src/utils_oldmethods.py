@@ -1,16 +1,16 @@
-import sys, os
-here = os.path.dirname(__file__)
-sys.path.insert(0, here)
+# import sys, os
+# here = os.path.dirname(__file__)
+# sys.path.insert(0, here)
 
-from layers_classification import MultiClassMixin
-from models_full import BaseDiscriminator, SentenceEmbeddingsLayer
+from .layers_classification import MultiClassMixin
+from .models_full import BaseDiscriminator, SentenceEmbeddingsLayer
 import transformers
 if transformers.__version__ == '3.0.2':
-    from utils_futures import GPT2ForSequenceClassification
+    from .utils_futures import GPT2ForSequenceClassification
 else: # transformers: version 4.0
     from transformers.models.gpt2.modeling_gpt2 import GPT2ForSequenceClassification
-from utils_general import get_config
-from utils_lightning import LightningMixin
+from .utils_general import get_config
+from .utils_lightning import LightningMixin
 from transformers import AutoConfig
 from torch import nn
 import torch
