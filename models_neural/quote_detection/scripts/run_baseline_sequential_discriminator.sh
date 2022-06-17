@@ -58,7 +58,6 @@ katie compute run \
         --accumulate_grad_batches 1 \
         --learning_rate 1e-4 \
         --warmup_steps 0 \
-        --use_x \
 
 #models_neural/quote_detection/stage_one/model_runner
 

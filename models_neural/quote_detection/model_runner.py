@@ -167,7 +167,9 @@ if __name__ == "__main__":
             eval_data_file = os.path.join(here, '..', args.eval_data_file_s3)
         pretrained_path = args.pretrained_files_s3
     else:
-        from utils_data_access import get_fs, download_model_files_bb, download_file_to_filepath
+        from models_neural.quote_detection.src.utils_data_access import (
+            get_fs, download_model_files_bb, download_file_to_filepath
+        )
         # train (and eval df)
         print('Downloading data...')
         fn = 'input_data.csv.gz' if args.train_data_file_s3.endswith('.gz') else 'input_data.csv'
@@ -188,7 +190,7 @@ if __name__ == "__main__":
 
         print(glob.glob(os.path.join(pretrained_path, '*')))
         if args.finetuned_lm_file is not None:
-            from language_models import LMModel
+            from models_neural.quote_detection.src.language_models import LMModel
             download_file_to_filepath(remote_file_name=args.finetuned_lm_file)
             config = AutoConfig.from_pretrained(pretrained_path)
             # print(config)
