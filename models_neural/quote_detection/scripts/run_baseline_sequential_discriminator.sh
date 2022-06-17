@@ -40,7 +40,7 @@ katie compute run \
         --python-module models_neural.quote_detection.model_runner \
         --identities hadoop=$DEFAULT_HADOOP_IDENTITY bcs=$DEFAULT_BCS_IDENTITY git=$DEFAULT_GIT_IDENTIY \
         --pip-packages $DEFAULT_PACKAGE \
-        --tensorboard-log-dir hdfs:///projects/ai_classification/aspangher/source-finding/tensorboard \
+        --tensorboard-log-dir hdfs:///user/aspangher/source-finding/tensorboard \
         --env NCCL_ASYNC_ERROR_HANDLING=1 NCCL_LL_THRESHOLD=0 NCCL_DEBUG=INFO env=$ENV \
         -- \
         --model_type $model_type \
@@ -60,7 +60,7 @@ katie compute run \
         --warmup_steps 0 \
 
 #models_neural/quote_detection/stage_one/model_runner
-
+#        --tensorboard-log-dir hdfs:///projects/ai_classification/aspangher/source-finding/tensorboard \
 #       --pretrained_files_s3 $pretrained_model \
 #        --freeze_encoder_layers $frozen_layers \
 #        --bidirectional \
