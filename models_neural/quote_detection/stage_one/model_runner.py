@@ -1,18 +1,18 @@
 # set up logging before imports
 import logging
 
-import sys, os
-here = os.path.dirname(__file__)
-sys.path.insert(0, here)
+# import sys, os
+# here = os.path.dirname(__file__)
+# sys.path.insert(0, here)
 
-from config_helper import training_args
-from utils_parser import attach_model_arguments
-from utils_general import format_loss_weighting
-from utils_general import reformat_model_path
-from config_helper import TransformersConfig, get_transformer_config
-from models_full import Discriminator
-from utils_oldmethods import BaselineDiscriminator, DiscriminatorGPT2Baseline
-from utils_dataset import (
+from .config_helper import training_args
+from .utils_parser import attach_model_arguments
+from .utils_general import format_loss_weighting
+from .utils_general import reformat_model_path
+from .config_helper import TransformersConfig, get_transformer_config
+from .models_full import Discriminator
+from .utils_oldmethods import BaselineDiscriminator, DiscriminatorGPT2Baseline
+from .utils_dataset import (
     NonSequentialDiscourseDataModule, SequentialDiscourseDataModule, FlatDocumentDiscourseDataModule,
     FlatDocumentDiscourseDataModuleWordSplit
 )

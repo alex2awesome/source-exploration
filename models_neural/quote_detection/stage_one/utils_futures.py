@@ -3,10 +3,10 @@ import transformers
 if transformers.__version__ == '3.0.2':
     from transformers.modeling_gpt2 import GPT2PreTrainedModel, GPT2Model
     from torch.nn import CrossEntropyLoss, MSELoss
-    import sys, os
-    here = os.path.dirname(__file__)
-    sys.path.insert(0, here)
-    from utils_general import freeze_all_params
+    # import sys, os
+    # here = os.path.dirname(__file__)
+    # sys.path.insert(0, here)
+    from .utils_general import freeze_all_params
     import torch
     try:
         from transformers.utils import logging

@@ -3,11 +3,11 @@ from sklearn.metrics import (
     classification_report,
     confusion_matrix
 )
-import sys, os
-here = os.path.dirname(__file__)
-sys.path.insert(0, here)
+# import sys, os
+# here = os.path.dirname(__file__)
+# sys.path.insert(0, here)
 
-from config_helper import TransformersConfig
+from .config_helper import TransformersConfig
 from torch.nn.functional import pad
 import os
 import csv

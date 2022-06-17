@@ -1,6 +1,6 @@
 import pytorch_lightning as pl
 
-from discriminator.utils_metrics import (
+from .utils_metrics import (
     get_classification_report_metric,
     format_classification_report,
     Entropy,
@@ -8,7 +8,7 @@ from discriminator.utils_metrics import (
 )
 import torch
 from pytorch_lightning.utilities.exceptions import MisconfigurationException
-from discriminator.utils_general import get_config
+from .utils_general import get_config
 
 adam_beta1, adam_beta2, adam_epsilon = .9, .999, 1e-08
 

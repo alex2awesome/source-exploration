@@ -5,15 +5,15 @@ import numpy as np
 import torch.nn.functional as F
 import pytorch_lightning as pl
 
-from discriminator.utils_metrics import (
+from .utils_metrics import (
     get_classification_report_metric,
     format_classification_report,
     Entropy,
     MaxCount
 )
-from discriminator.utils_general import format_layer_freezes
-from util.utils_general import reformat_model_path, format_local_vars
-from discriminator.layers_attention import DocLevelSelfAttention
+from .utils_general import format_layer_freezes
+from .utils_general import reformat_model_path, format_local_vars
+from .layers_attention import DocLevelSelfAttention
 from torch import nn
 
 torch.manual_seed(0)

@@ -9,17 +9,17 @@ else: # transformers: version 4.0
 import torch
 from operator import mul
 import re
-import sys, os
-here = os.path.dirname(__file__)
-sys.path.insert(0, here)
+# import sys, os
+# here = os.path.dirname(__file__)
+# sys.path.insert(0, here)
 
-from layers_classification import MultiClassMixin, MultiTaskMultiClassMixin
-from layers_embeddings import EmbeddingHandlerMixin
-from layers_attention import (
+from .layers_classification import MultiClassMixin, MultiTaskMultiClassMixin
+from .layers_embeddings import EmbeddingHandlerMixin
+from .layers_attention import (
     WordLevelAttention, DocEmbeddingForDocLabelClass, LabelEmbeddingWithContext
 )
-from utils_lightning import LightningMixin
-from utils_general import (
+from .utils_lightning import LightningMixin
+from .utils_general import (
     format_layer_freezes, freeze_all_params, get_config, reshape_and_pad_sequence, vec_or_nones, get_device
 )
 

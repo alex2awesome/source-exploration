@@ -1,11 +1,11 @@
 import torch
 from torch import nn
-import sys, os
-here = os.path.dirname(__file__)
-sys.path.insert(0, here)
+# import sys, os
+# here = os.path.dirname(__file__)
+# sys.path.insert(0, here)
 
-from layers_attention import DocLevelSelfAttention
-from utils_general import get_config
+from .layers_attention import DocLevelSelfAttention
+from .utils_general import get_config
 
 class DocEmbMixin(nn.Module):
     def __init__(self, config, *args, **kwargs):

@@ -1,10 +1,7 @@
 import torch
 from torch import nn
-import sys, os
-here = os.path.dirname(__file__)
-sys.path.insert(0, here)
 
-from utils_general import get_config, get_device, _get_attention_mask
+from .utils_general import get_config, get_device, _get_attention_mask
 from torch.nn.utils.rnn import pad_sequence
 
 IGNORE_INDEX = -100

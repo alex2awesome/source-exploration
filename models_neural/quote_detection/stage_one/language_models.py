@@ -7,8 +7,8 @@ except: # transformers: version 4.0
 from typing import Tuple, Any, List, Dict
 import torch
 from torch import nn
-from fine_tuning.utils_lightning import LightningOptimizer, LightningSteps
-from discriminator.utils_general import format_layer_freezes, freeze_all_params, get_config
+from .utils_lightning import LightningOptimizer, LightningSteps
+from .utils_general import format_layer_freezes, freeze_all_params, get_config
 import torch.optim as optim
 from pytorch_lightning import LightningModule, Trainer
 

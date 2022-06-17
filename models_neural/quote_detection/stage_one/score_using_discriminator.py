@@ -1,15 +1,15 @@
-import sys, os
-here = os.path.dirname(__file__)
-sys.path.insert(0, here)
+# import sys, os
+# here = os.path.dirname(__file__)
+# sys.path.insert(0, here)
 
-from config_helper import training_args
-from utils_parser import attach_model_arguments
-from utils_general import get_device
-from utils_general import reformat_model_path, _get_attention_mask
-from config_helper import TransformersConfig, get_transformer_config
+from .config_helper import training_args
+from .utils_parser import attach_model_arguments
+from .utils_general import get_device
+from .utils_general import reformat_model_path, _get_attention_mask
+from .config_helper import TransformersConfig, get_transformer_config
 import torch
 import logging
-from utils_model_loader import ModelLoader
+from .utils_model_loader import ModelLoader
 from torch.nn.utils.rnn import pad_sequence
 
 
