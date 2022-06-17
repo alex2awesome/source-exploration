@@ -5,14 +5,14 @@ import logging
 # here = os.path.dirname(__file__)
 # sys.path.insert(0, here)
 
-from src.config_helper import training_args
-from src.utils_parser import attach_model_arguments
-from src.utils_general import format_loss_weighting
-from src.utils_general import reformat_model_path
-from src.config_helper import TransformersConfig, get_transformer_config
-from src.models_full import Discriminator
-from src.utils_oldmethods import BaselineDiscriminator, DiscriminatorGPT2Baseline
-from src.utils_dataset import (
+from models_neural.quote_detection.src.config_helper import training_args
+from models_neural.quote_detection.src.utils_parser import attach_model_arguments
+from models_neural.quote_detection.src.utils_general import format_loss_weighting
+from models_neural.quote_detection.src.utils_general import reformat_model_path
+from models_neural.quote_detection.src.config_helper import TransformersConfig, get_transformer_config
+from models_neural.quote_detection.src.models_full import Discriminator
+from models_neural.quote_detection.src.utils_oldmethods import BaselineDiscriminator, DiscriminatorGPT2Baseline
+from models_neural.quote_detection.src.utils_dataset import (
     NonSequentialDiscourseDataModule, SequentialDiscourseDataModule, FlatDocumentDiscourseDataModule,
     FlatDocumentDiscourseDataModuleWordSplit
 )
