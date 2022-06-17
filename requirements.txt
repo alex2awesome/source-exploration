@@ -13,7 +13,6 @@ tensorflow-gan==2.0.0
 tensorflow-hub==0.8.0
 tensorflow-metadata==0.23.0
 tensorflow-probability==0.7.0
-aiobotocore==1.4.1
 boto==2.49.0
 boto3==1.14.20
 Cython==0.29.15
@@ -32,3 +31,4 @@ torchmetrics==0.5.0
 # allennlp==2.9.0
 # allennlp-models==2.9.0
 # https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.1.0/en_core_web_lg-2.1.0.tar.gz
+# botocore>=1.20.106
