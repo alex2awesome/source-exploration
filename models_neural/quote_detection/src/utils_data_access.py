@@ -7,7 +7,9 @@ endpoint = 'http://s3.dev.obdc.bcs.bloomberg.com'
 os.environ['AWS_ACCESS_KEY_ID'] = access_key
 os.environ['AWS_SECRET_ACCESS_KEY'] = secret_access_key
 os.environ['AWS_ENDPOINT'] = endpoint
-
+# s3://<bucket_name>/<project_name>/
+s3_bucket_name = 'aspangher'
+s3_project_name = 'source-exploration'
 
 def is_local(args):
     if hasattr(args, 'local'):
@@ -164,11 +166,12 @@ def download_file_to_filepath(remote_file_name, local_path=None):
         os.makedirs(local_file_dir, exist_ok=True)
     if 's3://' in remote_file_name:
         remote_file_name = remote_file_name.replace('s3://', '')
-    if 'aspangher' not in remote_file_name or 'controlled-sequence-gen' not in remote_file_name:
-        remote_file_name = os.path.join('aspangher', 'controlled-sequence-gen', remote_file_name)
+    if s3_bucket_name not in remote_file_name and s3_project_name not in remote_file_name:
+        remote_file_name = os.path.join(s3_bucket_name, s3_project_name, remote_file_name)
     fs.get(remote_file_name, local_path)
     print('Downloading remote filename %s -> %s' % (remote_file_name, local_path))
     return local_path
+
 
 def upload_file_to_filepath(local_name, remote_file_name=None):
     if remote_file_name is None:
@@ -177,8 +180,8 @@ def upload_file_to_filepath(local_name, remote_file_name=None):
     fs = get_fs()
     if 's3://' in remote_file_name:
         remote_file_name = remote_file_name.replace('s3://', '')
-    if 'aspangher' not in remote_file_name or 'controlled-sequence-gen' not in remote_file_name:
-        remote_file_name = os.path.join('aspangher', 'controlled-sequence-gen', remote_file_name)
+    if s3_bucket_name not in remote_file_name or s3_project_name not in remote_file_name:
+        remote_file_name = os.path.join(s3_bucket_name, s3_project_name, remote_file_name)
     fs.upload(local_name, remote_file_name)
     print('Uploading file %s -> %s' % (local_name, remote_file_name))
     return local_name
