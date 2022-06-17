@@ -28,6 +28,7 @@ pytorch-lightning==1.4.1
 transformers==4.12.2
 torch==1.9.1
 torchmetrics==0.5.0
+scikit-learn==0.24.2
 # allennlp==2.9.0
 # allennlp-models==2.9.0
 # https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-2.1.0/en_core_web_lg-2.1.0.tar.gz
