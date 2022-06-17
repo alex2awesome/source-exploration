@@ -8,3 +8,4 @@ torch==1.9.1
 torchmetrics==0.5.0
 scikit-learn==0.24.2
 s3fs
+pyarrow
