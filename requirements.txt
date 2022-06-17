@@ -66,6 +66,8 @@ google-auth-oauthlib==0.4.6
     # via tensorboard
 grpcio==1.46.3
     # via tensorboard
+html5lib==0.9999999
+    # via -r requirements.in
 huggingface-hub==0.7.0
     # via transformers
 idna==3.3
@@ -184,6 +186,7 @@ six==1.16.0
     # via
     #   google-auth
     #   grpcio
+    #   html5lib
     #   python-dateutil
     #   sacremoses
 spacy==2.1.3
