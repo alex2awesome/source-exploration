@@ -136,6 +136,7 @@ import glob, os
 def make_table_html():
     task = request.args.get('task', 'full')
     shuffle = request.args.get('shuffle', False)
+    practice = request.args.get('practice', False)
     input_data_filepattern = os.path.join(basedir, 'data/input_data/*/*')
     to_annotate = glob.glob(input_data_filepattern)
     to_annotate = list(map(lambda x: (x, re.findall('to-annotate-\d+', x)[0]), to_annotate))
@@ -145,8 +146,14 @@ def make_table_html():
     output_data_filepattern = os.path.join(basedir, 'data/output_data_%s/*/*' % task)
     annotated = glob.glob(output_data_filepattern)
     annotated_files = set(map(lambda x: re.findall('annotated-\d+', x)[0], annotated))
-    #
-    to_annotate = list(filter(lambda x: x[1] not in annotated_files, to_annotate))
+
+    # filter down to remaining files
+    if practice:
+        to_annotate = list(filter(lambda x: x[1] in annotated_files, to_annotate))
+    else:
+        to_annotate = list(filter(lambda x: x[1] not in annotated_files, to_annotate))
+
+    # shuffle the files
     if shuffle:
         random.shuffle(to_annotate)
 
@@ -179,6 +186,7 @@ def make_table_html():
         return render_template(
             'table-annotation-slim-%s.html' % task,
             data=input['html_data'],
+            file_id=file_id.split('-')[1],
             entry_id=input['entry_id'],
             version=input['version'],
             label=input['label'],
@@ -193,20 +201,24 @@ def make_table_html():
         return "No more data."
 
 
+def get_annotated_files(task):
+    annotated_filepattern = os.path.join(basedir, 'data/output_data_%s/*/*' % task)
+    annotated = glob.glob(annotated_filepattern)
+
+    checked_filepattern = os.path.join(basedir, 'data/checked_data_%s/*/*' % task)
+    checked = glob.glob(checked_filepattern)
+    return annotated, checked
+
+
 @app.route('/check_table', methods=['GET'])
 def check_table():
     task = request.args.get('task', 'full')
     shuffle = request.args.get('shuffle', False)
 
-    to_check_filepattern = os.path.join(basedir, 'data/output_data_%s/*/*' % task)
-    to_check = glob.glob(to_check_filepattern)
+    to_check, checked = get_annotated_files(task)
     to_check = list(map(lambda x: (x, re.findall('annotated-\d+', x)[0]), to_check))
     to_check = sorted(map(lambda x: (x[0], x[1].replace('annotated', 'checked')), to_check))
-
-    checked_filepattern = os.path.join(basedir, 'data/checked_data_%s/*/*' % task)
-    checked = glob.glob(checked_filepattern)
     checked_files = set(map(lambda x: re.findall('checked-\d+', x)[0], checked))
-
     to_check = list(filter(lambda x: x[1] not in checked_files, to_check))
 
     if len(to_check) > 0:
@@ -243,19 +255,59 @@ def check_table():
     else:
         return 'No more data.'
 
+
 @app.route('/check_table_no_submit')
 def check_specific_file():
     task = request.args.get('task', 'full')
     file_id = request.args.get('file_id')
-    entry_id = request.args.get('entry_id')
-    version = request.args.get('version')
+    annotated, checked = get_annotated_files(task)
 
     if file_id is not None:
-        pass
-    elif (entry_id is not None and version is not None):
-        pass
+        checked_w_file_id = list(map(lambda x: (x, re.findall('\d+', x.split('/')[-1])[0]), checked))
+        if file_id in list(map(lambda x: x[1], checked_w_file_id)):
+            to_display = list(filter(lambda x: file_id == x[1], checked_w_file_id))[0][0]
+        else:
+            annotated_w_file_id = list(map(lambda x: (x, re.findall('\d+', x.split('/')[-1])[0]), annotated))
+            if file_id in list(map(lambda x: x[1], annotated_w_file_id)):
+                to_display = list(filter(lambda x: file_id == x[1], annotated_w_file_id))[0][0]
+            else:
+                return 'Failed to find file by file_id.'
+
+        with open(to_display) as f:
+            data = json.load(f)
+            data = data['data']
+            if isinstance(data, dict):
+                data = data['row_data']
+
+        orig_input_fname = (
+            to_display
+                .replace('output_data_%s' % task, 'input_data')
+                .replace('checked_data_%s' % task, 'input_data')
+                .replace('annotated', 'to-annotate')
+                .replace('checked', 'to-annotate')
+        )
+        with open(orig_input_fname) as f:
+            orig_input_data = json.load(f)
+
+        return render_template(
+            'check-%s.html' % task,
+            annotated_data=data,
+            orig_input_data=orig_input_data['html_data'],
+            entry_id=orig_input_data['entry_id'],
+            version=orig_input_data['version'],
+            label=orig_input_data['label'],
+            url=orig_input_data['url'],
+            headline=orig_input_data['headline'],
+            published_date=orig_input_data['published_date'],
+            do_mturk=False,
+            submit=False,
+            start_time=time.time(),
+        )
+
     else:
-        return 'File incorrectly specific, no identifiers'
+        return 'File incorrectly specified, no file_id provided.'
+
+
 
 
 @app.route('/post_table', methods=['POST'])

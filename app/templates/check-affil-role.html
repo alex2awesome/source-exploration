@@ -84,8 +84,9 @@
             </tr>
         </thead>
     </table>
-
-    <button type="submit" id='submitButton' value='Submit'>Submit form</button>
+    {% if submit %}
+        <button type="submit" id='submitButton' value='Submit'>Submit form</button>
+    {% endif %}
 
 </div>
 <script>

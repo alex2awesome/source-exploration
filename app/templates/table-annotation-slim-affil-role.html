@@ -122,10 +122,8 @@
                                 <ol>
                                     <li>We missed a source! In which case it's a false negative. A false negative can be one of the following:
                                         <ol>
-                                            <li><b>False negative: This is a named source sentence we failed to label. The source is NOT found elsewhere.</b> This means there's a sentence that either contains a quote from, or references a NAMED person. We've missed it, and there are no other times that this source is mentioned.</li>
-                                            <li><b>False negative: This is a named source sentence we failed to label. The source IS found elsewhere.</b> Similar to the above error, except we've found other quotes by this source, but missed this particular sentence.</li>
-                                            <li><b>False negative: This is an unnamed source sentence we failed to label. The source is NOT found elsewhere.</b> This means there's a sentence that either contains a quote from, or references an UNNAMED SOURCE. An UNNAMED SOURCE can be either a statement put out by an agency or group, or a person who wishes to remain anonymous. Examples of unnamed sources are: ``an anonymous official'', ``The department says'', etc.</li>
-                                            <li><b>False negative: This is an unnamed source sentence we failed to label. The source IS found elsewhere.</b> Similar to the above error.</li>
+                                            <li><b>False negative: This is a source sentence we failed to label. The source is NOT found elsewhere.</b> This means there's a sentence that either contains a quote from, or references a NAMED person. We've missed it, and there are no other times that this source is mentioned.</li>
+                                            <li><b>False negative: This is a source sentence we failed to label. The source IS found elsewhere.</b> Similar to the above error, except we've found other quotes by this source, but missed this particular sentence.</li>
                                         </ol>
                                         Once you've tagged a negative, if the source has not yet been found, you'll be asked to fill out the <b>Source-Level</b> questions.
                                     </li>
@@ -255,6 +253,20 @@
                                         </div>
                                         <h4>Definitions</h4>
                                         <ul>
+                                            <li>Tagline: A line that describes the source. Usually it's explicit and located close to an introduction of the source. Sometimes, the given tagline is not descriptive enough (i.e. contains references to elsewhere in the document) and you'll have to paraphrase.</li>
+                                            <li>
+                                                <b>Source Type:</b>
+                                                <ol>
+                                                    <li><b>Named Individual</b>: A single person who is fully named or fully identifiable (e.g. if only one spokesman exists and the information seems readily retrievable).</li>
+                                                    <li><b>Unnamed Individual</b>: A single person who is either unidentifiable by happenstance (e.g. if many spokespeople exist) or by explicit request.</li>
+                                                    <li><b>Named Group</b>: An organization producing a quote, document or other piece of information.</li>
+                                                    <li><b>Unnamed Group</b>: Several individuals (e.g. experts) who are not named or identifiable, or an organization that is not named.</li>
+                                                    <li><b>Report/Document</b>: A media report, scientific document, law or other document that is identifiable or retrievable.</li>
+                                                    <li><b>Vote/Poll</b>: A vote or poll.</li>
+                                                    <li><b>Database</b>: A database of records that some statistic or other metric reported by the journalist was retrieved from.</li>
+                                                    <li><b>Other</b>: If not mentioned here, please specify.</li>
+                                                </ol>
+                                            </li>
                                             <li>
                                                 <b>Affiliation:</b> Which group the source belongs to.
                                                 <ul>
@@ -262,9 +274,15 @@
                                                         <ol>
                                                             <li><b>Government</b>: Any source who executes the functions of or represents a government entity. <i>(E.g. a politician, regulator, judge, political spokesman etc.)</i></li>
                                                             <li><b>Corporate</b>: Any source who belongs to an organization in the private sector. <i>(E.g. a corporate executive, worker, etc.)</i></li>
-                                                            <li><b>Non-Governmental Organization (NGO)</b>: If the source belongs to nonprofit organization that operates independently of a government. <i>(E.g. a charity, think tank, non-academic research group.)</i></li>
-                                                            <li><b>Academic</b>: If the source belongs to an academic institution. Typically, these are professors or students and they serve an informational role, but they can be university administrators, provosts etc. if the story is specifically about academia.</li>
-                                                            <li><b>Other Group</b>: If the source belongs or is acting on behalf of some group not captured by the above categories (please specify the group).</li>
+                                                            <li><b>NGO (Non-Governmental Organization)</b>: If the source belongs to nonprofit organization that operates independently of a government. <i>(E.g. a charity, think tank, non-academic research group.)</i></li>
+                                                            <li><b>Industry Group</b>: A source who belongs to a group whose primary purpose is to speak/lobby on behalf of several corporate entities (e.g. <i>The Chamber of Commerce</i>).</li>
+                                                            <li><b>Religious Group</b>: A source who belongs to a group whose primary purpose is to provide religious services (e.g. a church) or speak/lobby on behalf of those providing religious services.</li>
+                                                            <li><b>Academic</b>: A source belonging to an academic institution. Typically, these are professors or students and they serve an informational role, but they can be university administrators, provosts etc. if the story is specifically about academia.</li>
+                                                            <li><b>Media</b>: A newspaper, television station or radio entity publishing a report that is quoted, or a source speaking on behalf of a media organization.</li>
+                                                            <li><b>Political Group</b>: A source speaking for a campaign that is trying to influence policy and/or win election. Note: political candidates who later win office, or are currently in office, are considered part of a ``political group'' if they are speaking
+                                                            while on running a re-election campaign.</li>
+                                                            <li><b>Union:</b> A group representing workers' interests.</li>
+                                                            <li><b>Other Group</b>: A source belongs or is acting on behalf of some group not captured by the above categories (if selected, please specify the group).</li>
                                                         </ol>
                                                     </li>
                                                     <li>
@@ -281,7 +299,8 @@
                                             <li>
                                                 <b>Role:</b>
                                                 <ol>
-                                                    <li><b>Participant</b>: A source who is either directly making decisions on behalf of the entity they are affiliated with, or taking an active role somehow in the decision-making process.</li>
+                                                    <li><b>Decision Maker</b>: A source who is directly responsible for making decisions on behalf of the entity they are affiliated with.</li>
+                                                    <li><b>Participant</b>: A source who is taking an active role somehow in the decision-making process but is not be the final decision-maker.</li>
                                                     <li><b>Representative</b>: A source who is speaking on behalf of a <i>Participant</i>.</li>
                                                     <li><b>Informational</b>: A source who is giving information on ongoing decisions or events in the world, but is not directly involved in them.</li>
                                                     <li><b>Other</b>: Some other role that we have not captured (please specify).</li>
@@ -296,6 +315,21 @@
                                                 </ol>
                                             </li>
                                         </ul>
+
+                                          <h5>Notes on the above:</h5>
+                                          <ul>
+                                              <li>Person's position should be listed as what they are as of the time of writing the article.</li>
+                                              <li>Anyone who is directly affected by concrete events in the story is a participant or decision-maker. If the events are abstract, like economic downturn, they can be informational</li>
+                                              <li>Tagline can reference other sources by their relations e.g. "Mr. Cohen's company", "Ted's brother"</li>
+                                              <li>If it's one person and the description is enough to identify them (i.e. the chancellor of UC Berkeley) then they can be considered "named individual"</li>
+                                              <li>If it's a group that is small enough to be identified, i.e. "prosecutors on <a specific lawsuit>" should they be considered a named source?</li>
+                                              <li>"Academic" group is reserved for professors giving information to an article, "experts" or faculty participants in university drama. Unless the student is actively involved in the school's administration, they should be given an individual title, like "actor", "victim", etc.</li>
+                                              <li>Protestors should be "actors", unless they're specifically affiliated with a certain group</li>
+                                              <li>Unless explicitly given as a quote, forecasts should be listed as published works.</li>
+                                              <li>Person's position should also be listed as the role they play IN THE ARTICLE, i.e. do they explicitly have control over the events in the article? Journalist's goal: holding the powerful accountable. Power = control over events.</li>
+                                              <li>Prime ministers/presidents are not always decision makers, especially if it concerns local news. Sometimes, they just comment or participate.</li>
+                                              <li>Where possible, the source should be a person.</li>
+                                          </ul>
                                       </div>
                                     </div>
                                   </div>
@@ -314,7 +348,8 @@
     <h1>{{ headline }}</h1>
     <h3>Published: {{ published_date }}</h3>
     <a href="{{ url }}">{{ url }}</a>
-    <p>Key: ({{ entry_id }} , {{ version }})</p>
+    <p>File Id: {{ file_id }}</p>
+    <p>Entry Id, Version: ({{ entry_id }} , {{ version }}) <i>(Not used for checking...)</i></p>
 
     <h3>Category: {{ label }}</h3>
     <h4>Q1: Does the content of the article accurately reflect this category?</h4>
