@@ -2,14 +2,14 @@
 # here = os.path.dirname(__file__)
 # sys.path.insert(0, here)
 
-from .config_helper import training_args
-from .utils_parser import attach_model_arguments
-from .utils_general import get_device
-from .utils_general import reformat_model_path, _get_attention_mask
-from .config_helper import TransformersConfig, get_transformer_config
+from models_neural.quote_detection.src.config_helper import training_args
+from models_neural.quote_detection.src.utils_parser import attach_model_arguments
+from models_neural.quote_detection.src.utils_general import get_device, reformat_model_path, _get_attention_mask
+from models_neural.quote_detection.src.config_helper import TransformersConfig, get_transformer_config
+from models_neural.quote_detection.src.utils_model_loader import ModelLoader
+
 import torch
 import logging
-from .utils_model_loader import ModelLoader
 from torch.nn.utils.rnn import pad_sequence
 
 
@@ -71,7 +71,7 @@ if __name__=="__main__":
     here = os.path.dirname(os.path.realpath(__file__))
     if args.local:
         # train and eval files
-        main_data_file = os.path.join(here, '..', args.train_data_file_s3)
+        main_data_file = os.path.join(here, args.train_data_file_s3)
     else:
         # train (and eval df)
         print('Downloading data...')
@@ -123,17 +123,16 @@ if __name__=="__main__":
 
     ## edits run - change as necessary
     import pandas as pd
-    df = pd.read_csv(main_data_file)
-    if config.do_doc_pred:
-        docs = df.assign(sentence=lambda df: df['sentences'].str.split('<SENT>'))
-        docs = docs.set_index(['entry_id', 'version'])
-    else:
-        group_cols = ['entry_id', 'version']
-        if 'source' in df.columns:
-            group_cols.append('source')
-        df = df.loc[lambda df: df.notnull().all(axis=1)]
-        docs = df.groupby(group_cols).aggregate(list)
     from tqdm.auto import tqdm
+
+    df = pd.read_csv(main_data_file)
+    group_cols = ['entry_id']
+    if 'version' in df.columns:
+        group_cols.append('version')
+    if 'source' in df.columns:
+        group_cols.append('source')
+    df = df.loc[lambda df: df.notnull().all(axis=1)]
+    docs = df.groupby(group_cols).aggregate(list)
     # file
     local_name = 'output_file.txt'
     f = open(local_name, 'w')
@@ -141,18 +140,11 @@ if __name__=="__main__":
     for idx in tqdm(docs.index, total=len(docs)):
         cols = docs.loc[idx]
         sents = cols['sentence']
-        if args.do_version:
-            if args.do_doc_pred:
-                v = [idx[1]]
-            else:
-                v = [idx[1]] * len(sents)
-        else:
-            v = None
         try:
             label_col = pd.Series({}, dtype=object) if len(args.label_col) == 0 else cols[args.label_col]
             f.write(str(idx))
             f.write('\n')
-            pred_tags = s.predict(input_sentences=sents, add_features=v)
+            pred_tags = s.predict(input_sentences=sents)
             f.write(str(pred_tags))
             f.write(label_col.to_json())
             f.write('\n')

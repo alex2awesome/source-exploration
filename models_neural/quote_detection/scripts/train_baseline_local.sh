@@ -14,7 +14,7 @@ fi
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-python $SCRIPT_DIR/../model_runner.py \
+python $SCRIPT_DIR/../train.py \
         --model_type $model_type \
         --pretrained_files_s3 $pretrained_model \
         --experiment baseline_non-sequential \

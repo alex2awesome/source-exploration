@@ -1,4 +1,4 @@
-DEFAULT_REPO='git+https://bbgithub.dev.bloomberg.com/aspangher/source-finding.git'
+DEFAULT_REPO='git+https://bbgithub.dev.bloomberg.com/aspangher/controlled-sequence-gen.git'
 DEFAULT_BRANCH='master'
 DEFAULT_PACKAGE=$DEFAULT_REPO@$DEFAULT_BRANCH
 
@@ -27,40 +27,38 @@ then
   pretrained_model='gpt2-medium-expanded-embeddings'
   frozen_layers="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22"
 else
-  pretrained_model='roberta-base'
+  pretrained_model='roberta-base-expanded-embeddings'
   frozen_layers="0 1 2 3 4 5 6 7 8 9"
 fi
 ##
 
-katie compute run \
-        $APPROACH \
-        --compute-framework $DEFAULT_FRAMEWORK \
-        --node-size $DEFAULT_JOB_SIZE \
-        $worker_args \
-        --python-module models_neural.quote_detection.model_runner \
-        --identities hadoop=$DEFAULT_HADOOP_IDENTITY bcs=$DEFAULT_BCS_IDENTITY git=$DEFAULT_GIT_IDENTIY \
-        --pip-packages $DEFAULT_PACKAGE \
-        --tensorboard-log-dir hdfs:///user/aspangher/source-finding/tensorboard \
-        --env NCCL_ASYNC_ERROR_HANDLING=1 NCCL_LL_THRESHOLD=0 NCCL_DEBUG=INFO env=$ENV \
-        -- \
-        --model_type $model_type \
-        --pretrained_files_s3 $pretrained_model \
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+MODEL="$SCRIPT_DIR/../trained_models/trial-Stage 1: Quote Detection. First run, Polnear dataset only.__epoch=09-f1_macro=0.88.ckpt"
+
+python $SCRIPT_DIR/../eval.py \
+        --model_type "$model_type" \
+        --pretrained_files_s3 "$pretrained_model" \
         --experiment lstm_sequential \
         --batch_size 1 \
         --num_train_epochs 3 \
         --do_train \
         --do_eval \
-        --train_data_file_s3 data/polnear-training-data-stage-1.tsv \
-        --notes "Stage 1: Quote Detection. First run, Polnear dataset only." \
+        --train_data_file_s3 "$SCRIPT_DIR/../data/our-annotated-data-full.csv.gz" \
+        --notes "Score sentence edits" \
         --freeze_transformer \
+        --discriminator_path "$MODEL" \
+        --processed_data_fname "$SCRIPT_DIR/../output/full_annotated_scores.txt" \
+        --context_layer 'lstm' \
+        --num_contextual_layers 2 \
+        --num_sent_attn_heads 2 \
         --sentence_embedding_method 'attention' \
         --dropout .1 \
         --accumulate_grad_batches 1 \
         --learning_rate 1e-4 \
         --warmup_steps 0 \
+        --max_num_word_positions 2048 \
+        --local \
 
-#models_neural/quote_detection/stage_one/model_runner
-#        --tensorboard-log-dir hdfs:///projects/ai_classification/aspangher/source-finding/tensorboard \
 #       --pretrained_files_s3 $pretrained_model \
 #        --freeze_encoder_layers $frozen_layers \
 #        --bidirectional \

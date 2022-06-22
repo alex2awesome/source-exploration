@@ -138,7 +138,7 @@ def main(
     if not args.local:
         fs = get_fs()
         fname = os.path.basename(best_model_path)
-        remote_path = os.path.join('aspangher', 'controlled-sequence-gen', output_fp, fname)
+        remote_path = os.path.join('aspangher', 'source-exploration', 'models', output_fp, fname)
         print('uploading model file at %s to: %s...' % (best_model_path, remote_path))
         fs.put(best_model_path, remote_path)
     # log best metric score

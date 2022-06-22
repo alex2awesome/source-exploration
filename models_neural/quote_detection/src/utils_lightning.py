@@ -65,7 +65,6 @@ class LightningBase(pl.LightningModule):
         return output
 
     def validation_step(self, batch, batch_idx):
-        print('validation step...')
         loss, y_pred, y_true, add_features = self.forward(**batch)
         self.log('Validation loss', loss)
         output = self._format_step_output(loss, y_pred, y_true, add_features, batch)
