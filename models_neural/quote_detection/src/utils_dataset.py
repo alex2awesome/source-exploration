@@ -221,7 +221,7 @@ class SequentialDiscourseDataModule(BaseDiscourseDataModule):
         with get_fh(self.data_fp) as f:
             csv_reader = csv.reader(f, delimiter="\t")
             csv_data = list(csv_reader)
-            if csv_data[0] == ['source', 's', 't_id', 's_idx']:
+            if 'source' in csv_data[0] and 's' in csv_data[0]:
                 csv_data = csv_data[1:]
 
         idx = 0
