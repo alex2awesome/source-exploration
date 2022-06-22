@@ -26,3 +26,4 @@ tmp
 *.tsv
 *.ss
 *.pdf
+*.ckpt
