@@ -34,6 +34,7 @@ fi
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 MODEL="$SCRIPT_DIR/../trained_models/trial-Stage 1: Quote Detection. First run, Polnear dataset only.__epoch=09-f1_macro=0.88.ckpt"
+MODEL="$SCRIPT_DIR/../trained_models/trial-Stage 1: Quote Detection. Second run, our dataset only.__epoch=09-f1_macro=0.84.ckpt"
 
 python $SCRIPT_DIR/../eval.py \
         --model_type "$model_type" \
@@ -47,7 +48,7 @@ python $SCRIPT_DIR/../eval.py \
         --notes "Score sentence edits" \
         --freeze_transformer \
         --discriminator_path "$MODEL" \
-        --processed_data_fname "$SCRIPT_DIR/../output/full_annotated_scores.txt" \
+        --processed_data_fname "$SCRIPT_DIR/../output/second_run_annotated_scores.txt" \
         --context_layer 'lstm' \
         --num_contextual_layers 2 \
         --num_sent_attn_heads 2 \

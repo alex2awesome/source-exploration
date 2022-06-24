@@ -134,7 +134,7 @@ if __name__=="__main__":
     df = df.loc[lambda df: df.notnull().all(axis=1)]
     docs = df.groupby(group_cols).aggregate(list)
     # file
-    local_name = 'output_file.txt'
+    local_name = args.processed_data_fname
     f = open(local_name, 'w')
     # run process
     for idx in tqdm(docs.index, total=len(docs)):

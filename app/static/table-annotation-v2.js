@@ -273,7 +273,7 @@ let affil_field_name_mapper = {
         "vote_poll": "VOTE/POLL",
         "DOCUMENT": "document",
         "PRESS REPORT": "press_report",
-        "TWEET": "tweet",
+        "SOCIAL MEDIA POST": "tweet",
         "PROPOSAL/ORDER/LAW": "proposal",
         "Data Analysis": "data_analysis",
         "DECLINED COMMENT": "declined_comment",
@@ -1372,7 +1372,7 @@ class TablePageManager {
                           <option value="vote_poll">VOTE/POLL</option>
                           <option value="document">DOCUMENT</option>
                           <option value="press_report">PRESS REPORT</option>
-                          <option value="tweet">TWEET</option>
+                          <option value="tweet">SOCIAL MEDIA POST</option>
                           <option value="proposal">PROPOSAL/ORDER/LAW</option>
                           <option value="declined_comment">DECLINED COMMENT</option>
                           <option value="other">Other</option>
