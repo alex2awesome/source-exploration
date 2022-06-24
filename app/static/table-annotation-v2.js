@@ -264,13 +264,15 @@ let affil_field_name_mapper = {
     "quote_type": {
         "QUOTE":"quote",
         "BACKGROUND": "background",
+        "NARRATIVE": "narrative",
         "": "na",
         "PUBLIC SPEECH, NOT TO JOURNO": "speech",
         "COMMUNICATION, NOT TO JOURNO": "written_comms",
         "PUBLISHED WORK": "published_work",
         "STATEMENT": "statement",
         "LAWSUIT": 'lawsuit',
-        "vote_poll": "VOTE/POLL",
+        "VOTE/POLL": "vote_poll",
+        "PRICE SIGNAL": "price_signal",
         "DOCUMENT": "document",
         "PRESS REPORT": "press_report",
         "SOCIAL MEDIA POST": "tweet",
@@ -1359,17 +1361,22 @@ class TablePageManager {
             } else {
                 table_row += `<option value="background" class="background">BACKGROUND</option>`
             }
+            table_row += `<option value="narrative">NARRATIVE</option>`
+
+            //
             if (row.type == "") {
                 table_row += `<option value="na" class="na" selected="selected"></option>`
             } else {
                 table_row += `<option value="na" class="na"></option>`
             }
+
             table_row += `<option value="speech">PUBLIC SPEECH, NOT TO JOURNO</option>
                           <option value="written_comms">COMMUNICATION, NOT TO JOURNO</option>
                           <option value="published_work">PUBLISHED WORK</option>
                           <option value="statement">STATEMENT</option>
                           <option value="lawsuit">LAWSUIT</option>
                           <option value="vote_poll">VOTE/POLL</option>
+                          <option value="price_signal">PRICE SIGNAL</option>
                           <option value="document">DOCUMENT</option>
                           <option value="press_report">PRESS REPORT</option>
                           <option value="tweet">SOCIAL MEDIA POST</option>
