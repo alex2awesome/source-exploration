@@ -134,15 +134,20 @@ import time
 import glob, os
 @app.route('/render_table', methods=['GET'])
 def make_table_html():
+    import pandas as pd
+    import os
+
     task = request.args.get('task', 'full')
     shuffle = request.args.get('shuffle', False)
     practice = request.args.get('practice', False)
+    annotator = request.args.get('annotator', 'alex')
+
     input_data_filepattern = os.path.join(basedir, 'data/input_data/*/*')
     to_annotate = glob.glob(input_data_filepattern)
     to_annotate = list(map(lambda x: (x, re.findall('to-annotate-\d+', x)[0]), to_annotate))
     to_annotate = sorted(map(lambda x: (x[0], x[1].replace('to-annotate', 'annotated')), to_annotate))
-    #
 
+    #
     output_data_filepattern = os.path.join(basedir, 'data/output_data_%s/*/*' % task)
     annotated = glob.glob(output_data_filepattern)
     annotated_files = set(map(lambda x: re.findall('annotated-\d+', x)[0], annotated))
@@ -156,6 +161,18 @@ def make_table_html():
     # shuffle the files
     if shuffle:
         random.shuffle(to_annotate)
+
+    # filter to annotator-assigned files
+    annotator_assignments = None
+    annotator_assignment_fn = 'data/2022-07-08__annotator-assignments.csv.gz'
+    if os.path.exists(annotator_assignment_fn):
+        annotator_assignments = pd.read_csv(annotator_assignment_fn)
+        annotator_assignments = (
+            annotator_assignments
+                .loc[lambda df: df['annotator'] == annotator]['file_id']
+                .tolist()
+        )
+        to_annotate = list(filter(lambda x: x[0].split('-')[-1] in annotator_assignments, to_annotate))
 
     input = {}
     if len(to_annotate) > 0:
@@ -190,6 +207,7 @@ def make_table_html():
             entry_id=input['entry_id'],
             version=input['version'],
             label=input['label'],
+            annotator=annotator,
             url=input['url'],
             headline=input['headline'],
             published_date=input['published_date'],

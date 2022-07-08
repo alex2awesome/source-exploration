@@ -2,21 +2,21 @@ try: # transformers: version 3.0.2
     from transformers.modeling_gpt2 import Block as GPT2LMHeadModel
 except: # transformers: version 4.0
     from transformers.models.gpt2.modeling_gpt2 import GPT2LMHeadModel
-    from transformers.models.roberta.modeling_roberta import RobertaForMaskedLM
+    from transformers.models.roberta.modeling_roberta import RobertaForCausalLM
 
 from typing import Tuple, Any, List, Dict
 import torch
 from torch import nn
-from .utils_lightning import LightningOptimizer, LightningSteps
-from .utils_general import format_layer_freezes, freeze_all_params, get_config
+from models_neural.src.utils_lightning import LightningOptimizer, LightningSteps
+from models_neural.src.utils_general import format_layer_freezes, freeze_all_params, get_config
 import torch.optim as optim
 from pytorch_lightning import LightningModule, Trainer
 
 
-class LMModel(LightningOptimizer, LightningSteps):
+class BaseLMModel(LightningOptimizer, LightningSteps):
     def __init__(self, model=None, model_type='gpt2', *args, **kwargs):
         self.config = get_config(kwargs=kwargs)
-        self.model_type=model_type
+        self.model_type = model_type
         super().__init__(*args, **kwargs)
         self.hf_model = model
         if kwargs.get('loading_from_checkpoint'):
@@ -29,7 +29,7 @@ class LMModel(LightningOptimizer, LightningSteps):
         if self.model_type == 'gpt2':
             return GPT2LMHeadModel(config=self.config)
         else:
-            return RobertaForMaskedLM(config=self.config)
+            return RobertaForCausalLM(config=self.config)
 
     def freeze_encoder_layers(self):
         # freeze whole transformer
@@ -51,6 +51,11 @@ class LMModel(LightningOptimizer, LightningSteps):
                     freeze_all_params(self.hf_model.transformer.h[layer])
                 else:
                     freeze_all_params(self.hf_model.encoder.layer[layer])
+
+
+class LMModel(BaseLMModel):
+    def __init__(self, model=None, model_type='gpt2', *args, **kwargs):
+        super().__init__(model=model, model_type=model_type, *args, **kwargs)
 
     def forward(self, *args, **kwargs):
         return self.hf_model.forward(*args, **kwargs)
@@ -79,6 +84,15 @@ class LMModel(LightningOptimizer, LightningSteps):
         past = tuple(list(map(lambda l: torch.cat(l), past)))
         return logits, past, all_hidden
 
+
+class SourceModel(BaseLMModel):
+    """
+    Similar to the `LMModel` except it does language generation using a sentence-level embedding
+    that also has positional information on top of it.
+    """
+    def __init__(self, model=None, model_type='gpt2', *args, **kwargs):
+        super().__init__(model=model, model_type=model_type, *args, **kwargs)
+        pass
 
 class GPT2Wrapper(LightningModule):
     """A thin wrapper around HuggingFace GPT2 implementation to adapt the forward and loss functions to LIT's trainer.
@@ -154,19 +168,4 @@ class GPT2Wrapper(LightningModule):
             lr=5e-5,
             weight_decay=0.0
         )
-
-    # def validation_step_end(self, batch_parts):
-    #     if isinstance(batch_parts, list):
-    #         for batch in batch_parts:
-    #             self.perplexity(batch['input_ids'], self.hf_model)
-    #         return sum(map(lambda x: x['loss'], batch_parts))
-    #     else:
-    #         self.perplexity(batch_parts['input_ids'], self.hf_model)
-    #         return batch_parts['loss']
-    #
-    # def validation_epoch_end(self, outputs):
-    #     ppl = self.perplexity.compute()
-    #     self.log('perplexity', ppl)
-    #     self.perplexity.reset()
-#
 

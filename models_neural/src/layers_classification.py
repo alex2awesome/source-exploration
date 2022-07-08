@@ -45,7 +45,6 @@ class MultiClassMixin(nn.Module):
         else:
             self.pred = nn.Linear(self.hidden_dim, self.config.num_output_tags)
 
-
     def _init_classifier_prediction_weights(self):
         nn.init.xavier_uniform_(self.pred.state_dict()['weight'])
         self.pred.bias.data.fill_(0)
@@ -56,8 +55,6 @@ class MultiClassMixin(nn.Module):
     def calculate_loss(self, preds, labels):
         if len(labels.shape) == 0:
             labels = labels.unsqueeze(dim=0)
-        # if len(labels) == 1:  # only interested in the prediction on the last sentence.
-        #     preds = preds[[-1]]
         loss = self.criterion(preds, labels)
         return loss
 
@@ -103,6 +100,12 @@ class MultiClassMixin(nn.Module):
         else:
             loss = torch.mean(loss)
         return loss, prediction, labels
+
+
+class BinaryMixin(MultiClassMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.criterion = nn.BCELoss(reduction='none')
 
 
 class MultiTaskMultiClassMixin(MultiClassMixin):
