@@ -263,11 +263,11 @@ def check_specific_file():
     annotated, checked = get_annotated_files(task)
 
     if file_id is not None:
-        checked_w_file_id = list(map(lambda x: (x, re.findall('\d+', x.split('/')[-1])[0]), checked))
+        checked_w_file_id = list(map(lambda x: (x, re.findall('\d+', x.split(os.sep)[-1])[0]), checked))
         if file_id in list(map(lambda x: x[1], checked_w_file_id)):
             to_display = list(filter(lambda x: file_id == x[1], checked_w_file_id))[0][0]
         else:
-            annotated_w_file_id = list(map(lambda x: (x, re.findall('\d+', x.split('/')[-1])[0]), annotated))
+            annotated_w_file_id = list(map(lambda x: (x, re.findall('\d+', x.split(os.sep)[-1])[0]), annotated))
             if file_id in list(map(lambda x: x[1], annotated_w_file_id)):
                 to_display = list(filter(lambda x: file_id == x[1], annotated_w_file_id))[0][0]
             else:
@@ -318,6 +318,7 @@ def post_table_html():
     output_dir = os.path.dirname(output_fname)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+    print(output_fname)
     with open(output_fname, 'w') as f:
         json.dump(output_data, f)
     return 'success'
