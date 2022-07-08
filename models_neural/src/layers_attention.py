@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+from torch import nn as nn
+
 
 class AdditiveSelfAttention(nn.Module):
     def __init__(self, input_dim, dropout):
@@ -165,3 +167,143 @@ class LabelEmbeddingWithContext(nn.Module):
 
         label_embs = torch.vstack(label_embs)
         return self.label_attention(label_embs)
+
+
+class MultiHeadedSelfAttention(nn.Module):
+    def __init__(self, max_seq_len, emb_dim=512, hidden_size=768, num_heads=12):
+        self.max_seq_len = max_seq_len    # S
+        self.emb_dim = emb_dim            # E
+        self.hidden_dim = hidden_size     # H
+        self.output_seq_len = 1           # L
+        self.num_heads = num_heads        # M
+
+        self.query_layer = torch.nn.Linear(self.emb_dim, self.hidden_dim)
+        self.compressor_layer = torch.nn.Linear(self.max_seq_len, self.output_seq_len)
+        self.key_layer = torch.nn.Linear(self.emb_dim, self.hidden_dim)
+        self.value_layer = torch.nn.Linear(self.emb_dim, self.hidden_dim)
+        self.attention = torch.nn.MultiheadAttention(self.hidden_dim, self.num_heads, batch_first=True)
+
+    def forward(self, x, attention_mask):
+        batch_size, x_seq_len, emb_dim = x.shape                # shape: N x S x E
+        if x_seq_len < self.max_seq_len:
+            z = torch.zeros(batch_size, self.max_seq_len - x_seq_len, emb_dim)
+            x = torch.hstack([x, z])
+            attention_mask = torch.hstack([attention_mask, x])
+            batch_size, x_seq_len, emb_dim = x.shape  # shape: N x S x E
+
+        assert x_seq_len == self.seq_len
+
+        Q = self.query_layer(x)
+        K = self.key_layer(x)
+        V = self.value_layer(x)
+
+        attention_mask = attention_mask.unsqueeze(-1).repeat(1, 1, self.hidden_dim)
+        masked_Q = Q + torch.where(attention_mask != 0, torch.zeros_like(Q), -Q)
+        masked_K = K + torch.where(attention_mask != 0, torch.zeros_like(K), -K)
+        masked_V = V + torch.where(attention_mask != 0, torch.zeros_like(V), -V)
+
+        Q_s = self.compressor_layer(masked_Q.permute(0, 2, 1)).permute(0, 2, 1)
+        o, _ = self.attention.forward(Q_s, masked_K, masked_V, attn_mask=attention_mask, need_weights=False)                        # N x L x E
+        return o.squeeze()
+
+
+class TGMultiHeadedSelfAttention(nn.Module):
+    """
+    Compresses token representation into a single vector
+    """
+
+    def __init__(self, hidden_dim, embed_dim, num_heads):
+        super().__init__()
+        self.cls_repr = nn.Parameter(torch.zeros(hidden_dim))
+        self.hidden_dim = hidden_dim
+        self.embed_dim = embed_dim
+        self.attn = torch.nn.MultiheadAttention(embed_dim=hidden_dim, num_heads=num_heads)
+        self.key_layer = torch.nn.Linear(self.emb_dim, self.hidden_dim)
+        self.value_layer = torch.nn.Linear(self.emb_dim, self.hidden_dim)
+
+
+    def forward(self, x, attention_mask):
+        B, T, D = x.size()  # [Batch, Time, Dim]
+        assert D == self.embed_dim
+        query = self.cls_repr.view(1, 1, self.hidden_dim).repeat(B, 1, 1)
+
+        key = self.key_layer(x)
+        value = self.value_layer(x)
+
+        # Args: Query, Key, Value, Mask
+        cls_repr = self.attn(query, key, value, attention_mask)
+        cls_repr = cls_repr.view(B, self.hidden_dim)  # [B, D]
+        return cls_repr
+
+
+from torch.nn import Parameter
+from torch.nn import init
+from torch.autograd import Variable
+
+class BatchSelfAttention(nn.Module):
+    def __init__(self, attention_size, batch_first=False, non_linearity="tanh"):
+        super().__init__()
+
+        self.batch_first = batch_first
+        self.attention_weights = Parameter(torch.FloatTensor(attention_size))
+        self.softmax = nn.Softmax(dim=-1)
+
+        if non_linearity == "relu":
+            self.non_linearity = nn.ReLU()
+        else:
+            self.non_linearity = nn.Tanh()
+
+        init.uniform(self.attention_weights.data, -0.005, 0.005)
+
+    def get_mask(self, attentions, lengths):
+        """
+        Construct mask for padded itemsteps, based on lengths
+        """
+        max_len = max(lengths.data)
+        mask = Variable(torch.ones(attentions.size())).detach()
+
+        if attentions.data.is_cuda:
+            mask = mask.cuda()
+
+        for i, l in enumerate(lengths.data):  # skip the first sentence
+            if l < max_len:
+                mask[i, l:] = 0
+        return mask
+
+    def forward(self, inputs, lengths):
+
+        ##################################################################
+        # STEP 1 - perform dot product
+        # of the attention vector and each hidden state
+        ##################################################################
+
+        # inputs is a 3D Tensor: batch, len, hidden_size
+        # scores is a 2D Tensor: batch, len
+        scores = self.non_linearity(inputs.matmul(self.attention_weights))
+        scores = self.softmax(scores)
+
+        ##################################################################
+        # Step 2 - Masking
+        ##################################################################
+
+        # construct a mask, based on the sentence lengths
+        mask = self.get_mask(scores, lengths)
+
+        # apply the mask - zero out masked timesteps
+        masked_scores = scores * mask
+
+        # re-normalize the masked scores
+        _sums = masked_scores.sum(-1, keepdim=True)  # sums per row
+        scores = masked_scores.div(_sums)  # divide by row sum
+
+        ##################################################################
+        # Step 3 - Weighted sum of hidden states, by the attention scores
+        ##################################################################
+
+        # multiply each hidden state with the attention weights
+        weighted = torch.mul(inputs, scores.unsqueeze(-1).expand_as(inputs))
+
+        # sum the hidden states
+        representations = weighted.sum(1).squeeze()
+
+        return representations, scores

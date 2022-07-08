@@ -1,18 +1,16 @@
 # set up logging before imports
-import logging
 
 # import sys, os
 # here = os.path.dirname(__file__)
 # sys.path.insert(0, here)
 
-from models_neural.quote_detection.src.config_helper import training_args
-from models_neural.quote_detection.src.utils_parser import attach_model_arguments
-from models_neural.quote_detection.src.utils_general import format_loss_weighting
-from models_neural.quote_detection.src.utils_general import reformat_model_path
-from models_neural.quote_detection.src.config_helper import TransformersConfig, get_transformer_config
-from models_neural.quote_detection.src.models_full import Discriminator
-from models_neural.quote_detection.src.utils_oldmethods import BaselineDiscriminator, DiscriminatorGPT2Baseline
-from models_neural.quote_detection.src.utils_dataset import (
+from models_neural.src.config_helper import training_args
+from models_neural.quote_detection.utils_parser import attach_model_arguments
+from models_neural.src.utils_general import format_loss_weighting, reformat_model_path
+from models_neural.src.config_helper import TransformersConfig, get_transformer_config
+from models_neural.quote_detection.models_discriminator_full import Discriminator
+from models_neural.src.utils_oldmethods import BaselineDiscriminator, DiscriminatorGPT2Baseline
+from models_neural.quote_detection.utils_dataset_discriminator import (
     NonSequentialDiscourseDataModule, SequentialDiscourseDataModule, FlatDocumentDiscourseDataModule,
     FlatDocumentDiscourseDataModuleWordSplit
 )
@@ -167,7 +165,7 @@ if __name__ == "__main__":
             eval_data_file = os.path.join(here, '..', args.eval_data_file_s3)
         pretrained_path = args.pretrained_files_s3
     else:
-        from models_neural.quote_detection.src.utils_data_access import (
+        from models_neural.src import (
             get_fs, download_model_files_bb, download_file_to_filepath
         )
         # train (and eval df)
@@ -190,7 +188,7 @@ if __name__ == "__main__":
 
         print(glob.glob(os.path.join(pretrained_path, '*')))
         if args.finetuned_lm_file is not None:
-            from models_neural.quote_detection.src.language_models import LMModel
+            from models_neural.src import LMModel
             download_file_to_filepath(remote_file_name=args.finetuned_lm_file)
             config = AutoConfig.from_pretrained(pretrained_path)
             # print(config)

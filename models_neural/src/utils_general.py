@@ -9,7 +9,7 @@ from sklearn.metrics import (
 
 from .config_helper import TransformersConfig
 from torch.nn.functional import pad
-import os
+import os, re
 import csv
 import gzip
 
@@ -43,6 +43,13 @@ def format_layer_freezes(layers):
 
     return list(map(int, layers))
 
+
+def _get_head_num(head_name):
+    m = re.search('\d', head_name)
+    if m is not None:
+        return int(m[0])
+    else:
+        return 0
 
 def format_loss_weighting(loss_weight):
     """

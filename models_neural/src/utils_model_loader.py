@@ -1,10 +1,10 @@
 import logging
 
-from transformers import GPT2Tokenizer, AutoTokenizer, AutoConfig, GPT2LMHeadModel
+from transformers import GPT2Tokenizer, AutoTokenizer, AutoConfig
 
 from . utils_general import reformat_model_path
 from . baseline_discriminator import BaselineDiscriminator
-from . models_full import Discriminator as SequentialLSTMDiscriminator
+from models_neural.quote_detection.models_discriminator_full import Discriminator as SequentialLSTMDiscriminator
 # from attrdict import AttrDict
 # import torch
 
@@ -82,7 +82,7 @@ class ModelLoader():
         transformer_config = AutoConfig.from_pretrained(self.pretrained_model_path)
         transformer_config.vocab_size = self.tokenizer.vocab_size + self.prompt_gen.num_added_tokens
         transformer_config.n_ctx = transformer_config.n_positions = self.max_num_word_positions
-        from .language_models import LMModel
+        from models_neural.quote_attribution.language_models import LMModel
         self.lm = LMModel.load_from_checkpoint(
             self.pretrained_lm_model_path,
             map_location=self.device,

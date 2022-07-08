@@ -3,7 +3,8 @@
 # sys.path.insert(0, here)
 
 from .layers_classification import MultiClassMixin
-from .models_full import BaseDiscriminator, SentenceEmbeddingsLayer
+from models_neural.quote_detection.models_discriminator_full import BaseDiscriminator
+from .layers_sentence_embedding import SentenceEmbeddingsLayer
 import transformers
 if transformers.__version__ == '3.0.2':
     from .utils_futures import GPT2ForSequenceClassification

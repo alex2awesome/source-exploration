@@ -6,7 +6,7 @@ import pytorch_lightning as pl
 from transformers import BertTokenizer, GPT2Tokenizer, RobertaTokenizer
 
 import os
-from .utils_general import (
+from models_neural.src.utils_general import (
     reformat_model_path,
     get_idx2class,
     _get_attention_mask,

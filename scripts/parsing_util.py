@@ -8,12 +8,13 @@ import xml.etree.ElementTree as ET
 
 
 class EntityMention():    
-    def __init__(self, name=None, start=None, end=None, head=None, sentence=None):
-        self.name=name
-        self.start=start
-        self.end=end
-        self.head=head
-        self.sentence=sentence
+    def __init__(self, name=None, start=None, end=None, head=None, sentence=None, type=None):
+        self.name = name
+        self.start = start
+        self.end = end
+        self.head = head
+        self.sentence = sentence
+        self.type = type
     
     def key(self):
         return (self.sentence, self.head)
@@ -130,9 +131,8 @@ def cluster_entities_method_2(entities, sim=.95):
             "head"
         }
     """
-    name_mapper = defaultdict(set)
-    mapped = {} ## name mapper, just so we're not calculating similarity a lot
-    seen = defaultdict(bool)  ## unique entity mention mapper
+    mapped = {}  # name mapper, just so we're not calculating similarity a lot.
+    seen = defaultdict(bool)  # unique entity mention mapper
     entity_list = list(entities)
     num_ent = len(entity_list)
 
@@ -168,7 +168,7 @@ def cluster_entities_method_2(entities, sim=.95):
                         seen[key_2] = True
 
                 else:    
-                    ## get similarites 
+                    # get similarites
                     name_parts = []
                     for w_i in name_1.split():
                         for w_j in name_2.split():
