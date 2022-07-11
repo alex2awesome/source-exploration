@@ -265,6 +265,7 @@ let affil_field_name_mapper = {
         "QUOTE":"quote",
         "BACKGROUND": "background",
         "NARRATIVE": "narrative",
+        "DIRECT OBSERVATION": 'direct_observation',
         "": "na",
         "PUBLIC SPEECH, NOT TO JOURNO": "speech",
         "COMMUNICATION, NOT TO JOURNO": "written_comms",
@@ -1362,6 +1363,7 @@ class TablePageManager {
                 table_row += `<option value="background" class="background">BACKGROUND</option>`
             }
             table_row += `<option value="narrative">NARRATIVE</option>`
+            table_row += `<option value="direct_observation">DIRECT OBSERVATION</option>`
 
             //
             if (row.type == "") {
