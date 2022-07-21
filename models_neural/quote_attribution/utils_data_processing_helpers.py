@@ -26,11 +26,13 @@ def clean_articles(input_str):
 def get_source_candidates(input_doc, nlp=None):
     all_source_candidates = []
     for sent, source_head, sent_idx, _ in input_doc:
+        doc = nlp(sent)
+        word_strs = list(map(str, doc))
         words = list(map(lambda x: {
             'word_idx': x[0],
             'word': x[1].lower(),
             'found': False,
-        }, enumerate(sent.split())))
+        }, enumerate(word_strs)))
 
         # A. get named entities
         ents = nlp(sent).ents
@@ -79,6 +81,7 @@ def get_source_candidates(input_doc, nlp=None):
                     })
     return pd.DataFrame(all_source_candidates).drop_duplicates('candidate')
 
+
 def name_matching_jaro(a, c):
     c_temp, a_temp = clean_articles(c), clean_articles(a)
     if jellyfish.jaro_similarity(c_temp, a_temp) > .9:
@@ -92,6 +95,7 @@ def name_matching_jaro(a, c):
     else:
         return False
     # a_parts, b_parts = a.split(), b.split()
+
 
 # 2. reconcile the candidate list with the list of annotations
 def reconcile_candidates_and_annotations(source_cand_df, input_doc):

@@ -26,14 +26,15 @@ class LightningBase(pl.LightningModule):
 
     def __init__(self, config=None, *args, **kwargs):
         super().__init__()
-        self.config = get_config(config=config, kwargs=kwargs)
-
-        self.save_hyperparameters(self.config.to_dict(), ignore=[
-            'train_data_file_s3', 'log_all_metrics', 'save_model', 'do_train', 'do_eval', 'notes', 'local', 'use_cpu', 'transformer_model_name',
-            'model_name', 'pretrained_cache_dir', 'main_data_file', 'pad_id', 'num_steps_per_epoch',
-            'total_steps'
+        config = get_config(config=config, kwargs=kwargs)
+        self.save_hyperparameters(
+            # config.to_dict(),
+            ignore=[
+                'train_data_file_s3', 'log_all_metrics', 'save_model', 'do_train', 'do_eval', 'notes', 'local', 'use_cpu',
+                'transformer_model_name', 'model_name', 'pretrained_cache_dir', 'main_data_file', 'pad_id',
+                'num_steps_per_epoch', 'total_steps'
         ])
-
+        self.config = config
         #####
         # metrics
         dist_sync_on_step = kwargs.get('accelerator') == 'dp'
@@ -46,12 +47,15 @@ class LightningBase(pl.LightningModule):
         self.hp_metric_list = []  # to store f1-scores and then take the max
 
     def is_multitask(self):
-        if self.config.separate_heads:
+        if self.separate_heads():
             return False
 
-        return self.config.do_multitask or \
-               (self.config.num_labels_pred_window is not None and
-               self.config.num_labels_pred_window != 0)
+        pred_window = getattr(self.config, 'num_labels_pred_window', None)
+        return getattr(self.config, 'do_multitask', False) or \
+               (pred_window is not None and pred_window != 0)
+
+    def separate_heads(self):
+        return getattr(self.config, 'separate_heads', False)
 
     def _format_step_output(self, loss, y_pred, y_true, add_features, batch):
         output = {'loss': loss, 'y_pred': y_pred}
@@ -62,7 +66,7 @@ class LightningBase(pl.LightningModule):
             if len(y_true.shape) == 0:
                 y_true = y_true.unsqueeze(0)
         output['y_true'] = y_true
-        if self.config.separate_heads:
+        if self.separate_heads():
             output['head'] = add_features
         return output
 
@@ -84,7 +88,7 @@ class LightningBase(pl.LightningModule):
         if isinstance(batch_parts, list):
             for batch in batch_parts:
                 self.training_report(batch['y_pred'], batch['y_true'])
-                if not self.is_multitask() and (not self.config.separate_heads):
+                if not self.is_multitask() and (not self.separate_heads()):
                     self.entropy(batch['y_pred'])
                     self.max_count(batch['y_pred'])
             return sum(map(lambda x: x['loss'], batch_parts))
@@ -94,7 +98,7 @@ class LightningBase(pl.LightningModule):
                 self.training_report(batch_parts['y_pred'], batch_parts['y_true'], head=batch_parts.get('head'))
             else:
                 self.training_report(batch_parts['y_pred'], batch_parts['y_true'])
-            if not self.is_multitask() and (not self.config.separate_heads):
+            if not self.is_multitask() and (not self.separate_heads()):
                 self.max_count(batch_parts['y_pred'])
                 self.entropy(batch_parts['y_pred'])
             return batch_parts['loss']
@@ -114,7 +118,7 @@ class LightningBase(pl.LightningModule):
                 self.validation_report(batch_parts['y_pred'], batch_parts['y_true'], head=batch_parts.get('head'))
             else:
                 self.validation_report(batch_parts['y_pred'], batch_parts['y_true'])
-            if not self.is_multitask() and (not self.config.separate_heads):
+            if not self.is_multitask() and (not self.separate_heads()):
                 self.entropy(batch_parts['y_pred'])
                 self.max_count(batch_parts['y_pred'])
 
@@ -129,7 +133,7 @@ class LightningBase(pl.LightningModule):
         if self.log_all_metrics:
             self.log_dict(format_classification_report(report, 'Validation', config=self.config))
         self.validation_report.reset()
-        if not self.is_multitask() and (not self.config.separate_heads):
+        if not self.is_multitask() and (not self.separate_heads()):
             self.log('f1 macro', report['Macro F1'])
             self.log('f1 weighted', report['Weighted F1'])
             self.hp_metric_list.append(report['Macro F1'])
@@ -140,7 +144,7 @@ class LightningBase(pl.LightningModule):
             self.max_count.reset()
 
     def on_validation_end(self):
-        if not self.is_multitask() and not self.config.separate_heads:
+        if not self.is_multitask() and not self.separate_heads():
             try:
                 self.log('hp_metric', max(self.hp_metric_list))
             except MisconfigurationException:

@@ -67,7 +67,7 @@ class LabelEmbeddings(nn.Module):
                 output = torch.hstack((ignore_tensor, labels[idxs]))
             return output.to(int)
 
-    def get_label_embeddings(self, labels, head=None):
+    def forward(self, labels, head=None):
         if isinstance(labels, list):
             labels = [self.start_idx] + labels + [self.end_idx]
             labels = torch.tensor(labels, device=self.device)

@@ -171,6 +171,7 @@ class LabelEmbeddingWithContext(nn.Module):
 
 class MultiHeadedSelfAttention(nn.Module):
     def __init__(self, max_seq_len, emb_dim=512, hidden_size=768, num_heads=12):
+        super().__init__()
         self.max_seq_len = max_seq_len    # S
         self.emb_dim = emb_dim            # E
         self.hidden_dim = hidden_size     # H

@@ -9,8 +9,8 @@ from models_neural.src.utils_lightning import LightningMixin
 class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
     def __init__(self, config, *args, **kwargs):
         super().__init__(config, *args, **kwargs)
-        self.person_embedding = nn.Embedding(2, self.hidden_dim)
-        self.target_sentence_embedding = nn.Embedding(2, self.hidden_dim)
+        self.person_embedding = nn.Embedding(2, self.config.hidden_dim)
+        self.target_sentence_embedding = nn.Embedding(2, self.config.hidden_dim)
         if self.config.sentence_embedding_method == 'multiheaded-attention':
             from models_neural.src.layers_attention import MultiHeadedSelfAttention
             self.attention = MultiHeadedSelfAttention(self.config.max_length)
@@ -65,8 +65,8 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
 
 class SourceClassifier(LightningMixin):
     def __init__(self, *args, **kwargs):
-        self.config = get_config(kwargs=kwargs)
         super().__init__(*args, **kwargs)
+        self.config = get_config(kwargs=kwargs)
         self.transformer = SourceSentenceEmbeddingLayer(*args, **kwargs)
         self.head = self.get_head_layer()(*args, **kwargs)
 

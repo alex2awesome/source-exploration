@@ -1,7 +1,7 @@
 import transformers
 from packaging import version
 from torch import nn as nn
-from transformers import AutoConfig, GPT2Model
+from transformers import AutoConfig, GPT2Model, RobertaModel
 
 from models_neural.src.utils_general import get_config
 
@@ -91,8 +91,10 @@ class TransformerContextMixin(nn.Module):
         else:
             self.do_resize = False
         # load transformer
-        if self.config.model_type == 'gpt2':
+        if self.config.sentence_contextualizer_model_type == 'gpt2':
             self.sentence_transformer = GPT2Model(config=transformer_config)
+        elif self.config.sentence_contextualizer_model_type == 'roberta':
+            self.sentence_transformer = RobertaModel(config=transformer_config)
         else:
             raise NotImplementedError
 
@@ -102,20 +104,16 @@ class TransformerContextMixin(nn.Module):
     def get_contextualized_embeddings(self, cls_embeddings, input_len_eq_one=None, *args, **kwargs):
         if self.do_resize: # pass vector through a linear layer to resize it
             cls_embeddings = self.resize_layer(cls_embeddings)
-        #
-        if version.parse(transformers.__version__) > version.parse('4.0.0'):
-            #  a single sentence/doc has been passed in, but flattened.
-            if len(cls_embeddings.shape) == 1:
-                cls_embeddings = cls_embeddings.unsqueeze(dim=0)
-            if cls_embeddings.shape[0] != 1 and len(cls_embeddings.shape) == 2 and input_len_eq_one:
-                # what this means is a large batch of inputs has been provided. (IG)
-                # and that they were all sequences of length 1.
-                # `input_embeds` expects argument of size (batch_size, sequence_length, hidden_size), so we'll unsqueeze
-                # so that sequence length is of length 1
-                cls_embeddings = cls_embeddings.unsqueeze(dim=1)
+        #  a single sentence/doc has been passed in, but flattened.
+        if len(cls_embeddings.shape) == 1:
+            cls_embeddings = cls_embeddings.unsqueeze(dim=0)
+        if cls_embeddings.shape[0] != 1 and len(cls_embeddings.shape) == 2 and input_len_eq_one:
+            # what this means is a large batch of inputs has been provided. (IG)
+            # and that they were all sequences of length 1.
+            # `input_embeds` expects argument of size (batch_size, sequence_length, hidden_size), so we'll unsqueeze
+            # so that sequence length is of length 1
+            cls_embeddings = cls_embeddings.unsqueeze(dim=1)
 
-            # inputs_embeds: input of shape: (batch_size, sequence_length, hidden_size)
-            contextualized_embeds, _ = self.sentence_transformer(inputs_embeds=cls_embeddings, return_dict=False)
-        else:
-            contextualized_embeds, _ = self.sentence_transformer(inputs_embeds=cls_embeddings)
+        # inputs_embeds: input of shape: (batch_size, sequence_length, hidden_size)
+        contextualized_embeds, _ = self.sentence_transformer(inputs_embeds=cls_embeddings, return_dict=False)
         return contextualized_embeds

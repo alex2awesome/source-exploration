@@ -45,10 +45,10 @@ desired_checklist_of_anonymous_sources = [
     "policy makers", "political rivals", "political opponents", "the mauritian authorities",
     "cbs executives", "safety experts", "conservative media outlets", "cbs staff members",
     "cbs staff member", "local prosecutor ’s office", "demonstrators", "company officials",
-    "asiana officials", 'Laotian diplomats', 'diplomats', 'company', 'pilots ’ union', 'lawyers',
+    "asiana officials", 'Laotian diplomats', 'diplomats', 'company', 'pilots ’ union', 'lawyers', 'for - profit sector',
     "campaign",
     # hacks
-    'Stripe', 'The Nation', 'The Atlantic', 'Salon'
+    'Stripe', 'The Nation', 'The Atlantic', 'Salon',
     ## PARC3 anon sources
     "investors", "president", "people", "chairman", "officials", "analysts",
     "vice president", "director", "traders", "analyst", "employees", "workers",
@@ -445,7 +445,7 @@ desired_checklist_of_anonymous_sources = [
     "hobos", "exorcist", "priest", "entourage", "letter",
     "tax-collecting agency", "anti-abortionist", "retail sales report", "household", "appraisers", "restorer",
     "workmen", "merchant", "phalanx", "demons", "demonologist", "psychics",
-    "magician", "her", "obstructionist", "preparer", "imperialists", "",
+    "magician", "her", "obstructionist", "preparer", "imperialists",
     "money manager", "second money manager", "industry observers", "witches", "debtors", "schoolteachers",
     "truant", "pupils", "less gifted", "state officials", "securities commissioners", "generalist",
     "generalists", "litigator"
@@ -466,10 +466,7 @@ for sources in desired_checklist_of_anonymous_sources:
             temp_list.append(source)
 
 desired_checklist_of_anonymous_sources = list(set(temp_list))
-desired_checklist_of_anonymous_sources = sorted(desired_checklist_of_anonymous_sources, key=lambda x: -len(x))
-
-
-
+desired_checklist_of_anonymous_sources = list(filter(lambda x: x != '', desired_checklist_of_anonymous_sources))
 desired_checklist_of_anonymous_sources = sorted(desired_checklist_of_anonymous_sources, key=lambda x: -len(x))
 
 
