@@ -143,18 +143,16 @@ def make_table_html():
     practice = request.args.get('practice', False)
     annotator = request.args.get('annotator', 'alex')
 
-    sep = '/'
-    is_windows = sys.platform.startswith('win')
-    if is_windows:
-        sep = '\\'
-
-    input_data_filepattern = basedir + sep + 'data' + sep + 'input_data' + sep + '*' + sep + '*'
+    input_data_filepattern = os.path.join(basedir, 'data', 'input_data', '*', '*')
     to_annotate = glob.glob(input_data_filepattern)
     to_annotate = list(map(lambda x: (x, re.findall('to-annotate-\d+', x)[0]), to_annotate))
     to_annotate = sorted(map(lambda x: (x[0], x[1].replace('to-annotate', 'annotated')), to_annotate))
 
-    #
-    output_data_filepattern = basedir + sep + 'data' + sep + ('output_data_%s' % task) + sep + '*' + sep + '*'
+    output_data_filepattern = os.path.join(basedir, 'data', 'output_data_%s' % task, '*', '*')
+
+    if sys.platform.startswith('win'):
+        output_data_filepattern = output_data_filepattern.replace('\\', '\\\\')
+
     annotated = glob.glob(output_data_filepattern)
     annotated_files = set(map(lambda x: re.findall('annotated-\d+', x)[0], annotated))
 
