@@ -13,6 +13,7 @@ from models_neural.src.utils_general import (
 )
 import itertools
 import spacy
+import random
 
 try: # version 3.0.2
     from transformers.tokenization_gpt2 import AddedToken
@@ -271,7 +272,16 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
             csv_reader = csv.reader(f, delimiter="\t")
             csv_data = list(csv_reader)
 
+        grouped = []
         for doc_idx, doc in itertools.groupby(csv_data, key=lambda x: x[3]):  # group by doc_id
+            sorted_doc = sorted(doc, key=lambda x: int(x[2]))  # sort by sent_id
+            grouped.append((doc_idx, sorted_doc))
+
+        if self.config.shuffle_data:
+            random.shuffle(grouped)
+
+        i = 0
+        for doc_idx, doc in grouped:
             sorted_doc = sorted(doc, key=lambda x: int(x[2]))                 # sort by sent_id
             sorted_doc = sorted_doc[:self.max_num_sentences]
 
@@ -281,10 +291,16 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
             if len(ambiguous_sources) > 0:
                 continue
 
+            sorted_doc[0][0] = 'journalist ' + sorted_doc[0][0]
             doc_tok_by_word, doc_tok_by_sent, blank_toks_by_sent, all_doc_tokens = cache_doc_tokens(sorted_doc, self.tokenizer, self.nlp)
             if len(all_doc_tokens) > max_num_tokens_in_doc:
                 print('doc too long')
                 continue
+
+            if self.config.num_documents is not None:
+                if i > self.config.num_documents:
+                    break
+                i += 1
 
             source_cand_df = get_source_candidates(sorted_doc, self.nlp)
             annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc)

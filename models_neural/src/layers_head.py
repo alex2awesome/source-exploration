@@ -13,11 +13,11 @@ class HeadBase(nn.Module):
     def __init__(self, *args, **kwargs):
         self.config = get_config(kwargs=kwargs)
         super().__init__(*args, **kwargs)
-        if self.config.do_doc_pred:
+        if getattr(self.config, 'do_doc_pred', False):
             self.doc_embeddings = DocEmbeddingForDocLabelClass(*args, **kwargs)
-        if not self.config.share_label_embeds:
+        if getattr(self.config, 'use_y', False) and not getattr(self.config, 'share_label_embeds', False):
             if (self.config.label_context_back != 0) or (self.config.label_context_forward != 0):
-                self.label_embds = LabelEmbeddings(config=self.config)
+                self.label_embedding_layer = LabelEmbeddings(config=self.config)
 
     def handle_x_embeddings(self, sent_embs, add_features=None, get_last=None, generate=False, *args, **kwargs):
         sent_embs = self.get_contextualized_embeddings(sent_embs, kwargs.get('input_len_eq_one'))
@@ -37,7 +37,7 @@ class HeadBase(nn.Module):
     def handle_y_embeddings(self, labels, label_embs=None, label_idx=None, add_features=None):
         if not self.config.share_label_embeds and self.config.use_y:
             if (self.config.label_context_back != 0) or (self.config.label_context_forward != 0):
-                label_embs, labels = self.label_embds.get_label_embeddings(labels, head=add_features)
+                label_embs, labels = self.label_embedding_layer(labels, head=add_features)
         if label_idx is not None and self.config.use_y:
             offset = 0 if not self.config.use_headline else 1
             label_embs = label_embs[label_idx - offset]
@@ -53,7 +53,8 @@ class HeadBase(nn.Module):
 
         If labels provided, returns (loss, prediction). Else, returns (None, prediction).
         """
-        label_embs, labels = self.handle_y_embeddings(labels, label_embs, label_idx, add_features)
+        if getattr(self.config, 'use_y', False):
+            label_embs, labels = self.handle_y_embeddings(labels, label_embs, label_idx, add_features)
         augmented_embs = self.handle_x_embeddings(sent_embs, add_features, get_last, generate, *args, **kwargs)
         if get_loss:
             return self.classification(augmented_embs, labels, label_embs)

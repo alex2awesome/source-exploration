@@ -161,9 +161,10 @@ def _get_classification_report_metric(num_classes, dist_sync_on_step):
     })
 
 def get_classification_report_metric(config, dist_sync_on_step):
-    if not config.do_multitask:
-        if ((config.num_labels_pred_window is not None) and (config.num_labels_pred_window != 0)):
-            if config.separate_heads:
+    if not getattr(config, 'do_multitask', False):
+        pred_window = getattr(config, 'num_labels_pred_window', None)
+        if ((pred_window is not None) and (pred_window != 0)):
+            if getattr(config, 'separate_heads', False):
                 return StructuredPredReportSepHeads(config, dist_sync_on_step)
             else:
                 return StructuredPredReport(config, dist_sync_on_step)

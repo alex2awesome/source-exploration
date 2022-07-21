@@ -25,7 +25,7 @@ class PosEmbMixin(nn.Module):
     def __init__(self, config, *args, **kwargs):
         super().__init__(config, *args, **kwargs)
         self.config = get_config(config=config, kwargs=kwargs)
-        hidden_dim = self.config.hidden_dim * 2 if self.config.bidirectional else self.config.hidden_dim
+        hidden_dim = self.config.hidden_dim * 2 if getattr(self.config, 'bidirectional', False) else self.config.hidden_dim
 
         if not self.config.sinusoidal_embeddings:
             self.max_position_embs = nn.Parameter(torch.tensor(self.config.max_position_embeddings), requires_grad=False)
@@ -83,7 +83,7 @@ class EmbeddingHandlerMixin(HeadlineMixin, PosEmbMixin, DocEmbMixin):
 
     def get_total_hidden_dim(self):
         hidden_dim = self.config.hidden_dim
-        hidden_dim = hidden_dim * (1 + int(self.config.bidirectional))
+        hidden_dim = hidden_dim * (1 + int(getattr(self.config, 'bidirectional', 0)))
         return hidden_dim * (1 + self.num_addt_vectors)
 
     def concat_vectors(self, sentence_embs, position_embs=None, headline_embs=None, doc_embs=None):

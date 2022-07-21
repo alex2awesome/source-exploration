@@ -69,6 +69,7 @@ def main(
     config = get_config(args.pretrained_model_path, args, config=config)
     config.pretrained_cache_dir = args.pretrained_model_path
     config.use_cache = False
+    config.num_output_tags = 1
 
     ####
     # load dataset and model classes
@@ -88,14 +89,7 @@ def main(
     dataset.setup(stage='fit')
     config.num_steps_per_epoch = len(dataset.train_dataset)
 
-    if lm_type == 'gpt2':
-        model = GPT2LMHeadModel.from_pretrained(config.pretrained_cache_dir, config=config)
-    else:
-        print(config)
-        model = RobertaForCausalLM.from_pretrained(config.pretrained_cache_dir, config=config)
-    #
-    model.resize_token_embeddings(len(dataset.tokenizer))
-    lm = lm_class(config=config, model=model)  # our experimental setup
+    model = lm_class(config=config)  # our experimental setup
 
 
     #########
@@ -145,7 +139,7 @@ def main(
     print('NUM GPUs USING:')
     print(trainer.gpus)
 
-    trainer.fit(lm, datamodule=dataset)
+    trainer.fit(model, datamodule=dataset)
 
     # cache
     # upload best model
