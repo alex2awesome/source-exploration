@@ -16,7 +16,7 @@ def get_client():
         return datastore.Client()
     except:
         import os
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'C:/Users/alexa/google-cloud/usc-research-c087445cf499.json'
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'C:\\Users\\alexa\\google-cloud\\usc-research-c087445cf499.json'
         return datastore.Client()
 
 
@@ -51,6 +51,7 @@ def get_user_stats():
 
 @app.route('/render_annotation_experiment')
 def render_annotation():
+    print('render_annotation---------------------------')
     client = get_client()
     query = client.query(kind='source-annotation-unmarked')
     query.add_filter('done', '=', False)
@@ -66,6 +67,7 @@ def render_annotation():
 
 @app.route('/post_annotation_experiment', methods=['POST'])
 def post():
+    print('post---------------------------')
     from google.cloud import datastore
     client = get_client()
     output_data = request.get_json()
@@ -99,6 +101,7 @@ def post():
 
 @app.route('/render_validation_experiment')
 def render_validation():
+    print('render_validation---------------------------')
     if False:
         ## fetch data
         client = get_client()
@@ -107,7 +110,7 @@ def render_validation():
         results = list(query.fetch(limit=3))
     else:
         results = []
-        with open('../data/news-article-flatlist/html-for-sources/doc_html.json') as f:
+        with open('..\\data\\news-article-flatlist\\html-for-sources\\doc_html.json') as f:
             for line in f.readlines():
                 results.append(json.loads(line.strip()))
         import numpy as np
@@ -119,6 +122,7 @@ def render_validation():
 
 @app.route('/post_validation_experiment', methods=['POST'])
 def post_validation():
+    print('post_validation---------------------------')
     output_data = request.get_json()
     ##
     crowd_data = output_data['data']
@@ -127,13 +131,14 @@ def post_validation():
         query = client.query(kind='source-validation-unscored')
 
     else:
-        json.dump(crowd_data, open('data/batch-marked-t.json', 'w'))
+        json.dump(crowd_data, open('data\\batch-marked-t.json', 'w'))
     return "success"
 
 import time
 import glob, os
 @app.route('/render_table', methods=['GET'])
 def make_table_html():
+    print('make_table_html---------------------------')
     import pandas as pd
     import os
 
@@ -142,14 +147,13 @@ def make_table_html():
     practice = request.args.get('practice', False)
     annotator = request.args.get('annotator', 'alex')
 
-    input_data_filepattern = os.path.join(basedir, 'data/input_data/*/*')
+    input_data_filepattern = os.path.join(basedir, 'data\\input_data\\*\\*')
     to_annotate = glob.glob(input_data_filepattern)
     to_annotate = list(map(lambda x: (x, re.findall('to-annotate-\d+', x)[0]), to_annotate))
     to_annotate = sorted(map(lambda x: (x[0], x[1].replace('to-annotate', 'annotated')), to_annotate))
 
     #
-    #output_data_filepattern = os.path.join(basedir, 'data/output_data_%s/*/*' % task)
-    output_data_filepattern = os.path.join(basedir, 'data', 'output_data_%s' % task, '*', '*')
+    output_data_filepattern = os.path.join(basedir, 'data\\output_data_%s\\*\\*' % task)
     annotated = glob.glob(output_data_filepattern)
     annotated_files = set(map(lambda x: re.findall('annotated-\d+', x)[0], annotated))
 
@@ -165,7 +169,7 @@ def make_table_html():
 
     # filter to annotator-assigned files
     annotator_assignments = None
-    annotator_assignment_fn = 'data/2022-07-08__annotator-assignments.csv.gz'
+    annotator_assignment_fn = 'data\\2022-07-08__annotator-assignments.csv.gz'
     if os.path.exists(annotator_assignment_fn):
         annotator_assignments = pd.read_csv(annotator_assignment_fn)
         annotator_assignments = (
@@ -201,6 +205,7 @@ def make_table_html():
         output_fn = fname.replace('input_data', 'output_data_%s' % task)
         output_dir = os.path.dirname(output_fn)
         output_fn = os.path.join(output_dir, file_id + '.json')
+
         return render_template(
             'table-annotation-slim-%s.html' % task,
             data=input['html_data'],
@@ -219,18 +224,19 @@ def make_table_html():
     else:
         return "No more data."
 
-
 def get_annotated_files(task):
-    annotated_filepattern = os.path.join(basedir, 'data/output_data_%s/*/*' % task)
+    print('get_annotated_files---------------------------')
+    annotated_filepattern = os.path.join(basedir, 'data\\output_data_%s\\*\\*' % task)
     annotated = glob.glob(annotated_filepattern)
 
-    checked_filepattern = os.path.join(basedir, 'data/checked_data_%s/*/*' % task)
+    checked_filepattern = os.path.join(basedir, 'data\\checked_data_%s\\*\\*' % task)
     checked = glob.glob(checked_filepattern)
     return annotated, checked
 
 
 @app.route('/check_table', methods=['GET'])
 def check_table():
+    print('check_table---------------------------')
     task = request.args.get('task', 'full')
     shuffle = request.args.get('shuffle', False)
 
@@ -277,6 +283,7 @@ def check_table():
 
 @app.route('/check_table_no_submit')
 def check_specific_file():
+    print('check_specific_file---------------------------')
     task = request.args.get('task', 'full')
     file_id = request.args.get('file_id')
     annotated, checked = get_annotated_files(task)
@@ -331,12 +338,15 @@ def check_specific_file():
 
 @app.route('/post_table', methods=['POST'])
 def post_table_html():
+    print('post_table_html---------------------------')
     output_data = request.get_json()
+    print(output_data)
     output_data['end_time'] = time.time()
     output_fname = output_data['output_fname']
     output_dir = os.path.dirname(output_fname)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+    print(output_fname)
     with open(output_fname, 'w') as f:
         json.dump(output_data, f)
     return 'success'
