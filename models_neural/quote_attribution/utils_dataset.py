@@ -14,6 +14,7 @@ from models_neural.src.utils_general import (
 import itertools
 import spacy
 import random
+from tqdm.auto import tqdm
 
 try: # version 3.0.2
     from transformers.tokenization_gpt2 import AddedToken
@@ -281,7 +282,7 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
             random.shuffle(grouped)
 
         i = 0
-        for doc_idx, doc in grouped:
+        for doc_idx, doc in tqdm(grouped, total=len(grouped)):
             sorted_doc = sorted(doc, key=lambda x: int(x[2]))                 # sort by sent_id
             sorted_doc = sorted_doc[:self.max_num_sentences]
 
@@ -291,7 +292,7 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
             if len(ambiguous_sources) > 0:
                 continue
 
-            sorted_doc[0][0] = 'journalist ' + sorted_doc[0][0]
+            sorted_doc[0][0] = 'journalist passive-voice ' + sorted_doc[0][0]
             doc_tok_by_word, doc_tok_by_sent, blank_toks_by_sent, all_doc_tokens = cache_doc_tokens(sorted_doc, self.tokenizer, self.nlp)
             if len(all_doc_tokens) > max_num_tokens_in_doc:
                 print('doc too long')
@@ -303,7 +304,7 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
                 i += 1
 
             source_cand_df = get_source_candidates(sorted_doc, self.nlp)
-            annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc)
+            annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp)
             source_ind_list, sent_ind_list = generate_indicator_lists(blank_toks_by_sent, doc_tok_by_word, source_cand_df, sorted_doc)
             source_cand_df = augment_lookup_table_with_none(source_cand_df, source_ind_list)
             training_data = generate_training_data(sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens)
