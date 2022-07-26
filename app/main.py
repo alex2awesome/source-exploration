@@ -149,10 +149,6 @@ def make_table_html():
     to_annotate = sorted(map(lambda x: (x[0], x[1].replace('to-annotate', 'annotated')), to_annotate))
 
     output_data_filepattern = os.path.join(basedir, 'data', 'output_data_%s' % task, '*', '*')
-
-    if sys.platform.startswith('win'):
-        output_data_filepattern = output_data_filepattern.replace('\\', '\\\\')
-
     annotated = glob.glob(output_data_filepattern)
     annotated_files = set(map(lambda x: re.findall('annotated-\d+', x)[0], annotated))
 
@@ -204,6 +200,9 @@ def make_table_html():
         output_fn = fname.replace('input_data', 'output_data_%s' % task)
         output_dir = os.path.dirname(output_fn)
         output_fn = os.path.join(output_dir, file_id + '.json')
+        if sys.platform.startswith('win'):
+            output_fn = output_fn.replace('\\', '\\\\')
+
         return render_template(
             'table-annotation-slim-%s.html' % task,
             data=input['html_data'],

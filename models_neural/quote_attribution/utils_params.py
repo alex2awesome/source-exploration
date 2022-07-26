@@ -30,7 +30,7 @@ desired_checklist_of_anonymous_sources = [
     "dealers", "enthusiasts", "a gun owner", "sellers",
     "gun salesman", "federal government", "dispatcher", "party strategists",
     "one house republican", "other republican", "climate experts", "global carbon project",
-    "engineers", "911 recording", "advocates", "defendents lawyer",
+    "engineers", "call", "recording", "advocates", "defendents lawyer",
     "salvage experts", "facebook spokewoman", "letter", "representative",
     "bill's sponsors", "robstown police officials", "government ’s statistics bureau",
     "puerto rico electric power authority", "power authority", "authority",
@@ -46,9 +46,99 @@ desired_checklist_of_anonymous_sources = [
     "cbs executives", "safety experts", "conservative media outlets", "cbs staff members",
     "cbs staff member", "local prosecutor ’s office", "demonstrators", "company officials",
     "asiana officials", 'Laotian diplomats', 'diplomats', 'company', 'pilots ’ union', 'lawyers', 'for - profit sector',
-    "campaign",
+    "counties", "campaign", "coastal counties",
+    "fire investigators", "the education department", "division of emergency management", "israeli parliament website",
+    "lake and mendocino county sheriffs ’ offices", "norwegian cruise line", "1996", "2010 study",
+    "2014 national climate assessment", "2015 report by the iowa department of transportation", "2017 report by the environmental protection agency", "a republican operative",
+    "abc", "airasia", "airlineratings.com", "amarillo globe-news",
+    "amendment 4", "american bar association", "american civil liberties union", "american civil liberties union of florida",
+    "amtrak", "arizona", "asiana", "atlas",
+    "australian government", "bbc", "beijing", "benjamin netanyahu's administration",
+    "bernstein analysts", "bike owners; makers", "boeing", "boeing official",
+    "bolivian government", "brazil", "brazilian government", "british airline pilots association",
+    "british airlines", "british airways", "bureau of land management", "cbs",
+    "clearesult", "cvs representatives; wegmans representatives", "california public utilities commission", "california supreme court",
+    "canonsburg hospital", "census bureau", "charleston", "chase",
+    "chatham county emergency management agency", "cheryl lankford", "chicago police", "china",
+    "china academy of information and communications technology", "china ’s ministry of environmental protection", "china ’s national energy administration", "commission on women in the profession",
+    "common pleas court", "communications workers of america", "congress", "congressional democrats",
+    "connecticut; california; washington; oregon; indiana", "corporate and leisure aviation", "corriere della sera", "costa cruises",
+    "crown prosecution service", "democrats; justice department", "department of homeland security", "department of water resources",
+    "diana project", "dow jones", "e.p.a.", "economic policy institute",
+    "energy information administration", "european commission", "european union", "european union ’s air safety list",
+    "eurostar", "eurotunnel", "exxon", "exxon mobile",
+    "fema", "facebook", "federal emergency management agency", "firstenergy",
+    "florida governor ’s office", "floridians", "ford motor company", "foreign ministry",
+    "fox 46", "fox news", "france", "franceinfo",
+    "french high council of public finances", "fresno fire department", "friendship village", "gabriel bernal; fidel garcia",
+    "google", "greek parliament", "greenpeace", "greenpeace east asia",
+    "harris county officials", "hertz", "higher people ’s court of jiangsu province", "house republicans",
+    "hubei shuanghuan", "i", "i. launa", "i.a.s.a.",
+    "indian meteorological department", "indonesian government", "institute for family studies", "interior department",
+    "international air transport association", "international criminal court", "international maritime organization", "investigators; lawyer",
+    "israeli medical association", "israeli supreme court", "japan meteorological agency", "joe biden ’s campaign",
+    "judge barbara mcdermott", "julián castro's campaign", "justice department lawyers", "kroger",
+    "l.g.b.t.q. activists", "labour", "land ministry", "laotian diplomats",
+    "lapindo", "larry king", "louisville courier - journal", "louisville police",
+    "lusa", "maersk", "maldives", "marine traffic",
+    "mcconnell campaign", "media matters", "mexico", "ministry of public security",
+    "ministry of research , technology and higher education", "mr. biden's team", "ms. taylor ’s lawyers", "ms. taylor ’s relatives",
+    "nasa; the national oceanic and atmospheric administration", "nbc", "nagashiki shipping", "national bureau of statistics",
+    "national employment law project", "national hurricane center", "national transportation safety board", "national weather service",
+    "new jersey transit", "new york city", "new york state", "new york times",
+    "new york times / cbs news poll", "nissan", "north korea", "ohio state university",
+    "optimus", "organization for economic cooperation and development", "other scientific and engineering studies", "ppl electric utilities",
+    "pakistan civil aviation officials", "pasco sheriff ’s office", "paul ryan", "pew",
+    "philadelphia county common pleas court", "phoenix television", "piers morgan", "point72",
+    "politico", "port authority", "porter wright morris & amp ; arthur", "quirky",
+    "russia", "salon", "senate environment and public works committee", "shell",
+    "shell oil", "south korea", "south ’s unification ministry", "starbucks",
+    "state officials; local officials", "stripe", "supreme court", "tvi",
+    "tvn24", "tvn24; social media", "tax policy center", "temple university",
+    "texas", "texas public policy foundation", "the atlantic", "the federal aviation administration",
+    "the guardian", "the interior department", "the justice department", "the mauritian authorities",
+    "the mauritian environment ministry", "the national weather service", "the tax foundation", "the wichita beacon",
+    "the world health organization", "the yes on prop . 22 campaign", "they", "transit officials; taxi companies",
+    "trump administration", "trump administration; republicans", "trump campaign aides", "trump campaign and nevada republicans",
+    "tyco", "uber; lyft", "uber; lyft; doordash", "unesco",
+    "united nations", "united states", "united states court of appeals", "united states equal employment opportunity commission",
+    "united states geological survey", "urban - brookings tax center", "valero", "villagecare",
+    "vox; fivethirtyeight", "wcnc", "walgreens", "walmart",
+    "washington state supreme court", "waymo", "white house spokeswoman", "wilbur ross; justice department lawyers",
+    "world health organization", "world shipping council", "a pentagon spokeswoman", "a few parents",
+    "a gun owner", "a higher education trade group", "administration", "american and malaysian officials",
+    "analysis-1", "article-2", "authorities-2", "authorities; organization",
+    "aviation authorities", "beijing newspaper", "bill-2", "bill-3",
+    "bill-4", "bill-5", "bill-6", "bill-7",
+    "bill-8", "bill-9", "california", "campaign; kamala harris",
+    "chinese government", "city paper", "company official and four crew members", "data",
+    "district attorney ’s office", "eight senators", "embassies", "embassy",
+    "emergency room specialists", "environment ministers", "epytians", "experts; news reports",
+    "fire brigade spokesman", "fire officials", "first lady ’s office", "footage",
+    "forecasters-2", "fund", "global regulators", "government agency",
+    "government estimates", "government officials; asiana officials", "government; national electoral commission", "guidelines",
+    "health officials", "human rights groups", "images and videos", "islamist",
+    "italy", "jury", "local reports", "many",
+    "members of the party's left wing", "mine's owners", "national poll-2", "native americans; environmental activists",
+    "news staff", "nytimes staff members", "obama administration", "office",
+    "official reports", "officials-2", "oil companies", "one person",
+    "opinion department", "opponents-2", "opposition; ruling coalition", "owners of electric bikes; industry representatives",
+    "parents; school officials", "person-2", "plaintiffs-2", "polling",
+    "polls-2", "press office", "primaries", "proponents-2",
+    "recent reports", "reference", "reporters; editors", "republicans; trump",
+    "residents; officials", "scene", "scientists-2", "senior boeing executives",
+    "shares", "sheriff ’s office", "spokeswoman for the e.p.a.", "spokeswoman-1",
+    "staff union", "states; counties; facilities", "stocks", "taiwanese officials",
+    "talk shows", "television", "the census bureau", "the centers for medicare and medicaid",
+    "the environment ministry", "the federal emergency management agency", "the forest service says", "the french democratic confederation of labor",
+    "the giffords law center to prevent gun violence", "the johnson amendment", "the national hurricane center", "the organization for the prohibition of chemical weapons",
+    "the pittsburgh post - gazette", "the santa clara county fire department", "the small business administration", "the storm prediction center",
+    "the united nations", "the united states attorney in the district of arizona", "the university of california , san francisco", "the city manager",
+    "the shooting sports foundation", "the state legislature", "tourism officials", "victims ’ families",
+    "video", "viral tweet", "wall street analysts", "website",
+    "white house", "witnesses; officials", "passive-voice",
     # hacks
-    'Stripe', 'The Nation', 'The Atlantic', 'Salon',
+    'Stripe', 'The Nation', 'The Atlantic', 'Salon', 'Dalai Lama', 'Tessah Melamed', 'Tzipi Hotovely', 'Shannon Watts',
     ## PARC3 anon sources
     "investors", "president", "people", "chairman", "officials", "analysts",
     "vice president", "director", "traders", "analyst", "employees", "workers",
@@ -406,7 +496,7 @@ desired_checklist_of_anonymous_sources = [
     "charlatans", "internationalists", "sheiks", "cripple-maker", "beggars", "card shark",
     "prostitute", "market researchers", "legislation", "specialists", "other analysts", "extremist",
     "maniac", "takers", "anchorman", "landlord", "extras", "unknowns",
-    "vice president\/product", "vice president\/national-government", "brokerage house officials", "art gallery", "market analysts", "news service reports",
+    "vice president", "product", "vice president", "national government", "brokerage house officials", "art gallery", "market analysts", "news service reports",
     "chief marketing officer", "comic", "co-sponsor", "receiver", "confreres", "transportation department spokesman",
     "other officials", "chancellor of exchequer", "coterie", "deputy prime minister", "immunologist", "personal computer maker",
     "ice-baggers", "scalawags", "opportunists", "knowledgeable individual", "unionists", "district attorney",
@@ -449,21 +539,30 @@ desired_checklist_of_anonymous_sources = [
     "money manager", "second money manager", "industry observers", "witches", "debtors", "schoolteachers",
     "truant", "pupils", "less gifted", "state officials", "securities commissioners", "generalist",
     "generalists", "litigator"
-
-
 ]
 
 temp_list = []
 for sources in desired_checklist_of_anonymous_sources:
     if sources not in ['they', 'for']:
-        for source in sources.split(' and '):
+        if ';' in sources:
+            sources = sources.split(';')
+        elif '\/' in sources:
+            sources = sources.split('\/')
+        else:
+            sources = [sources]
+
+        for source in sources:
+            # source = source.replace('-', ' ')
+            # source = ' '.join(list(filter(lambda x: not x.isdigit(), source.split(' '))))
+            if len(source.strip()) == 0:
+                continue
             if source.startswith('the '):
                 source = source[len('the '):]
             if source.startswith('a '):
                 source = source[len('a '):]
             if source.endswith('s'):
-                temp_list.append(source[:-1])
-            temp_list.append(source)
+                temp_list.append(source[:-1].strip())
+            temp_list.append(source.strip())
 
 desired_checklist_of_anonymous_sources = list(set(temp_list))
 desired_checklist_of_anonymous_sources = list(filter(lambda x: x != '', desired_checklist_of_anonymous_sources))
@@ -479,7 +578,7 @@ desired_checklist_of_documents = [
     "white house fact sheet", "the sun", "united states federal aviation administration", "every list",
     "taizhou city environmental protection association", "news reports", "new york times investigation",
     "the chicago tribune",
-    "chinese legislature", "prop . 22", "uber", "scientific studies",
+    "chinese legislature", "prop . 22", "uber", "scientific studies", "studies",
     "california voters", "orlando sentinel", "law", "aaj tak television news channel",
     "pennsylvania poll", "the press trust of india news agency", "the gainesville sun", "china national radio",
     "sunderland", "cbs news", "lyft", "the national oceanic and atmospheric administration",

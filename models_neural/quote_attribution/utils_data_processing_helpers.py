@@ -1,6 +1,7 @@
 import pandas as pd
 import jellyfish
 from . import utils_params as params
+import numpy as np
 
 
 def get_unique_spacy_ents(ent_list):
@@ -13,7 +14,9 @@ def get_unique_spacy_ents(ent_list):
     return output
 
 
-def clean_articles(input_str):
+def clean_articles(input_str, nlp):
+    input_str = list(map(str, nlp(input_str)))
+    input_str = ' '.join(input_str)
     input_str = input_str.lower()
     if input_str.startswith('the '):
         input_str = input_str[len('the '):]
@@ -22,7 +25,6 @@ def clean_articles(input_str):
     return input_str.strip()
 
 
-# 1. extract candidate list from document of NERs and special-tokens
 def get_source_candidates(input_doc, nlp=None):
     all_source_candidates = []
     for sent, source_head, sent_idx, _ in input_doc:
@@ -35,7 +37,7 @@ def get_source_candidates(input_doc, nlp=None):
         }, enumerate(word_strs)))
 
         # A. get named entities
-        ents = nlp(sent).ents
+        ents = doc.ents
         for ent in ents:
             if ent.label_ in params.ner_filter_list:
                 all_source_candidates.append({
@@ -82,8 +84,15 @@ def get_source_candidates(input_doc, nlp=None):
     return pd.DataFrame(all_source_candidates).drop_duplicates('candidate')
 
 
-def name_matching_jaro(a, c):
-    c_temp, a_temp = clean_articles(c), clean_articles(a)
+def name_matching_jaro(a, c, nlp):
+    """Check to see if there is a lexical match, if any of the criterion are satisfied:
+
+    1. Forward jaro similarity is high
+    2. Reverse jaro similarity is high
+    3. a is in c
+    4. c is in a
+    """
+    c_temp, a_temp = clean_articles(c, nlp), clean_articles(a, nlp)
     if jellyfish.jaro_similarity(c_temp, a_temp) > .9:
         return True
     elif jellyfish.jaro_similarity(c_temp[::-1], a_temp[::-1]) > .9:
@@ -98,7 +107,7 @@ def name_matching_jaro(a, c):
 
 
 # 2. reconcile the candidate list with the list of annotations
-def reconcile_candidates_and_annotations(source_cand_df, input_doc):
+def reconcile_candidates_and_annotations(source_cand_df, input_doc, nlp):
     doc_str = ' '.join(list(map(lambda x: x[0], input_doc)))
     candidate_set = source_cand_df['candidate'].tolist()
     candidate_set = sorted(candidate_set, key=lambda x: -len(x))  # match the longest matches first
@@ -107,7 +116,7 @@ def reconcile_candidates_and_annotations(source_cand_df, input_doc):
     for a in annotated_set:
         found = False
         for c in candidate_set:
-            if name_matching_jaro(a, c):
+            if name_matching_jaro(a, c, nlp):
                 annotation_to_candidate_mapper[a] = c
                 found = True
                 break
@@ -191,7 +200,7 @@ def augment_lookup_table_with_none(source_candidates_df, source_indicator_output
             'candidate': 'None',
             'start_word': 0,
             'end_word': 0,
-            'sent_idx': 0,
+            # 'sent_idx': 0,
             'type': 'none',
             'source_tokenized': [0] * len(source_indicator_output[0])
 
