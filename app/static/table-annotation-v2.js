@@ -1129,7 +1129,7 @@ class TablePageManager {
         return [data, all_to_continue]
     }
 
-    record_data(output, submit_click_event, do_mturk, start_time, output_fname, loc) {
+    record_data(output, submit_click_event, do_mturk, start_time, output_fname, loc, annotator) {
         if (do_mturk) {            // submit mturk
             $('#data').attr('value', JSON.stringify(output))
             $('#submitButton').trigger(submit_click_event.type);
@@ -1138,7 +1138,7 @@ class TablePageManager {
             output['start_time'] = start_time
             output['output_fname'] = output_fname
             if (output_fname.indexOf('affil-role') != -1){
-                loc = loc + "?task=affil-role"
+                loc = loc + "?task=affil-role&annotator=" + annotator
             } else if (output_fname.indexOf('diversity') != -1){
                 loc = loc + "?task=diversity"
             }
