@@ -45,7 +45,7 @@ desired_checklist_of_anonymous_sources = [
     "policy makers", "political rivals", "political opponents", "the mauritian authorities",
     "cbs executives", "safety experts", "conservative media outlets", "cbs staff members",
     "cbs staff member", "local prosecutor ’s office", "demonstrators", "company officials",
-    "asiana officials", 'Laotian diplomats', 'diplomats', 'company', 'pilots ’ union', 'lawyers', 'for - profit sector',
+    "asiana officials", 'Laotian diplomats', 'diplomats', 'company', 'pilots ’ union', 'lawyers', 'for-profit sector',
     "counties", "campaign", "coastal counties",
     "fire investigators", "the education department", "division of emergency management", "israeli parliament website",
     "lake and mendocino county sheriffs ’ offices", "norwegian cruise line", "1996", "2010 study",
@@ -64,7 +64,7 @@ desired_checklist_of_anonymous_sources = [
     "common pleas court", "communications workers of america", "congress", "congressional democrats",
     "connecticut; california; washington; oregon; indiana", "corporate and leisure aviation", "corriere della sera", "costa cruises",
     "crown prosecution service", "democrats; justice department", "department of homeland security", "department of water resources",
-    "diana project", "dow jones", "e.p.a.", "economic policy institute",
+    "diana project", "dow jones", "e.p.a.", "E.P.A.", "economic policy institute",
     "energy information administration", "european commission", "european union", "european union ’s air safety list",
     "eurostar", "eurotunnel", "exxon", "exxon mobile",
     "fema", "facebook", "federal emergency management agency", "firstenergy",
@@ -79,7 +79,7 @@ desired_checklist_of_anonymous_sources = [
     "israeli medical association", "israeli supreme court", "japan meteorological agency", "joe biden ’s campaign",
     "judge barbara mcdermott", "julián castro's campaign", "justice department lawyers", "kroger",
     "l.g.b.t.q. activists", "labour", "land ministry", "laotian diplomats",
-    "lapindo", "larry king", "louisville courier - journal", "louisville police",
+    "lapindo", "larry king", "louisville courier-journal", "louisville police",
     "lusa", "maersk", "maldives", "marine traffic",
     "mcconnell campaign", "media matters", "mexico", "ministry of public security",
     "ministry of research , technology and higher education", "mr. biden's team", "ms. taylor ’s lawyers", "ms. taylor ’s relatives",
@@ -102,7 +102,7 @@ desired_checklist_of_anonymous_sources = [
     "trump administration", "trump administration; republicans", "trump campaign aides", "trump campaign and nevada republicans",
     "tyco", "uber; lyft", "uber; lyft; doordash", "unesco",
     "united nations", "united states", "united states court of appeals", "united states equal employment opportunity commission",
-    "united states geological survey", "urban - brookings tax center", "valero", "villagecare",
+    "united states geological survey", "urban-brookings tax center", "valero", "villagecare",
     "vox; fivethirtyeight", "wcnc", "walgreens", "walmart",
     "washington state supreme court", "waymo", "white house spokeswoman", "wilbur ross; justice department lawyers",
     "world health organization", "world shipping council", "a pentagon spokeswoman", "a few parents",
@@ -127,19 +127,22 @@ desired_checklist_of_anonymous_sources = [
     "polls-2", "press office", "primaries", "proponents-2",
     "recent reports", "reference", "reporters; editors", "republicans; trump",
     "residents; officials", "scene", "scientists-2", "senior boeing executives",
-    "shares", "sheriff ’s office", "spokeswoman for the e.p.a.", "spokeswoman-1",
+    "shares", "sheriff ’s office", "spokeswoman for the E.P.A.", "spokeswoman-1",
     "staff union", "states; counties; facilities", "stocks", "taiwanese officials",
     "talk shows", "television", "the census bureau", "the centers for medicare and medicaid",
     "the environment ministry", "the federal emergency management agency", "the forest service says", "the french democratic confederation of labor",
     "the giffords law center to prevent gun violence", "the johnson amendment", "the national hurricane center", "the organization for the prohibition of chemical weapons",
-    "the pittsburgh post - gazette", "the santa clara county fire department", "the small business administration", "the storm prediction center",
+    "the pittsburgh post-gazette", "the santa clara county fire department", "the small business administration", "the storm prediction center",
     "the united nations", "the united states attorney in the district of arizona", "the university of california , san francisco", "the city manager",
     "the shooting sports foundation", "the state legislature", "tourism officials", "victims ’ families",
     "video", "viral tweet", "wall street analysts", "website",
-    "white house", "witnesses; officials", "passive-voice",
+    "white house", "witnesses; officials", "passive-voice", "commentaries", "commentary",
+    "archaeologists", "another", "some", "projections", "oil prices", 'few',
     # hacks
-    'Stripe', 'The Nation', 'The Atlantic', 'Salon', 'Dalai Lama', 'Tessah Melamed', 'Tzipi Hotovely', 'Shannon Watts',
-    ## PARC3 anon sources
+    'Stripe', 'The Nation', 'The Atlantic', 'Salon', 'Dalai Lama', 'Tessah Melamed', 'Le Monde',
+    'Tzipi Hotovely', 'Shannon Watts', 'Agustinus Tri Budi Utomo', 'Sneh Seetal', 'Tonight Show',
+    'AT5', 'NU.nl', "S&P 500",
+    # PARC3 anon sources
     "investors", "president", "people", "chairman", "officials", "analysts",
     "vice president", "director", "traders", "analyst", "employees", "workers",
     "executive", "chief executive officer", "members", "executives", "spokesman", "managers",
@@ -421,7 +424,8 @@ desired_checklist_of_anonymous_sources = [
     "independents", "delinquents", "cousins", "tipsters", "live-haulers", "processors",
     "evangelists", "hiders", "masons", "roofers", "payer", "deputy assistant commissioner",
     "man", "orthodoxy", "kidnappers", "captives", "ex-president", "analysts",
-    "two-time-losers", "cable-TV industry executives", "legal observers", "chemist-turned-entrepreneur", "investment salesmen", "toddler",
+    "two-time-losers", "cable-TV industry executives", "legal observers", "chemist-turned-entrepreneur",
+    "investment salesmen", "toddler",
     "newborns", "first-grader", "weather man", "benefactors", "savers", "reckons",
     "securities regulators", "amahs", "stepchildren", "four-man", "throwers", "self-employed",
     "actuary", "doubter", "citizenship", "brass", "dropout", "hairdresser",
@@ -541,6 +545,8 @@ desired_checklist_of_anonymous_sources = [
     "generalists", "litigator"
 ]
 
+import spacy
+nlp = spacy.load('en_core_web_lg')
 temp_list = []
 for sources in desired_checklist_of_anonymous_sources:
     if sources not in ['they', 'for']:
@@ -554,6 +560,7 @@ for sources in desired_checklist_of_anonymous_sources:
         for source in sources:
             # source = source.replace('-', ' ')
             # source = ' '.join(list(filter(lambda x: not x.isdigit(), source.split(' '))))
+            source = ' '.join(list(map(str, nlp(source))))
             if len(source.strip()) == 0:
                 continue
             if source.startswith('the '):

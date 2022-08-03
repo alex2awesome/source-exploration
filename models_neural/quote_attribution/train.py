@@ -9,9 +9,15 @@ from models_neural.quote_attribution.utils_parser import attach_model_arguments
 from models_neural.src.utils_general import format_loss_weighting, reformat_model_path
 from models_neural.src.config_helper import TransformersConfig, get_transformer_config
 from models_neural.quote_attribution.language_models import LMModel, GPT2LMHeadModel, RobertaForCausalLM
-from models_neural.quote_attribution.utils_dataset import \
-    SourceConditionalGenerationDataset, SourceClassificationDataModule
-from models_neural.quote_attribution.classification_models import SourceClassifier
+from models_neural.quote_attribution.utils_dataset import (
+    SourceConditionalGenerationDataset,
+    SourceClassificationDataModule,
+    SourceQADataModule
+)
+from models_neural.quote_attribution.classification_models import (
+    SourceClassifier,
+    SourceQA
+)
 
 
 import pytorch_lightning as pl
@@ -25,7 +31,8 @@ logging.basicConfig(level=logging.INFO)
 
 experiments = {
     'roberta_generation': ('roberta', SourceConditionalGenerationDataset, LMModel),
-    'roberta_classification': ('roberta', SourceClassificationDataModule, SourceClassifier)
+    'roberta_classification': ('roberta', SourceClassificationDataModule, SourceClassifier),
+    'roberta_qa': ('roberta', SourceQADataModule, SourceQA)
 }
 
 local_output_fp = './runs/'

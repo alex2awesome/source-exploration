@@ -1,19 +1,23 @@
 import torch
 from torch import nn
-from models_neural.src.layers_sentence_embedding import SentenceEmbeddingsLayer
+from models_neural.src.layers_sentence_embedding import PretrainedModelLoader, SentenceEmbeddingsLayer
 from models_neural.src.utils_general import get_config
 from models_neural.src.layers_head import HeadLayerBinaryFF, HeadLayerBinaryLSTM, HeadLayerBinaryTransformer
-from models_neural.src.utils_lightning import LightningMixin
-
+from models_neural.src.utils_lightning import LightningMixin, LightningLMSteps, LightningOptimizer, LightningQASteps
+from torch.nn import CrossEntropyLoss
 
 class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
     def __init__(self, config, *args, **kwargs):
         super().__init__(config, *args, **kwargs)
-        self.person_embedding = nn.Embedding(2, self.config.hidden_dim)
-        self.target_sentence_embedding = nn.Embedding(2, self.config.hidden_dim)
+        self.person_embedding = nn.Embedding(2, self.config.embedding_dim)
+        self.target_sentence_embedding = nn.Embedding(2, self.config.embedding_dim)
         if self.config.sentence_embedding_method == 'multiheaded-attention':
-            from models_neural.src.layers_attention import MultiHeadedSelfAttention
-            self.attention = MultiHeadedSelfAttention(self.config.max_length)
+            from models_neural.src.layers_attention import TGMultiHeadedSelfAttention
+            self.attention = TGMultiHeadedSelfAttention(
+                self.config.hidden_dim,
+                self.config.embedding_dim,
+                8
+            )
 
     def get_sentence_embs(self, word_embs, attention_mask):
         # aggregate
@@ -111,3 +115,56 @@ class SourceClassifier(LightningMixin):
         sent_embeddings = self.transformer(input_ids, target_sentence_ids, target_person_ids, attention_mask)
         loss, prediction, labels = self.head.classification(sent_embeddings, labels)
         return loss
+
+
+class SourceQA(LightningOptimizer, LightningQASteps):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.config = get_config(kwargs=kwargs)
+        self.num_labels = 2
+        pretrained_model_loader = PretrainedModelLoader(*args, **kwargs)
+        self.encoder_model = pretrained_model_loader.encoder_model
+        self.qa_outputs = nn.Linear(self.config.hidden_size, self.num_labels)
+        self.target_sentence_embedding = nn.Embedding(2, self.config.embedding_dim)
+
+    def forward(
+            self,
+            input_ids,
+            sentence_ids,
+            start_positions=None,
+            end_positions=None,
+            input_lens=None,
+            attention_mask=None,
+            *args,
+            **kwargs
+    ):
+
+        outputs = self.encoder_model(input_ids, attention_mask=attention_mask)
+        sentence_type_embs = self.target_sentence_embedding(sentence_ids)
+        word_embs = outputs[0]
+        word_embs = word_embs + sentence_type_embs
+
+        logits = self.qa_outputs(word_embs)
+        start_logits, end_logits = logits.split(1, dim=-1)
+        start_logits = start_logits.squeeze(-1).contiguous()
+        end_logits = end_logits.squeeze(-1).contiguous()
+
+        total_loss = None
+        if start_positions is not None and end_positions is not None:
+            # If we are on multi-GPU, split add a dimension
+            if len(start_positions.size()) > 1:
+                start_positions = start_positions.squeeze(-1)
+            if len(end_positions.size()) > 1:
+                end_positions = end_positions.squeeze(-1)
+            # sometimes the start/end positions are outside our model inputs, we ignore these terms
+            ignored_index = start_logits.size(1)
+            start_positions = start_positions.clamp(0, ignored_index)
+            end_positions = end_positions.clamp(0, ignored_index)
+
+            loss_fct = CrossEntropyLoss(ignore_index=ignored_index)
+            start_loss = loss_fct(start_logits, start_positions)
+            end_loss = loss_fct(end_logits, end_positions)
+            total_loss = (start_loss + end_loss) / 2
+
+        output = (start_logits, end_logits) + outputs[2:]
+        return ((total_loss,) + output) if total_loss is not None else output

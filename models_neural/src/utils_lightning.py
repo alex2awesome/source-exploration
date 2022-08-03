@@ -111,9 +111,6 @@ class LightningBase(pl.LightningModule):
                     self.entropy(batch['y_pred'])
                     self.max_count(batch['y_pred'])
         else:
-            # print('DEVICES:')
-            # print('Y_PRED: %s' % str(batch_parts['y_pred'].device))
-            # print('Y_TRUE: %s' % str(batch_parts['y_true'].device))
             if 'head' in batch_parts:
                 self.validation_report(batch_parts['y_pred'], batch_parts['y_true'], head=batch_parts.get('head'))
             else:
@@ -240,7 +237,7 @@ class LightningOptimizer(pl.LightningModule):
         }
 
 
-class LightningSteps(pl.LightningModule):
+class LightningLMSteps(pl.LightningModule):
     """Mixin to handle Lightning hooks and metrics"""
 
     def __init__(self, *args, **kwargs):
@@ -303,3 +300,40 @@ class LightningSteps(pl.LightningModule):
             ppl = self.training_perplexity.compute()
             self.log('Training Perplexity', ppl)
             self.training_perplexity.reset()
+
+
+
+class LightningQASteps(pl.LightningModule):
+    """Mixin to handle Lightning hooks and metrics"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+    def training_step(self, batch, batch_idx):
+        loss = self.forward(**batch)[0]
+        self.log('Training Loss', loss)
+        return {'loss': loss}
+
+    def validation_step(self, batch, batch_idx):
+        loss = self.forward(**batch)[0]
+        self.log('Validation loss', loss)
+        return {'loss': loss}
+
+    def training_step_end(self, batch_parts):
+        # if run on multi-GPUs, this is a list(?)
+        if isinstance(batch_parts, list):
+            return sum(map(lambda x: x['loss'], batch_parts))
+        else:
+            return batch_parts['loss']
+
+    def validation_step_end(self, batch_parts):
+        if isinstance(batch_parts, list):
+            return sum(map(lambda x: x['loss'], batch_parts))
+        else:
+            return batch_parts['loss']
+
+    def training_epoch_end(self, outputs):
+        pass
+
+    def validation_epoch_end(self, outputs):
+        pass
