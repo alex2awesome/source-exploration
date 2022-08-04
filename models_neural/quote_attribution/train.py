@@ -180,7 +180,7 @@ if __name__ == "__main__":
         args.num_gpus = 0
         args.pretrained_path = args.pretrained_model_path
     else:
-        from models_neural.src import download_all_necessary_files
+        from models_neural.src.utils_data_access import download_all_necessary_files
         download_all_necessary_files(args)
 
     # config
