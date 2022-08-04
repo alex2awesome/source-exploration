@@ -10,7 +10,7 @@ def attach_model_arguments(parser):
     parser.add_argument('--local_rank', type=int, required=False, default=-1, help='Local rank when doing multi-process training, set to -1 if not')
     parser.add_argument('--model_type', type=str, default='roberta')
     parser.add_argument('--sentence_contextualizer_model_type', type=str, default='roberta')
-    parser.add_argument('--spacy_path', type=str, default=None)
+    parser.add_argument('--spacy_model_file', type=str, default=None)
     parser.add_argument('--log_all_metrics', action='store_true')
     parser.add_argument('--shuffle_data', action='store_true')
     parser.add_argument('--downsample_negative_data', default=1.0, type=float, help="rate at which to downsample negative datapoints.")
