@@ -80,11 +80,7 @@ def download_all_necessary_files(args):
         import spacy
         if not is_local(args):
             logging.info('Downloading spacy model file: %s...' % args.spacy_model_file)
-            download_model_files_bb(args.spacy_model_file, local_path='en_core', use_zip=False, use_pretrained_dir=False)
-            args.spacy_model = spacy.load('en_core')
-            args.spacy_model_file = 'en_core'
-        else:
-            args.spacy_model = spacy.load(args.spacy_model_file)
+            download_model_files_bb(args.spacy_model_file, use_zip=False, use_pretrained_dir=False)
 
     # Download data file
     if get_data_file_path(args):

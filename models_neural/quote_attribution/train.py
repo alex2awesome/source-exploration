@@ -90,7 +90,7 @@ def main(
         model_type=lm_type,
         batch_size=args.batch_size,
         max_length_seq=args.max_length_seq,
-        spacy_path=args.spacy_path
+        spacy_path=args.spacy_model_file
     )
     dataset.prepare_data()
     dataset.setup(stage='fit')
