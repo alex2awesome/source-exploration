@@ -43,20 +43,17 @@ katie compute run \
         --env NCCL_ASYNC_ERROR_HANDLING=1 NCCL_LL_THRESHOLD=0 NCCL_DEBUG=INFO env=$ENV \
         -- \
         --model_type $model_type \
-        --pretrained_files_s3 $pretrained_model \
+        --pretrained_model_path $pretrained_model \
         --experiment lstm_sequential \
         --batch_size 1 \
         --num_train_epochs 3 \
-        --do_train \
-        --do_eval \
-        --train_data_file_s3 data/our-annotated-data__stage-2.tsv \
+        --train_data_file data/our-annotated-data__stage-2.tsv \
         --notes "Stage 2: Quote Attribution. Second run, our dataset only." \
         --freeze_transformer \
         --sentence_embedding_method 'attention' \
         --dropout .1 \
         --accumulate_grad_batches 1 \
         --learning_rate 1e-4 \
-        --warmup_steps 0 \
         --spacy_model_file en_core_web_lg/ \
 
 
