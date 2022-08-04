@@ -54,7 +54,7 @@ katie compute run \
         --dropout .1 \
         --accumulate_grad_batches 1 \
         --learning_rate 1e-4 \
-        --spacy_model_file en_core_web_lg/ \
+        --spacy_model_file aspangher/spacy/en_core_web_lg/ \
 
 
 #        --tensorboard-log-dir hdfs:///user/aspangher/source-finding/tensorboard \

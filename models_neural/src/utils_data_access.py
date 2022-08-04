@@ -145,7 +145,10 @@ def download_model_files_bb(remote_model, use_pretrained_dir=True, local_path=No
 
     # format model name/path
     model_file_name = '%s.zip' % remote_model if use_zip else remote_model
-    model_path_name = 'aspangher/transformer-pretrained-models/%s' % model_file_name if use_pretrained_dir else model_file_name
+    if use_pretrained_dir:
+        model_path_name = 'aspangher/transformer-pretrained-models/%s' % model_file_name
+    else:
+        model_path_name = 'aspangher/%s' % model_file_name
 
     print('downloading %s -> %s...' % (model_path_name, local_path))
     # download and optionally unzip
