@@ -545,37 +545,6 @@ desired_checklist_of_anonymous_sources = [
     "generalists", "litigator"
 ]
 
-import spacy
-nlp = spacy.load('en_core_web_lg')
-temp_list = []
-for sources in desired_checklist_of_anonymous_sources:
-    if sources not in ['they', 'for']:
-        if ';' in sources:
-            sources = sources.split(';')
-        elif '\/' in sources:
-            sources = sources.split('\/')
-        else:
-            sources = [sources]
-
-        for source in sources:
-            # source = source.replace('-', ' ')
-            # source = ' '.join(list(filter(lambda x: not x.isdigit(), source.split(' '))))
-            source = ' '.join(list(map(str, nlp(source))))
-            if len(source.strip()) == 0:
-                continue
-            if source.startswith('the '):
-                source = source[len('the '):]
-            if source.startswith('a '):
-                source = source[len('a '):]
-            if source.endswith('s'):
-                temp_list.append(source[:-1].strip())
-            temp_list.append(source.strip())
-
-desired_checklist_of_anonymous_sources = list(set(temp_list))
-desired_checklist_of_anonymous_sources = list(filter(lambda x: x != '', desired_checklist_of_anonymous_sources))
-desired_checklist_of_anonymous_sources = sorted(desired_checklist_of_anonymous_sources, key=lambda x: -len(x))
-
-
 desired_checklist_of_documents = [
     "bill", "the washington post", "the associated press", "reuters",
     "poll", "report", "associated press", "polls",
@@ -621,3 +590,36 @@ ner_filter_list = [
     'GPE',
     'LAW',
 ]
+
+
+all_sources = desired_checklist_of_anonymous_sources + desired_checklist_of_documents
+
+
+def get_anon_sources(nlp, source_keywords=all_sources):
+    temp_list = []
+    for sources in source_keywords:
+        if sources not in ['they', 'for']:
+            if ';' in sources:
+                sources = sources.split(';')
+            elif '\/' in sources:
+                sources = sources.split('\/')
+            else:
+                sources = [sources]
+
+            for source in sources:
+                # source = source.replace('-', ' ')
+                # source = ' '.join(list(filter(lambda x: not x.isdigit(), source.split(' '))))
+                source = ' '.join(list(map(str, nlp(source))))
+                if len(source.strip()) == 0:
+                    continue
+                if source.startswith('the '):
+                    source = source[len('the '):]
+                if source.startswith('a '):
+                    source = source[len('a '):]
+                if source.endswith('s'):
+                    temp_list.append(source[:-1].strip())
+                temp_list.append(source.strip())
+
+    output = list(set(temp_list))
+    output = list(filter(lambda x: x != '', output))
+    return sorted(output, key=lambda x: -len(x))

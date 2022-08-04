@@ -52,10 +52,7 @@ def get_source_candidates(input_doc, nlp=None):
                     words[word_idx]['found'] = True
 
         # B. get special strings (e.g. "the reporter")
-        special_strs_to_search = (
-            params.desired_checklist_of_anonymous_sources +
-            params.desired_checklist_of_documents
-        )
+        special_strs_to_search = params.get_anon_sources(nlp)
         for anon_source in special_strs_to_search:
             source_words = anon_source.lower().split()
             matching_start_indices = list(filter(lambda x: x['word'] == source_words[0], words))

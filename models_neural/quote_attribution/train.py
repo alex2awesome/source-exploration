@@ -178,53 +178,15 @@ if __name__ == "__main__":
     if args.local:
         # train and eval files
         args.num_gpus = 0
-        args.main_data_file = os.path.join(here, args.train_data_file)
-        if args.eval_data_file is not None:
-            args.eval_data_file = os.path.join(here, args.eval_data_file)
         args.pretrained_path = args.pretrained_model_path
     else:
-        from models_neural.src import (
-            get_fs, download_model_files_bb, download_file_to_filepath
-        )
-        # train (and eval df)
-        print('Downloading data...')
-        fn = 'input_data.csv.gz' if args.train_data_file.endswith('.gz') else 'input_data.csv'
-        args.main_data_file = os.path.join(here, fn)
-        download_file_to_filepath(remote_file_name=args.train_data_file, local_path=args.main_data_file)
-        if args.eval_data_file is not None:
-            args.eval_data_file = os.path.join(here, 'eval_data.csv')
-            download_file_to_filepath(remote_file_name=args.eval_data_file, local_path=args.eval_data_file)
-
-        # download model files
-        print('Downloading pretrained discriminator...')
-        args.pretrained_path = args.pretrained_model_path
-        print('downloading pretrained model %s->%s' % (args.pretrained_model_path, args.pretrained_path))
-        if '/' not in args.pretrained_model_path:
-            download_model_files_bb(remote_model=args.pretrained_model_path, local_path=here)
-        else:
-            download_file_to_filepath(remote_file_name=args.pretrained_model_path)
-
-        print(glob.glob(os.path.join(args.pretrained_path, '*')))
-        if args.finetuned_lm_file is not None:
-            from models_neural.src import LMModel
-            download_file_to_filepath(remote_file_name=args.finetuned_lm_file)
-            config = AutoConfig.from_pretrained(args.pretrained_path)
-            fine_tuned_model = LMModel.load_from_checkpoint(
-                args.finetuned_lm_file,
-                loading_from_checkpoint=True,
-                config=config,
-                model_type=args.model_type,
-            )
-            if hasattr(fine_tuned_model, 'hf_model'):
-                fine_tuned_model = fine_tuned_model.hf_model
-            torch.save(fine_tuned_model.state_dict(), os.path.join(args.pretrained_path, 'pytorch_model.bin'))
-            print('new directory with fine-tuned model...')
-            print(glob.glob(os.path.join(args.pretrained_path, '*')))
+        from models_neural.src import download_all_necessary_files
+        download_all_necessary_files(args)
 
     # config
     config = TransformersConfig(cmd_args=args)
     config.pretrained_cache_dir = reformat_model_path(args.pretrained_path)
-    config.main_data_file = args.main_data_file
+    config.main_data_file = os.path.join(here, args.train_data_file)
     config.max_position_embeddings = args.max_num_word_positions
     config.num_warmup_steps = training_args.warmup_steps
     config.num_train_epochs = config.num_train_epochs if hasattr(config, 'num_train_epochs') else training_args.num_train_epochs
