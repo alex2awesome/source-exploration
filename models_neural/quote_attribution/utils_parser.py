@@ -34,7 +34,7 @@ def attach_model_arguments(parser):
     # optimization params
     parser.add_argument('--num_train_epochs', type=int, default=3)
     parser.add_argument('--learning_rate', type=float, default=5e-5)
-    parser.add_argument("--num_warmup_steps", type=float, default=0, help="Num warmup steps.")
+    parser.add_argument("--warmup_steps", type=float, default=0, help="Num warmup steps.")
     parser.add_argument("--weight_decay", type=float, default=0, help="Whether to have a LR decay schedule or not (not implemented).")
     parser.add_argument("--max_grad_norm", type=float, default=0, help="Clip the gradients at a certain point.")
     parser.add_argument("--accumulate_grad_batches", type=int, default=1, help="Accumulate gradients across batches.")
@@ -57,7 +57,7 @@ def attach_model_arguments(parser):
     parser.add_argument('--concat_headline', action='store_true')
     parser.add_argument('--use_positional', action='store_true')
     parser.add_argument('--sinusoidal_embeddings', action='store_true')
-    parser.add_argument('--max_position_embeddings', type=int, default=40)
+    parser.add_argument('--max_num_sent_positions', type=int, default=40)
     parser.add_argument('--use_doc_emb', action='store_true')
     parser.add_argument('--doc_embed_arithmetic', action='store_true')
 

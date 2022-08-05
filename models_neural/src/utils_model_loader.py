@@ -105,7 +105,7 @@ class ModelLoader():
             lightning_module.load_from_checkpoint(
                 checkpoint_path=self.discriminator_path,
                 loading_from_checkpoint=True,
-                pretrained_cache_dir=self.pretrained_model_path,
+                pretrained_model_path=self.pretrained_model_path,
                 config=self.config,
                 **kwargs
                 # gpt2-medium-expanded-embeddings

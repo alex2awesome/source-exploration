@@ -31,7 +31,7 @@ class LightningBase(pl.LightningModule):
             # config.to_dict(),
             ignore=[
                 'train_data_file_s3', 'log_all_metrics', 'save_model', 'do_train', 'do_eval', 'notes', 'local', 'use_cpu',
-                'transformer_model_name', 'model_name', 'pretrained_cache_dir', 'main_data_file', 'pad_id',
+                'transformer_model_name', 'model_name', 'pretrained_model_path', 'main_data_file', 'pad_id',
                 'num_steps_per_epoch', 'total_steps'
         ])
         self.config = config
@@ -159,20 +159,20 @@ class LightningMixin(LightningBase):
 
         #
         self.lr = self.config.learning_rate
-        self.num_warmup_steps = self.config.num_warmup_steps
+        self.warmup_steps = self.config.warmup_steps
         self.dataset_size = self.config.num_steps_per_epoch
 
     # optimization
     def _lr_lambda(self, current_step):
-        if current_step < self.num_warmup_steps:
-            return float(current_step) / float(max(1.0, self.num_warmup_steps))
+        if current_step < self.warmup_steps:
+            return float(current_step) / float(max(1.0, self.warmup_steps))
         return 1.0
 
     def _lr_lambda_linear(self, current_step):
-        if current_step < self.num_warmup_steps:
-            return float(current_step) / float(max(1, self.num_warmup_steps))
+        if current_step < self.warmup_steps:
+            return float(current_step) / float(max(1, self.warmup_steps))
         num = self.num_training_steps - current_step
-        denom = self.num_training_steps - self.num_warmup_steps
+        denom = self.num_training_steps - self.warmup_steps
         num = float(max(0, num))
         denom = float(max(1, denom))
         return num / denom
@@ -203,20 +203,20 @@ class LightningOptimizer(pl.LightningModule):
         self.config = get_config(kwargs=kwargs)
         #
         self.lr = self.config.learning_rate
-        self.num_warmup_steps = self.config.num_warmup_steps
+        self.warmup_steps = self.config.warmup_steps
         self.dataset_size = self.config.num_steps_per_epoch
 
     # optimization
     def _lr_lambda(self, current_step):
-        if current_step < self.num_warmup_steps:
-            return float(current_step) / float(max(1.0, self.num_warmup_steps))
+        if current_step < self.warmup_steps:
+            return float(current_step) / float(max(1.0, self.warmup_steps))
         return 1.0
 
     def _lr_lambda_linear(self, current_step):
-        if current_step < self.num_warmup_steps:
-            return float(current_step) / float(max(1, self.num_warmup_steps))
+        if current_step < self.warmup_steps:
+            return float(current_step) / float(max(1, self.warmup_steps))
         num = self.num_training_steps - current_step
-        denom = self.num_training_steps - self.num_warmup_steps
+        denom = self.num_training_steps - self.warmup_steps
         num = float(max(0, num))
         denom = float(max(1, denom))
         return num / denom

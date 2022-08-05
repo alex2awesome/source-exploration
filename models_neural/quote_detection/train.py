@@ -52,7 +52,7 @@ def main(
     datasetclass, discriminator_class = experiments[experiment]
     dataset = datasetclass(
         data_fp=config.main_data_file,
-        pretrained_model_path=config.pretrained_cache_dir,
+        pretrained_model_path=config.pretrained_model_path,
         num_cpus=config.num_dataloader_cpus,
         config=config,
         **kwargs
@@ -108,7 +108,7 @@ def main(
                 'sentence_embedding_method': config.sentence_embedding_method,
                 'experiment': experiment,
                 # trainer params
-                'num_warmup_steps': config.num_warmup_steps,
+                'warmup_steps': config.warmup_steps,
                 'learning_rate': config.learning_rate,
                 'gradient_accumulation': config.accumulate_grad_batches,
             }
@@ -206,15 +206,15 @@ if __name__ == "__main__":
 
     # config
     config = TransformersConfig(cmd_args=args)
-    config.pretrained_cache_dir = reformat_model_path(pretrained_path)
+    config.pretrained_model_path = reformat_model_path(pretrained_path)
     config.main_data_file = main_data_file
-    config.num_warmup_steps = training_args.warmup_steps
+    config.warmup_steps = training_args.warmup_steps
     config.num_train_epochs = config.num_train_epochs if hasattr(config, 'num_train_epochs') else training_args.num_train_epochs
     config.loss_weighting = format_loss_weighting(config.loss_weighting)
     if not hasattr(config, 'env'):
         config.env = os.environ.get('env')
 
-    t_config = get_transformer_config(config.pretrained_cache_dir)
+    t_config = get_transformer_config(config.pretrained_model_path)
     config.embedding_dim = t_config.hidden_size
 
     # set up model

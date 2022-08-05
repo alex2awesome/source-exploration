@@ -63,7 +63,7 @@ def attach_model_arguments(parser):
     parser.add_argument('--concat_headline', action='store_true')
     parser.add_argument('--use_positional', action='store_true')
     parser.add_argument('--sinusoidal_embeddings', action='store_true')
-    parser.add_argument('--max_position_embeddings', type=int, default=40)
+    parser.add_argument('--max_num_sent_positions', type=int, default=40)
     parser.add_argument('--use_doc_emb', action='store_true')
     parser.add_argument('--doc_embed_arithmetic', action='store_true')
     parser.add_argument('--do_doc_pred', action='store_true', default=False, help='TEMPORARY (for edits project)')

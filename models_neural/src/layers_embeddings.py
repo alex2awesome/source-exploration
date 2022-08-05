@@ -28,12 +28,12 @@ class PosEmbMixin(nn.Module):
         hidden_dim = self.config.hidden_dim * 2 if getattr(self.config, 'bidirectional', False) else self.config.hidden_dim
 
         if not self.config.sinusoidal_embeddings:
-            self.max_position_embs = nn.Parameter(torch.tensor(self.config.max_position_embeddings), requires_grad=False)
+            self.max_position_embs = nn.Parameter(torch.tensor(self.config.num_position_embeddings), requires_grad=False)
             self.default_max_pos = nn.Parameter(torch.tensor(self.max_position_embs - 1), requires_grad=False)
-            self.position_embeddings = nn.Embedding(self.config.max_position_embeddings, hidden_dim)
+            self.position_embeddings = nn.Embedding(self.config.num_position_embeddings, hidden_dim)
         else:
             from fairseq.modules import SinusoidalPositionalEmbedding
-            self.position_embeddings = SinusoidalPositionalEmbedding(hidden_dim, self.config.pad_id, self.config.max_position_embeddings)
+            self.position_embeddings = SinusoidalPositionalEmbedding(hidden_dim, self.config.pad_id, self.config.num_position_embeddings)
 
     def get_position_embeddings(self, hidden_embs):
         if not self.config.use_positional:

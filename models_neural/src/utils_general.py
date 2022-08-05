@@ -108,13 +108,13 @@ def get_config(config=None, kwargs={}):
         config.num_sent_attn_heads = 2
     if getattr(config, 'context_layer', None) is None:
         config.context_layer = 'gpt2-sentence'
-    if getattr(config, 'max_num_word_positions', None) is None:
+    if getattr(config, 'max_num_sent_positions', None) is None:
         config.max_num_word_positions = 2048
 
     if getattr(config, 'learning_rate', None) is None:
         config.learning_rate = 5e-05
-    if getattr(config, 'num_warmup_steps', None) is None:
-        config.num_warmup_steps = 0
+    if getattr(config, 'warmup_steps', None) is None:
+        config.warmup_steps = 0
     if getattr(config, 'num_steps_per_epoch', None) is None:
         config.num_steps_per_epoch = 800
 

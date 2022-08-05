@@ -124,7 +124,7 @@ class SourceQA(LightningOptimizer, LightningQASteps):
         self.num_labels = 2
         pretrained_model_loader = PretrainedModelLoader(*args, **kwargs)
         self.encoder_model = pretrained_model_loader.encoder_model
-        self.qa_outputs = nn.Linear(self.config.hidden_size, self.num_labels)
+        self.qa_outputs = nn.Linear(self.config.embedding_dim, self.num_labels)
         self.target_sentence_embedding = nn.Embedding(2, self.config.embedding_dim)
 
     def forward(

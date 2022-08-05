@@ -37,22 +37,6 @@ experiments = {
 
 local_output_fp = './runs/'
 
-def get_config(pretrained_path=None, cmd_args=None, config=None):
-    """
-    """
-    pretrained_config = AutoConfig.from_pretrained(pretrained_path)
-
-    # update pretrained config with our Argparse config.
-    for k in cmd_args.__dict__:
-        pretrained_config.__dict__[k] = cmd_args.__dict__[k]
-
-    if config is not None:
-        for k in config.__dict__:
-            pretrained_config.__dict__[k] = config.__dict__[k]
-
-    # return
-    return pretrained_config
-
 
 def main(
         args,
@@ -72,18 +56,13 @@ def main(
         os.makedirs(output_fp)
 
     lm_type, datasetclass, lm_class = experiments[experiment]
-    #
-    config = get_config(args.pretrained_model_path, args, config=config)
-    config.pretrained_cache_dir = args.pretrained_model_path
-    config.use_cache = False
-    config.num_output_tags = 1
 
     ####
     # load dataset and model classes
     dataset = datasetclass(
         config=config,
-        data_fp=config.main_data_file,
-        pretrained_model_path=config.pretrained_cache_dir,
+        data_fp=config.train_data_file,
+        pretrained_model_path=config.pretrained_model_path,
         num_cpus=config.num_dataloader_cpus,
         split_type=args.split_type,
         split_perc=.95,
@@ -112,7 +91,7 @@ def main(
                 'experiment': args.experiment,
                 # trainer params
                 'batch_size': config.batch_size,
-                'num_warmup_steps': config.num_warmup_steps,
+                'warmup_steps': config.warmup_steps,
                 'learning_rate': config.learning_rate,
                 'gradient_accumulation': config.accumulate_grad_batches,
             }
@@ -178,28 +157,25 @@ if __name__ == "__main__":
     if args.local:
         # train and eval files
         args.num_gpus = 0
-        args.pretrained_path = args.pretrained_model_path
     else:
         from models_neural.src.utils_data_access import download_all_necessary_files
         download_all_necessary_files(args)
 
     # config
     config = TransformersConfig(cmd_args=args)
-    config.pretrained_cache_dir = reformat_model_path(args.pretrained_path)
-    config.main_data_file = os.path.join(here, args.train_data_file)
-    config.max_position_embeddings = args.max_num_word_positions
-    config.num_warmup_steps = training_args.warmup_steps
+    config.pretrained_model_path = reformat_model_path(config.pretrained_model_path)
+    config.train_data_file = os.path.join(here, args.train_data_file)
     config.num_train_epochs = config.num_train_epochs if hasattr(config, 'num_train_epochs') else training_args.num_train_epochs
     config.loss_weighting = format_loss_weighting(config.loss_weighting)
+    config.use_cache = False
+    config.num_output_tags = 1
+
     if not hasattr(config, 'env'):
         config.env = os.environ.get('env')
 
-    t_config = get_transformer_config(config.pretrained_cache_dir)
-    config.embedding_dim = t_config.hidden_size
-
     # set up model
     logging.info('MODEL PARAMS:')
-    logging.info(config.to_json_string())
+    logging.info(config.to_json_string(use_diff=False))
     logging.info('END MODEL PARAMS')
 
     main(

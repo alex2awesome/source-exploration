@@ -14,7 +14,7 @@ class LabelEmbeddings(nn.Module):
         self.device = get_device()
         self.label_embeds = nn.Embedding(self.config.num_output_tags + 2, self.config.hidden_dim)
         if self.config.label_pos_embs:
-            self.label_pos_embeds = nn.Embedding(self.config.max_position_embeddings + 1, self.config.hidden_dim)
+            self.label_pos_embeds = nn.Embedding(self.config.num_position_embeddings + 1, self.config.hidden_dim)
         self.start_idx = self.config.num_output_tags
         self.end_idx = self.config.num_output_tags + 1
         self.label_attention = LabelEmbeddingWithContext(config=self.config)
@@ -79,7 +79,7 @@ class LabelEmbeddings(nn.Module):
         label_embedding_mat = self.label_embeds(labels)
         if self.config.label_pos_embs:
             position_ids = torch.arange(len(labels), dtype=torch.long, device=self.device)
-            position_ids = position_ids.where(position_ids < self.config.max_position_embeddings, torch.tensor(self.config.max_position_embeddings, device=self.device))
+            position_ids = position_ids.where(position_ids < self.config.num_position_embeddings, torch.tensor(self.config.num_position_embeddings, device=self.device))
             pos_emb = self.label_pos_embeds(position_ids)
             label_embedding_mat = label_embedding_mat + pos_emb
 

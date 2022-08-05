@@ -16,8 +16,8 @@ class PretrainedModelLoader(nn.Module):
         # setup configs
         self.loading_from_checkpoint = loading_from_checkpoint
         if self.loading_from_checkpoint:
-            if kwargs.get('pretrained_cache_dir') != self.config.pretrained_cache_dir:
-                self.config.pretrained_cache_dir = kwargs.get('pretrained_cache_dir')
+            if kwargs.get('pretrained_model_path') != self.config.pretrained_model_path:
+                self.config.pretrained_model_path = kwargs.get('pretrained_model_path')
 
         super().__init__()
         # get encoder
@@ -29,7 +29,7 @@ class PretrainedModelLoader(nn.Module):
     def get_pretrained_model(self):
         # get pretrained model
         if self.config.model_type == "gpt2":
-            transformer_config = AutoConfig.from_pretrained(self.config.pretrained_cache_dir)
+            transformer_config = AutoConfig.from_pretrained(self.config.pretrained_model_path)
             transformer_config.n_ctx = transformer_config.n_positions = self.config.max_num_word_positions
             self.embed_size = transformer_config.hidden_size
             ######### if loading from a checkpoint
@@ -38,13 +38,13 @@ class PretrainedModelLoader(nn.Module):
             if self.loading_from_checkpoint:
                 self.encoder_model = GPT2LMHeadModel(config=transformer_config)
             else:
-                self.encoder_model = GPT2LMHeadModel.from_pretrained(self.config.pretrained_cache_dir, config=transformer_config)
+                self.encoder_model = GPT2LMHeadModel.from_pretrained(self.config.pretrained_model_path, config=transformer_config)
             ##
         elif self.config.model_type == "bert":
-            self.encoder_model = BertModel.from_pretrained(self.config.pretrained_cache_dir)
+            self.encoder_model = BertModel.from_pretrained(self.config.pretrained_model_path)
             self.embed_size = self.encoder_model.config.hidden_size
         elif self.config.model_type == 'roberta':
-            self.encoder_model = RobertaModel.from_pretrained(self.config.pretrained_cache_dir)
+            self.encoder_model = RobertaModel.from_pretrained(self.config.pretrained_model_path)
             self.embed_size = self.encoder_model.config.hidden_size
         else:
             raise ValueError(

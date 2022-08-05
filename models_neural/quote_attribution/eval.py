@@ -94,15 +94,15 @@ if __name__=="__main__":
     print(glob.glob(os.path.join(pretrained_path, '*')))
     # config
     config = TransformersConfig(cmd_args=args)
-    config.pretrained_cache_dir = reformat_model_path(pretrained_path)
+    config.pretrained_model_path = reformat_model_path(pretrained_path)
     config.main_data_file = main_data_file
     config.discriminator_path = args.discriminator_path
-    config.num_warmup_steps = training_args.warmup_steps
+    config.warmup_steps = training_args.warmup_steps
     config.num_train_epochs = config.num_train_epochs if hasattr(config, 'num_train_epochs') else training_args.num_train_epochs
     if not hasattr(config, 'env'):
         config.env = os.environ.get('env')
 
-    t_config = get_transformer_config(config.pretrained_cache_dir)
+    t_config = get_transformer_config(config.pretrained_model_path)
     config.embedding_dim = t_config.hidden_size
 
     # set up model
@@ -113,7 +113,7 @@ if __name__=="__main__":
     s = Scorer(
         lm_model_type=config.model_type,
         pretrained_lm_model_path=None,
-        pretrained_model_path=config.pretrained_cache_dir,
+        pretrained_model_path=config.pretrained_model_path,
         discriminator_path=config.discriminator_path,
         training_args=training_args,
         experiment=args.experiment,

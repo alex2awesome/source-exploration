@@ -66,7 +66,7 @@ class BaselineDiscriminator(LightningMixin, BaseDiscriminator):
 class DiscriminatorGPT2Baseline(LightningMixin, BaseDiscriminator):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        t_config = AutoConfig.from_pretrained(self.config.pretrained_cache_dir)
+        t_config = AutoConfig.from_pretrained(self.config.pretrained_model_path)
         setattr(t_config, 'pad_token_id', self.config.pad_id)
         setattr(t_config, 'num_labels', self.config.num_output_tags)
         self.classifier = GPT2ForSequenceClassification(config=t_config)

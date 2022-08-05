@@ -26,7 +26,7 @@ class TransformersConfig(PretrainedConfig):
     train_perc: float  ## how much of the training set to use
     ## embedding augmentations
     use_positional: bool
-    max_position_embeddings: int ## for positional embeddings, specifies how far out we go.
+    max_num_sent_positions: int ## for positional embeddings, specifies how far out we go.
     use_doc_emb: bool
     doc_embed_arithmetic: bool
     concat_headline: bool ## actually use the headline embedding
@@ -36,6 +36,12 @@ class TransformersConfig(PretrainedConfig):
     use_cpu: bool = False
 
     def __init__(self, cmd_args=None, *args, **kwargs):
+        pretrained_config = AutoConfig.from_pretrained(cmd_args.pretrained_model_path)
+        for k in pretrained_config.__dict__:
+            self.__dict__[k] = pretrained_config.__dict__[k]
+
+        self.embedding_dim = pretrained_config.hidden_size
+
         if cmd_args is not None:
             # pass in all args
             for k in cmd_args.__dict__:
@@ -55,16 +61,15 @@ class TransformersConfig(PretrainedConfig):
             self.freeze_encoder_layers = list(map(int, cmd_args.freeze_encoder_layers))
             self.transformer_hidden_dropout_prob = cmd_args.dropout
             self.transformer_attention_probs_dropout_prob = cmd_args.dropout
-            self.embedding_dim = 0 ## default set by transformer in the code
 
         # handle kwargs for from_dict reconstruction
         for k, v in kwargs.items():
             self.__dict__[k] = v
 
-        if hasattr(self, 'pretrained_cache_dir'):
+        if hasattr(self, 'pretrained_model_path'):
             if os.environ.get('env') != 'bb':
-                if self.pretrained_cache_dir is not None and self.pretrained_cache_dir.startswith('./'):
-                    self.pretrained_cache_dir = self.pretrained_cache_dir[2:]
+                if self.pretrained_model_path is not None and self.pretrained_model_path.startswith('./'):
+                    self.pretrained_model_path = self.pretrained_model_path[2:]
 
     def to_json_string(self, use_diff: bool = True) -> str:
         """
@@ -118,8 +123,8 @@ training_args = TrainingArguments(
 )
 
 
-def get_transformer_config(pretrained_cache_dir):
-    transformer_config = AutoConfig.from_pretrained(pretrained_cache_dir)
+def get_transformer_config(pretrained_model_path):
+    transformer_config = AutoConfig.from_pretrained(pretrained_model_path)
     # transformer_config.hidden_dropout_prob = config.transformer_hidden_dropout_prob
     # transformer_config.attention_probs_dropout_prob = config.transformer_attention_probs_dropout_prob
     return transformer_config

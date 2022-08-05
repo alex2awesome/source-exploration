@@ -36,13 +36,6 @@ class BiLSTMContextMixin(nn.Module):
             bidirectional=self.config.bidirectional
         )
         self._init_lstm_hidden_layers()
-        transformer_config = AutoConfig.from_pretrained(self.config.pretrained_cache_dir)
-        orig_embed_size = transformer_config.hidden_size
-
-        # if orig_embed_size != self.config.hidden_dim:
-        #     self.resize_layer = nn.Linear(orig_embed_size, self.config.hidden_dim, bias=False)
-        #     self.do_resize = True
-
 
     def _init_lstm_hidden_layers(self):
         for name, param in self.lstm.state_dict().items():
@@ -75,7 +68,7 @@ class BiLSTMContextMixin(nn.Module):
 class TransformerContextMixin(nn.Module):
     def __init__(self, *args, **kwargs):
         self.config = get_config(kwargs=kwargs)
-        transformer_config = AutoConfig.from_pretrained(self.config.pretrained_cache_dir)
+        transformer_config = AutoConfig.from_pretrained(self.config.pretrained_model_path)
         orig_embed_size = transformer_config.hidden_size
         assert hasattr(self.config, 'num_sent_attn_heads') and hasattr(self.config, 'num_contextual_layers')
         super().__init__(*args, **kwargs)

@@ -44,7 +44,7 @@ class BaseDiscriminator(pl.LightningModule):
         super().__init__()
         self.save_hyperparameters()
         self.lr = kwargs.get('lr')
-        self.num_warmup_steps = kwargs.get('num_warmup_steps', 0)
+        self.warmup_steps = kwargs.get('warmup_steps', 0)
         self.batch_size = kwargs.get('batch_size')
         self.dataset_size = kwargs.get('dataset_size')
 
@@ -100,7 +100,7 @@ class BaseDiscriminator(pl.LightningModule):
             self.position_embeddings = SinusoidalPositionalEmbedding(
                 self.get_final_layer_size(),
                 self.pad_token_id,
-                self.max_position_embeddings
+                self.max_num_sent_positions
             )
 
         #####
