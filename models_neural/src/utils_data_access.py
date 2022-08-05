@@ -80,7 +80,7 @@ def download_all_necessary_files(args):
         import spacy
         if not is_local(args):
             logging.info('Downloading spacy model file: %s...' % args.spacy_model_file)
-            download_model_files_bb(args.spacy_model_file, use_zip=False, use_pretrained_dir=False)
+            download_model_files_bb(args.spacy_model_file, use_zip=False, use_pretrained_dir=False, recursive=True)
 
     # Download data file
     if get_data_file_path(args):
@@ -123,7 +123,7 @@ def get_fs():
     return fs
 
 
-def download_model_files_bb(remote_model, use_pretrained_dir=True, local_path=None, use_zip=True):
+def download_model_files_bb(remote_model, use_pretrained_dir=True, local_path=None, use_zip=True, recursive=False):
     """
     Download pretrained model files from bb S3.
 
@@ -154,7 +154,6 @@ def download_model_files_bb(remote_model, use_pretrained_dir=True, local_path=No
         with zipfile.ZipFile('%s.zip' % local_path, 'r') as zip_ref:
             zip_ref.extractall()
     else:
-        recursive = False
         if remote_model.strip()[-1] == '/':
             recursive = True
         fs.get(model_path_name, '%s' % local_path, recursive=recursive)
