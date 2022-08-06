@@ -44,7 +44,7 @@ katie compute run \
         -- \
         --model_type $model_type \
         --pretrained_model_path $pretrained_model \
-        --experiment lstm_sequential \
+        --experiment roberta_qa \
         --batch_size 1 \
         --num_train_epochs 3 \
         --train_data_file data/our-annotated-data__stage-2.tsv \
