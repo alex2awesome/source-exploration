@@ -418,6 +418,7 @@ class SourceQADataModule(BaseFineTuningDataModule):
             doc_to_group = sorted(doc_to_group, key=lambda x: x[1])  # sort by source
 
             for source_heads, source_sentences in itertools.groupby(doc_to_group, key=lambda x: x[1]):
+                source_sentences = list(source_sentences)
                 if (not self.config.train_on_none) and (source_heads == 'None'):
                     continue
 
@@ -430,7 +431,7 @@ class SourceQADataModule(BaseFineTuningDataModule):
                         source_chunk, source_sentences, all_doc_tokens, sent_lens
                     )
                     training_data.extend(training_chunks)
-                    split.append(s)
+                    split.extend([s] * len(source_sentences))
 
         return SourceDataset(input=training_data, split=split)
 
