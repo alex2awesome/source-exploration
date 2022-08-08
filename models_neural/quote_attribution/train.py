@@ -102,7 +102,7 @@ def main(
     #################
     #  Train model
     checkpoint_callback = ModelCheckpoint(
-        monitor='Validation Perplexity',
+        monitor='Validation loss',
         dirpath=local_output_fp,
         filename='trial-%s__epoch={epoch:02d}-perplexity={Validation Perplexity:.2f}' % args.notes,
         save_top_k=1,
