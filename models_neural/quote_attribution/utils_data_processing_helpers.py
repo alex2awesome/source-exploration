@@ -280,7 +280,7 @@ def find_rk(seq, subseq):
         curr_hash += hash(seq[i + m - 1]) - hash(seq[i - 1])   # update hash
         if hash_subseq == curr_hash and seq[i:i + m] == subseq:
             return i
-    return False
+    return -1
 
 def get_source_in_sentence(source_head, sentence):
     if re.search('-\d', source_head):

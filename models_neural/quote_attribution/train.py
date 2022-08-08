@@ -157,6 +157,7 @@ if __name__ == "__main__":
     if args.local:
         # train and eval files
         args.num_gpus = 0
+        args.train_data_file = os.path.join(here, args.train_data_file)
     else:
         from models_neural.src.utils_data_access import download_all_necessary_files
         download_all_necessary_files(args)
@@ -164,7 +165,6 @@ if __name__ == "__main__":
     # config
     config = TransformersConfig(cmd_args=args)
     config.pretrained_model_path = reformat_model_path(config.pretrained_model_path)
-    # config.train_data_file = os.path.join(here, args.train_data_file)
     config.num_train_epochs = config.num_train_epochs if hasattr(config, 'num_train_epochs') else training_args.num_train_epochs
     config.loss_weighting = format_loss_weighting(config.loss_weighting)
     config.use_cache = False

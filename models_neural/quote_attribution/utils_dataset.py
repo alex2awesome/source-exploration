@@ -12,6 +12,7 @@ from models_neural.src.utils_general import (
     format_local_vars,
     transpose_dict,
 )
+import numpy as np
 from unidecode import unidecode
 import itertools
 import spacy
