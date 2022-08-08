@@ -129,7 +129,8 @@ def main(
 
     # upload best model
     best_model_path = checkpoint_callback.best_model_path
-    if args.env == 'bb':
+    if not args.local:
+        from models_neural.src.utils_data_access import get_fs
         fs = get_fs()
         fname = os.path.basename(best_model_path)
         remote_path = os.path.join('aspangher', 'source-exploration', output_fp, fname)
