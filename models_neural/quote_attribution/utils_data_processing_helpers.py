@@ -364,23 +364,26 @@ def cache_doc_tokens_for_qa(input_doc, tokenizer, nlp):
     )
 
 
-def generate_training_chunk_from_source_offset(source_offset_chunk, all_doc_tokens, sent_lens):
-    s_idx = int(source_offset_chunk['s_idx'])
+def generate_training_chunk_from_source_offset(source_offset_chunk, source_sentences, all_doc_tokens, sent_lens):
+    training_chunks = []
 
-    ##
-    training_chunk = {}
-    training_chunk['start_position'] = source_offset_chunk['start_tok_idx']
-    training_chunk['end_position'] = source_offset_chunk['end_tok_idx']
-    training_chunk['context'] = all_doc_tokens
-    sent_inds = []
-    for i, l in enumerate(sent_lens):
-        if i == s_idx:
-            sent_inds += [1] * l
-        else:
-            sent_inds += [0] * l
+    for _, _, s_idx, _ in source_sentences:
+        s_idx = int(s_idx)
+        ##
+        training_chunk = {}
+        training_chunk['start_position'] = source_offset_chunk['start_tok_idx']
+        training_chunk['end_position'] = source_offset_chunk['end_tok_idx']
+        training_chunk['context'] = all_doc_tokens
+        sent_inds = []
+        for i, l in enumerate(sent_lens):
+            if i == s_idx:
+                sent_inds += [1] * l
+            else:
+                sent_inds += [0] * l
 
-    training_chunk['sentence_indicator_tokens'] = sent_inds
-    return training_chunk
+        training_chunk['sentence_indicator_tokens'] = sent_inds
+        training_chunks.append(training_chunk)
+    return training_chunks
 
 
 

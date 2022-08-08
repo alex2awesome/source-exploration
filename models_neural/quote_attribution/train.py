@@ -127,7 +127,6 @@ def main(
 
     trainer.fit(model, datamodule=dataset)
 
-    # cache
     # upload best model
     best_model_path = checkpoint_callback.best_model_path
     if args.env == 'bb':
@@ -136,6 +135,7 @@ def main(
         remote_path = os.path.join('aspangher', 'source-exploration', output_fp, fname)
         print('uploading model file at %s to: %s...' % (best_model_path, remote_path))
         fs.put(best_model_path, remote_path)
+
     # log best metric score
     best_metric = checkpoint_callback.best_model_score
     print('BEST MODEL SCORE: %s' % best_metric)

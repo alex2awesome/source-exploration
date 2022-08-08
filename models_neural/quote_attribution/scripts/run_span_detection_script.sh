@@ -48,8 +48,33 @@ katie compute run \
         --batch_size 1 \
         --num_train_epochs 3 \
         --train_data_file data/our-annotated-data__stage-2.tsv \
-        --notes "Stage 2: Quote Attribution. Second run, our dataset only." \
-        --freeze_transformer \
+        --notes "Stage 2: Quote Attribution. Our dataset only." \
+        --freeze_encoder_layers $frozen_layers \
+        --sentence_embedding_method 'attention' \
+        --dropout .1 \
+        --accumulate_grad_batches 1 \
+        --learning_rate 1e-4 \
+        --spacy_model_file spacy/en_core_web_lg \
+
+
+katie compute run \
+        $APPROACH \
+        --compute-framework $DEFAULT_FRAMEWORK \
+        --node-size $DEFAULT_JOB_SIZE \
+        $worker_args \
+        --python-module models_neural.quote_attribution.train \
+        --identities hadoop=$DEFAULT_HADOOP_IDENTITY bcs=$DEFAULT_BCS_IDENTITY git=$DEFAULT_GIT_IDENTIY \
+        --pip-packages $DEFAULT_PACKAGE \
+        --env NCCL_ASYNC_ERROR_HANDLING=1 NCCL_LL_THRESHOLD=0 NCCL_DEBUG=INFO env=$ENV \
+        -- \
+        --model_type $model_type \
+        --pretrained_model_path $pretrained_model \
+        --experiment roberta_qa \
+        --batch_size 1 \
+        --num_train_epochs 3 \
+        --train_data_file data/our-annotated-data__stage-2.tsv \
+        --notes "Stage 2: Quote Detection + Attribution (i.e. train attribution on 'None'). Our dataset only." \
+        --freeze_encoder_layers $frozen_layers \
         --sentence_embedding_method 'attention' \
         --dropout .1 \
         --accumulate_grad_batches 1 \
