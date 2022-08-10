@@ -208,35 +208,6 @@ class MultiHeadedSelfAttention(nn.Module):
         return o.squeeze()
 
 
-class TGMultiHeadedSelfAttention(nn.Module):
-    """
-    Compresses token representation into a single vector
-    """
-
-    def __init__(self, hidden_dim, embed_dim, num_heads):
-        super().__init__()
-        self.cls_repr = nn.Parameter(torch.zeros(hidden_dim))
-        self.hidden_dim = hidden_dim
-        self.embed_dim = embed_dim
-        self.attn = torch.nn.MultiheadAttention(embed_dim=hidden_dim, num_heads=num_heads)
-        self.key_layer = torch.nn.Linear(self.embed_dim, self.hidden_dim)
-        self.value_layer = torch.nn.Linear(self.embed_dim, self.hidden_dim)
-
-
-    def forward(self, x, attention_mask):
-        B, T, D = x.size()  # [Batch, Time, Dim]
-        assert D == self.embed_dim
-        query = self.cls_repr.view(1, 1, self.hidden_dim).repeat(B, 1, 1)
-
-        key = self.key_layer(x)
-        value = self.value_layer(x)
-
-        # Args: Query, Key, Value, Mask
-        cls_repr = self.attn(query, key, value, attention_mask)
-        cls_repr = cls_repr.view(B, self.hidden_dim)  # [B, D]
-        return cls_repr
-
-
 from torch.nn import Parameter
 from torch.nn import init
 from torch.autograd import Variable

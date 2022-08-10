@@ -137,7 +137,7 @@ desired_checklist_of_anonymous_sources = [
     "the shooting sports foundation", "the state legislature", "tourism officials", "victims ’ families",
     "video", "viral tweet", "wall street analysts", "website",
     "white house", "witnesses; officials", "passive-voice", "commentaries", "commentary",
-    "archaeologists", "another", "some", "projections", "oil prices", 'few',
+    "archaeologists", "another", "some", "projections", "oil prices", 'few', 'foresters',
     # hacks
     'Stripe', 'The Nation', 'The Atlantic', 'Salon', 'Dalai Lama', 'Tessah Melamed', 'Le Monde',
     'Tzipi Hotovely', 'Shannon Watts', 'Agustinus Tri Budi Utomo', 'Sneh Seetal', 'Tonight Show',

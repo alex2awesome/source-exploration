@@ -12,8 +12,8 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
         self.person_embedding = nn.Embedding(2, self.config.embedding_dim)
         self.target_sentence_embedding = nn.Embedding(2, self.config.embedding_dim)
         if self.config.sentence_embedding_method == 'multiheaded-attention':
-            from models_neural.src.layers_attention import TGMultiHeadedSelfAttention
-            self.attention = TGMultiHeadedSelfAttention(
+            from models_neural.src.layers_attention_tg import SentenceCompressor
+            self.attention = SentenceCompressor(
                 self.config.hidden_dim,
                 self.config.embedding_dim,
                 8
@@ -61,13 +61,12 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
         )
 
         source_type_embs = self.person_embedding(target_person_ids)
-        word_embs = word_embs + source_type_embs
-        sent_embs = self.get_sentence_embs(word_embs, attention_mask)
         sentence_type_embs = self.target_sentence_embedding(target_sentence_ids)
-        return sent_embs + sentence_type_embs
+        word_embs = word_embs + source_type_embs + sentence_type_embs
+        return self.get_sentence_embs(word_embs, attention_mask)
 
 
-class SourceClassifier(LightningMixin):
+class SourceClassifier(LightningOptimizer, LightningQASteps):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.config = get_config(kwargs=kwargs)
@@ -113,8 +112,7 @@ class SourceClassifier(LightningMixin):
          returns tuple of (None, y_preds, None)
         """
         sent_embeddings = self.transformer(input_ids, target_sentence_ids, target_person_ids, attention_mask)
-        loss, prediction, labels = self.head.classification(sent_embeddings, labels)
-        return loss
+        return self.head.classification(sent_embeddings, labels)
 
 
 class SourceQA(LightningOptimizer, LightningQASteps):

@@ -4,6 +4,13 @@ from . import utils_params as params
 import numpy as np
 import random
 
+_special_strs_to_search = None
+def get_special_strs_to_search(nlp):
+    global _special_strs_to_search
+    if _special_strs_to_search is None:
+        _special_strs_to_search = params.get_anon_sources(nlp)
+    return _special_strs_to_search
+
 
 def get_unique_spacy_ents(ent_list):
     seen = set()
@@ -26,7 +33,7 @@ def clean_articles(input_str, nlp):
     return input_str.strip()
 
 
-def get_source_candidates(input_doc, nlp=None):
+def get_source_candidates(input_doc, nlp=None, special_strs_to_search=None):
     all_source_candidates = []
     for sent, source_head, sent_idx, _ in input_doc:
         doc = nlp(sent)
@@ -52,7 +59,7 @@ def get_source_candidates(input_doc, nlp=None):
                     words[word_idx]['found'] = True
 
         # B. get special strings (e.g. "the reporter")
-        special_strs_to_search = params.get_anon_sources(nlp)
+        special_strs_to_search = get_special_strs_to_search(nlp)
         for anon_source in special_strs_to_search:
             source_words = anon_source.lower().split()
             matching_start_indices = list(filter(lambda x: x['word'] == source_words[0], words))
@@ -118,11 +125,11 @@ def reconcile_candidates_and_annotations(source_cand_df, input_doc, nlp, split):
                 annotation_to_candidate_mapper[a] = c
                 found = True
                 break
-        if (not found) and (split == 'train'):
-            assert a not in doc_str
-            assert a in doc_str
+        # if (not found) and (split == 'train'):
+        #     assert a not in doc_str
+        #     assert a in doc_str
     #         annotation_to_candidate_mapper[a] = a
-        elif (not found) and (split == 'test'):
+        if not found: # and (split == 'test'):
             print('not found %s, test...' % a)
             temp_candidate_set = list(filter(lambda x: len(x) > 2, candidate_set))
             r_c = random.choice(temp_candidate_set)

@@ -59,7 +59,7 @@ class MultiClassMixin(nn.Module):
             self.text_and_label_comb.bias.data.fill_(0)
 
     def calculate_loss(self, preds, labels):
-        if len(labels.shape) == 0:
+        if len(labels.shape) < len(preds.shape):
             labels = labels.unsqueeze(dim=0)
         loss = self.criterion(preds, labels)
         return loss
@@ -91,8 +91,8 @@ class MultiClassMixin(nn.Module):
             global_step=None
     ):
         # loss
-        label_context_back = getattr(self.config, 'label_context_back', 0)
-        label_context_forward = getattr(self.config, 'label_context_forward', 0)
+        label_context_back = getattr(self.config, 'label_context_back', 0) or 0
+        label_context_forward = getattr(self.config, 'label_context_forward', 0) or 0
         if (label_context_back != 0) or (label_context_forward != 0):
             label_embs = label_embs.reshape(hidden_embs.shape)
             hidden_embs = torch.hstack((hidden_embs, label_embs))
@@ -114,7 +114,13 @@ class BinaryMixin(MultiClassMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.criterion = nn.BCELoss(reduction='none')
+        self.m = nn.Sigmoid()
 
+    def calculate_loss(self, preds, labels):
+        if len(labels.shape) < len(preds.shape):
+            labels = labels.unsqueeze(dim=0)
+        loss = self.criterion(self.m(preds), labels)
+        return loss
 
 class MultiTaskMultiClassMixin(MultiClassMixin):
     """

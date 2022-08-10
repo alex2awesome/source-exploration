@@ -26,7 +26,7 @@ def format_layer_freezes(layers):
     When run remotely, because of reformatting, it's a list of joined strings: ['1 2 3...']
 
     """
-    if not isinstance(layers, list):
+    if not isinstance(layers, (list, tuple)):
         try:
             return int(layers)
         except:

@@ -346,6 +346,7 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
         attention_mask = list(map(lambda x_len: [1] * x_len + [0] * (max_len - x_len), X_lens))
         attention_mask = torch.tensor(attention_mask)
         labels = list(map(int, columns['label']))
+        labels = torch.tensor(labels).to(torch.float)
         return {
             "input_ids": X_input_ids,
             "target_sentence_ids": X_sent_ids,
