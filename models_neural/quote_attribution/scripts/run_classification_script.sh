@@ -50,8 +50,11 @@ katie compute run \
         --train_data_file data/our-annotated-data__stage-2.tsv \
         --notes "Stage 2: Quote Attribution. Classification. Our dataset only." \
         --freeze_encoder_layers $frozen_layers \
-        --sentence_embedding_method 'attention' \
+        --sentence_embedding_method 'multiheaded-attention' \
         --dropout .1 \
         --accumulate_grad_batches 1 \
         --learning_rate 1e-4 \
         --spacy_model_file spacy/en_core_web_lg \
+        --downsample_negative_data .1 \
+        --shuffle_data
+
