@@ -13,14 +13,6 @@ import logging
 from torch.nn.utils.rnn import pad_sequence
 
 
-idx_to_label_high_level = {
-    0: 'Cause',
-    1: 'Distant',
-    2: 'Error',
-    3: 'Main'
-}
-
-
 class Scorer(ModelLoader):
     def predict(self, input_sentences, add_features=None):
         if isinstance(input_sentences, pd.Series):
@@ -39,14 +31,11 @@ class Scorer(ModelLoader):
             input_ids=input_ids, attention_mask=attention_mask,
             add_features=add_features
         )
-        if preds.shape[1] == 4:
-            idx_to_label = idx_to_label_high_level
 
         preds = torch.argmax(preds, axis=1)
         preds = preds.cpu().detach().numpy().tolist()
-        if self.kwargs.get('config') and self.kwargs['config'].map_tags:
-            preds = list(map(idx_to_label.get, preds))
         return preds
+
 
 if __name__=="__main__":
     from util.utils_data_access import (
