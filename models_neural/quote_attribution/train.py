@@ -132,10 +132,21 @@ def main(
     if not args.local:
         from models_neural.src.utils_data_access import get_fs
         fs = get_fs()
+        # upload model
         fname = os.path.basename(best_model_path)
         remote_path = os.path.join('aspangher', 'source-exploration', output_fp, fname)
         print('uploading model file at %s to: %s...' % (best_model_path, remote_path))
         fs.put(best_model_path, remote_path)
+
+        # upload config
+        import json
+        local_config_path = 'config-%s.json' % args.notes
+        remote_config_path = os.path.join('aspangher', 'source-exploration', output_fp, local_config_path)
+        with open(local_config_path, 'w') as f:
+            config_dict = config.to_dict()
+            json.dump(config_dict, f)
+        fs.put(local_config_path, remote_config_path)
+
 
     # log best metric score
     best_metric = checkpoint_callback.best_model_score
