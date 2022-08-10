@@ -374,10 +374,12 @@ def cache_doc_tokens_for_qa(input_doc, tokenizer, nlp):
 def generate_training_chunk_from_source_offset(source_offset_chunk, source_sentences, all_doc_tokens, sent_lens):
     training_chunks = []
 
-    for _, _, s_idx, _ in source_sentences:
+    for _, source_head, s_idx, doc_idx in source_sentences:
         s_idx = int(s_idx)
         ##
         training_chunk = {}
+        training_chunk['doc_idx'] = doc_idx
+        training_chunk['source_head'] = source_head
         training_chunk['start_position'] = source_offset_chunk['start_tok_idx']
         training_chunk['end_position'] = source_offset_chunk['end_tok_idx']
         training_chunk['context'] = all_doc_tokens
@@ -389,11 +391,9 @@ def generate_training_chunk_from_source_offset(source_offset_chunk, source_sente
                 sent_inds += [0] * l
 
         training_chunk['sentence_indicator_tokens'] = sent_inds
+
         training_chunks.append(training_chunk)
     return training_chunks
-
-
-
 
 #                 p.EntityMention(
 #                     name=str(ent),
