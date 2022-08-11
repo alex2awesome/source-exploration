@@ -129,6 +129,8 @@ class TGMultiHeadedAttention(nn.Module):
         if mask is not None:
             # Same mask applied to all h heads.
             mask = mask.unsqueeze(1)  # [BatchSize x 1 x Time x SeqLen]  1=Broadcast for all heads
+            if len(mask.shape) == 3:
+                mask = mask.unsqueeze(1)
         batch_size = query.size(0)
 
         # 1) Do all the linear projections in batch from d_model => h x d_k
