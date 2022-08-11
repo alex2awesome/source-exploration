@@ -117,8 +117,8 @@ class BinaryMixin(MultiClassMixin):
         self.m = nn.Sigmoid()
 
     def calculate_loss(self, preds, labels):
-        if len(labels.shape) < len(preds.shape):
-            labels = labels.unsqueeze(dim=0)
+        if labels.shape != preds.shape:
+            labels = labels.reshape_as(preds)
         loss = self.criterion(self.m(preds), labels)
         return loss
 
