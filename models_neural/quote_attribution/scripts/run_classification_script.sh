@@ -45,7 +45,7 @@ katie compute run \
         --model_type $model_type \
         --pretrained_model_path $pretrained_model \
         --experiment roberta_classification \
-        --batch_size 1 \
+        --batch_size 5 \
         --num_train_epochs 3 \
         --train_data_file data/our-annotated-data__stage-2.tsv \
         --notes "Stage 2: Quote Attribution. Classification. Our dataset only." \
