@@ -345,7 +345,7 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
         max_len = max(X_lens)
         attention_mask = list(map(lambda x_len: [1] * x_len + [0] * (max_len - x_len), X_lens))
         attention_mask = self.tensorfy_and_pad(attention_mask)
-        
+
         labels = list(map(int, columns['label']))
         labels = torch.tensor(labels).to(torch.float)
         return {

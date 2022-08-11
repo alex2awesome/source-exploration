@@ -13,7 +13,7 @@ def attach_model_arguments(parser):
     parser.add_argument('--spacy_model_file', type=str, default=None)
     parser.add_argument('--log_all_metrics', action='store_true')
     parser.add_argument('--shuffle_data', action='store_true')
-    parser.add_argument('--downsample_negative_data', default=1.0, type=float, help="rate at which to downsample negative datapoints.")
+    parser.add_argument('--downsample_negative_data', default=None, type=float, help="rate at which to downsample negative datapoints.")
     parser.add_argument('--train_on_none', action='store_true')
 
     # hardware params

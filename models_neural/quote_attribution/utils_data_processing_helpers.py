@@ -262,9 +262,13 @@ def generate_training_data(
                     'label': False
                 })
 
-    if negative_downsample < 1:
+    if (negative_downsample is not None) and (negative_downsample < 1):
         random.shuffle(neg_training_data)
         neg_training_data = neg_training_data[:int(len(neg_training_data) * negative_downsample)]
+
+    if (negative_downsample is not None) and (negative_downsample >= 1):
+        random.shuffle(neg_training_data)
+        neg_training_data = neg_training_data[:int(len(pos_training_data) * negative_downsample)]
 
     # output
     training_data = pos_training_data + neg_training_data
