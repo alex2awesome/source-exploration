@@ -2,6 +2,7 @@ import pandas as pd
 import jellyfish
 from . import utils_params as params
 import numpy as np
+import random
 
 
 def get_unique_spacy_ents(ent_list):
@@ -50,7 +51,6 @@ def get_source_candidates(input_doc, nlp=None):
                 for word_idx in range(ent.start, ent.end):
                     words[word_idx]['found'] = True
 
-
         # B. get special strings (e.g. "the reporter")
         special_strs_to_search = (
             params.desired_checklist_of_anonymous_sources +
@@ -81,6 +81,7 @@ def get_source_candidates(input_doc, nlp=None):
                             'sent_idx': sent_idx,
                             'type': 'anonymous'
                     })
+
     return pd.DataFrame(all_source_candidates).drop_duplicates('candidate')
 
 
@@ -107,7 +108,7 @@ def name_matching_jaro(a, c, nlp):
 
 
 # 2. reconcile the candidate list with the list of annotations
-def reconcile_candidates_and_annotations(source_cand_df, input_doc, nlp):
+def reconcile_candidates_and_annotations(source_cand_df, input_doc, nlp, split):
     doc_str = ' '.join(list(map(lambda x: x[0], input_doc)))
     candidate_set = source_cand_df['candidate'].tolist()
     candidate_set = sorted(candidate_set, key=lambda x: -len(x))  # match the longest matches first
@@ -120,10 +121,16 @@ def reconcile_candidates_and_annotations(source_cand_df, input_doc, nlp):
                 annotation_to_candidate_mapper[a] = c
                 found = True
                 break
-        if not found:
+        if (not found) and (split == 'train'):
             assert a not in doc_str
             assert a in doc_str
     #         annotation_to_candidate_mapper[a] = a
+        elif (not found) and (split == 'test'):
+            print('not found %s, test...' % a)
+            temp_candidate_set = list(filter(lambda x: len(x) > 2, candidate_set))
+            r_c = random.choice(temp_candidate_set)
+            annotation_to_candidate_mapper[a] = r_c
+
     return annotation_to_candidate_mapper
 
 
@@ -133,11 +140,11 @@ def cache_doc_tokens(input_doc, tokenizer, nlp):
     doc_tokens_by_sentence = []
     blank_tokens_by_sentence = []
     for sent, _, _, _ in input_doc:
-        words = list(map(str, nlp(sent)))
+        words = list(map(str, nlp(sent.strip())))
         enc = [tokenizer.encode(x, add_special_tokens=False, add_prefix_space=True) for x in words]
         assert len(enc) == len(words)
         doc_tokens_by_word.append(enc)
-        tokenized_sentence = tokenizer.encode(sent)
+        tokenized_sentence = [tokenizer.bos_token_id] + [i for l in enc for i in l] + [tokenizer.eos_token_id]
         doc_tokens_by_sentence.append(tokenized_sentence)
         blank_tokens_by_sentence.append([0] * len(tokenized_sentence))
     doc_tokens = [i for l in doc_tokens_by_sentence for i in l]
@@ -193,26 +200,35 @@ def generate_indicator_lists(blank_tokens_by_sentence, doc_tokens_by_word, sourc
 
 
 # 5. prepare lookup table
-def augment_lookup_table_with_none(source_candidates_df, source_indicator_output):
+def build_source_lookup_table(source_candidates_df, source_indicator_output):
+    source_candidates_df = (
+        source_candidates_df
+            .assign(source_tokenized=pd.Series(source_indicator_output, index=source_candidates_df.index))
+    )
+    none_lookup_df = pd.Series({
+        'candidate': 'None',
+        'start_word': 0,
+        'end_word': 0,
+        # 'sent_idx': 0,
+        'type': 'none',
+        'source_tokenized': [0] * len(source_indicator_output[0])
+    }).to_frame().T
+
     source_candidates_df = pd.concat([
         source_candidates_df,
-        pd.Series({
-            'candidate': 'None',
-            'start_word': 0,
-            'end_word': 0,
-            # 'sent_idx': 0,
-            'type': 'none',
-            'source_tokenized': [0] * len(source_indicator_output[0])
-
-        }).to_frame().T
+        none_lookup_df
     ])
     source_candidates_df = source_candidates_df.set_index('candidate')
     return source_candidates_df
 
 
 # 7. Generate actual training data.
-def generate_training_data(input_doc, annot_to_cand_mapper, source_cand_df, sentence_indicator_output, doc_tokens):
-    training_data = []
+def generate_training_data(
+        input_doc, annot_to_cand_mapper, source_cand_df, sentence_indicator_output, doc_tokens,
+        negative_downsample=1,
+):
+    pos_training_data = []
+    neg_training_data = []
     true_pairs = set()
     candidate_set = source_cand_df.index.tolist()
 
@@ -221,7 +237,7 @@ def generate_training_data(input_doc, annot_to_cand_mapper, source_cand_df, sent
         candidate = annot_to_cand_mapper[annotated_source]
         source_ind_tokens = source_cand_df.loc[candidate]['source_tokenized']
         sentence_ind_tokens = sentence_indicator_output[int(sent_idx)]
-        sentence_indicator_output.append({
+        pos_training_data.append({
             'source_ind_tokens': source_ind_tokens,
             'sentence_ind_tokens': sentence_ind_tokens,
             'doc_tokens': doc_tokens,
@@ -235,17 +251,139 @@ def generate_training_data(input_doc, annot_to_cand_mapper, source_cand_df, sent
             if (c, sent_idx) not in true_pairs:
                 source_ind_tokens = source_cand_df.loc[c]['source_tokenized']
                 sentence_ind_tokens = sentence_indicator_output[int(sent_idx)]
-                sentence_indicator_output.append({
+                neg_training_data.append({
                     'source_ind_tokens': source_ind_tokens,
                     'sentence_ind_tokens': sentence_ind_tokens,
                     'doc_tokens': doc_tokens,
                     'label': False
                 })
 
+    if negative_downsample < 1:
+        random.shuffle(neg_training_data)
+        neg_training_data = neg_training_data[:int(len(neg_training_data) * negative_downsample)]
+
     # output
+    training_data = pos_training_data + neg_training_data
+    random.shuffle(training_data)
     return training_data
 
 
+
+#### data processing for QA
+import re
+from unidecode import unidecode
+def find_rk(seq, subseq):
+    n = len(seq)
+    m = len(subseq)
+    if seq[:m] == subseq:
+        return 0
+    hash_subseq = sum(hash(x) for x in subseq)  # compute hash
+    curr_hash = sum(hash(x) for x in seq[:m])  # compute hash
+    for i in range(1, n - m + 1):
+        curr_hash += hash(seq[i + m - 1]) - hash(seq[i - 1])   # update hash
+        if hash_subseq == curr_hash and seq[i:i + m] == subseq:
+            return i
+    return False
+
+def get_source_in_sentence(source_head, sentence):
+    if re.search('-\d', source_head):
+        source_head = re.sub('-\d', '', source_head)
+    if source_head in sentence:
+        return find_rk(sentence.split(), source_head.split())
+    else:
+        return -1
+
+
+def find_source_offset(source_head, source_sents, doc_sents, tok_lens_by_sent, sent_lens):
+    # 1. iterate through source-related sentences first
+    for sentence, _, s_idx, _ in source_sents:
+        sentence = unidecode(sentence)
+        offset = get_source_in_sentence(source_head.lower(), sentence.lower())
+        if offset != -1:
+            sent_toks = tok_lens_by_sent[int(s_idx)]
+            return {
+                'source': source_head,
+                's_idx': s_idx,
+                'start_tok_idx': sent_lens[int(s_idx)] + sent_toks[offset],
+                'end_tok_idx': sent_lens[int(s_idx)] + sent_toks[offset + len(source_head.split())],
+            }
+
+    # 2. iterate through the whole document if the source is not in the source sentences
+    for sentence, _, s_idx, _ in doc_sents:
+        sentence = unidecode(sentence)
+        offset = get_source_in_sentence(source_head.lower(), sentence.lower())
+        if offset != -1:
+            sent_toks = tok_lens_by_sent[int(s_idx)]
+            return {
+                'source': source_head,
+                's_idx': s_idx,
+                'start_tok_idx': sent_lens[int(s_idx)] + sent_toks[offset],
+                'end_tok_idx': sent_lens[int(s_idx)] + sent_toks[offset + len(source_head.split())],
+            }
+
+    # 3. nothing found, returning
+    return {
+        'source': source_head,
+        's_idx': -1,
+        'e_idx': -1,
+        'start_tok_idx': -1,
+        'end_tok_idx': -1,
+    }
+
+
+def cache_doc_tokens_for_qa(input_doc, tokenizer, nlp):
+    doc_tokens_by_word = []
+    doc_tokens_by_sentence = []
+    for sent, _, _, _ in input_doc:
+        words = list(map(str, nlp(sent.strip())))
+        enc = []
+        for w_idx, w in enumerate(words):
+            if w_idx == 0:
+                add_prefix_space = False
+            else:
+                add_prefix_space = True
+            enc.append(
+                tokenizer.encode(w, add_special_tokens=False, add_prefix_space=add_prefix_space)
+            )
+        doc_tokens_by_word.append(enc)
+        tokenized_sentence = [tokenizer.bos_token_id] + [i for l in enc for i in l] + [tokenizer.eos_token_id]
+        doc_tokens_by_sentence.append(tokenized_sentence)
+
+    doc_tokens = [i for l in doc_tokens_by_sentence for i in l]
+    word_lens_by_sent = [list(map(len, x)) for x in doc_tokens_by_word]
+
+    # we need a [1] offset in the cumsum because there is an extra bos token added.
+    word_lens_by_sent_cumsum = list(map(lambda x: np.cumsum([1] + x), word_lens_by_sent))
+    sent_lens = list(map(len, doc_tokens_by_sentence))
+    sent_lens_cumsum = np.cumsum([0] + sent_lens)
+
+    return (
+        doc_tokens_by_word,
+        doc_tokens_by_sentence,
+        doc_tokens,
+        word_lens_by_sent_cumsum,
+        sent_lens,
+        sent_lens_cumsum
+    )
+
+
+def generate_training_chunk_from_source_offset(source_offset_chunk, all_doc_tokens, sent_lens):
+    s_idx = int(source_offset_chunk['s_idx'])
+
+    ##
+    training_chunk = {}
+    training_chunk['start_position'] = source_offset_chunk['start_tok_idx']
+    training_chunk['end_position'] = source_offset_chunk['end_tok_idx']
+    training_chunk['context'] = all_doc_tokens
+    sent_inds = []
+    for i, l in enumerate(sent_lens):
+        if i == s_idx:
+            sent_inds += [1] * l
+        else:
+            sent_inds += [0] * l
+
+    training_chunk['sentence_indicator_tokens'] = sent_inds
+    return training_chunk
 
 
 

@@ -13,6 +13,7 @@ def attach_model_arguments(parser):
     parser.add_argument('--spacy_path', type=str, default=None)
     parser.add_argument('--log_all_metrics', action='store_true')
     parser.add_argument('--shuffle_data', action='store_true')
+    parser.add_argument('--downsample_negative_data', default=1.0, type=float, help="rate at which to downsample negative datapoints.")
 
     # hardware params
     parser.add_argument('--num_dataloader_cpus', type=int, default=10, help='Number of CPUs to use to process data')

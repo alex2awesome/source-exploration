@@ -10,35 +10,21 @@ from models_neural.src.utils_general import get_config, freeze_all_params, forma
 
 EPSILON = 1e-10
 
-class SentenceEmbeddingsLayer(nn.Module):
-    """
-    Main Discourse generator_pplm class:
-
-        Base Document encoder: RoBERTa
-        Head: Bi-LSTM or CRF
-    """
-    def __init__(self, config=None, loading_from_checkpoint=False, *args, **kwargs):
-        # setup configs
+class PretrainedModelLoader(nn.Module):
+    def __init__(self, config, loading_from_checkpoint=False, *args, **kwargs):
         self.config = get_config(config=config, kwargs=kwargs)
+        # setup configs
         self.loading_from_checkpoint = loading_from_checkpoint
         if self.loading_from_checkpoint:
             if kwargs.get('pretrained_cache_dir') != self.config.pretrained_cache_dir:
                 self.config.pretrained_cache_dir = kwargs.get('pretrained_cache_dir')
 
         super().__init__()
-
         # get encoder
         self.get_pretrained_model()
 
         # freeze layers
         self.freeze_encoder_layers()
-
-        # setup dropout
-        self.dropout = nn.Dropout(self.config.dropout)
-
-        #
-        if self.config.sentence_embedding_method == 'attention':
-            self.additive_attention = WordLevelAttention(config=self.config, input_dim=self.embed_size)
 
     def get_pretrained_model(self):
         # get pretrained model
@@ -86,6 +72,19 @@ class SentenceEmbeddingsLayer(nn.Module):
                 else:
                     freeze_all_params(self.encoder_model.encoder.layer[layer])
 
+
+class SentenceEmbeddingsLayer(PretrainedModelLoader):
+    """
+    Main Discourse generator_pplm class:
+
+        Base Document encoder: RoBERTa
+        Head: Bi-LSTM or CRF
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.config.sentence_embedding_method == 'attention':
+            self.additive_attention = WordLevelAttention(config=self.config, input_dim=self.embed_size)
+
     def get_sentence_embedding(
             self,
             input_ids,
@@ -122,7 +121,6 @@ class SentenceEmbeddingsLayer(nn.Module):
             else:
                 start_of_curr_seq = sequence_lens[-1]
                 hidden = hidden[:, -start_of_curr_seq:]
-
 
         # aggregate
         if self.config.sentence_embedding_method == 'average':

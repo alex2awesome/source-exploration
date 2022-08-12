@@ -7,13 +7,13 @@ except: # transformers: version 4.0
 from typing import Tuple, Any, List, Dict
 import torch
 from torch import nn
-from models_neural.src.utils_lightning import LightningOptimizer, LightningSteps
+from models_neural.src.utils_lightning import LightningOptimizer, LightningLMSteps
 from models_neural.src.utils_general import format_layer_freezes, freeze_all_params, get_config
 import torch.optim as optim
 from pytorch_lightning import LightningModule, Trainer
 
 
-class BaseLMModel(LightningOptimizer, LightningSteps):
+class BaseLMModel(LightningOptimizer, LightningLMSteps):
     def __init__(self, model=None, model_type='gpt2', *args, **kwargs):
         self.config = get_config(kwargs=kwargs)
         self.model_type = model_type

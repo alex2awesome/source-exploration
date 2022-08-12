@@ -192,7 +192,7 @@ class MultiHeadedSelfAttention(nn.Module):
             attention_mask = torch.hstack([attention_mask, x])
             batch_size, x_seq_len, emb_dim = x.shape  # shape: N x S x E
 
-        assert x_seq_len == self.seq_len
+        assert x_seq_len == self.max_seq_len
 
         Q = self.query_layer(x)
         K = self.key_layer(x)
@@ -219,8 +219,8 @@ class TGMultiHeadedSelfAttention(nn.Module):
         self.hidden_dim = hidden_dim
         self.embed_dim = embed_dim
         self.attn = torch.nn.MultiheadAttention(embed_dim=hidden_dim, num_heads=num_heads)
-        self.key_layer = torch.nn.Linear(self.emb_dim, self.hidden_dim)
-        self.value_layer = torch.nn.Linear(self.emb_dim, self.hidden_dim)
+        self.key_layer = torch.nn.Linear(self.embed_dim, self.hidden_dim)
+        self.value_layer = torch.nn.Linear(self.embed_dim, self.hidden_dim)
 
 
     def forward(self, x, attention_mask):

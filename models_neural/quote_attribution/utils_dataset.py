@@ -5,12 +5,14 @@ import torch.optim
 import torch.utils.data as data
 import pytorch_lightning as pl
 import os
+from torch.nn.utils.rnn import pad_sequence
 from transformers import BertTokenizer, GPT2Tokenizer, RobertaTokenizer
 from models_neural.src.utils_general import (
     reformat_model_path,
     format_local_vars,
     transpose_dict,
 )
+from unidecode import unidecode
 import itertools
 import spacy
 import random
@@ -26,8 +28,12 @@ from .utils_data_processing_helpers import (
     reconcile_candidates_and_annotations,
     cache_doc_tokens,
     generate_indicator_lists,
-    augment_lookup_table_with_none,
-    generate_training_data
+    build_source_lookup_table,
+    generate_training_data,
+    # for QA
+    cache_doc_tokens_for_qa,
+    find_source_offset,
+    generate_training_chunk_from_source_offset
 )
 
 
@@ -50,7 +56,7 @@ class Dataset(data.Dataset):
         return data
 
 
-class SourceClassificationDataset(data.Dataset):
+class SourceDataset(data.Dataset):
     def __init__(self, input, split=None):
         """Input is a list of dictionaries containing keys such as:
         {
@@ -294,29 +300,32 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
 
             sorted_doc[0][0] = 'journalist passive-voice ' + sorted_doc[0][0]
             doc_tok_by_word, doc_tok_by_sent, blank_toks_by_sent, all_doc_tokens = cache_doc_tokens(sorted_doc, self.tokenizer, self.nlp)
-            if len(all_doc_tokens) > max_num_tokens_in_doc:
-                print('doc too long')
-                continue
 
             if self.config.num_documents is not None:
                 if i > self.config.num_documents:
                     break
                 i += 1
 
+            s = _get_split(doc_idx)
             source_cand_df = get_source_candidates(sorted_doc, self.nlp)
-            annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp)
+            annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp, split=s)
             source_ind_list, sent_ind_list = generate_indicator_lists(blank_toks_by_sent, doc_tok_by_word, source_cand_df, sorted_doc)
-            source_cand_df = augment_lookup_table_with_none(source_cand_df, source_ind_list)
-            training_data = generate_training_data(sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens)
+            source_cand_df = build_source_lookup_table(source_cand_df, source_ind_list)
+            training_data = generate_training_data(
+                sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens, self.config.downsample_negative_data
+            )
 
             # append processed data
             data_chunk.extend(training_data)
-            s = _get_split(doc_idx)
+
             # record dataset built-in splits
             split.extend([s] * len(training_data))
 
-        return SourceClassificationDataset(input=data_chunk, split=split)
+        return SourceDataset(input=data_chunk, split=split)
 
+    def tensorfy_and_pad(self, list_of_lists):
+        tensors = list(map(torch.tensor, list_of_lists))
+        return pad_sequence(tensors, batch_first=True)[:, :max_num_tokens_in_doc]
 
     def collate_fn(self, dataset):
         """
@@ -328,9 +337,122 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
              labels: same as `input_ids`, for language modeling.
         """
         columns = transpose_dict(dataset)
-        X_batch = list(map(lambda sents: torch.cat(sents), columns["input_ids"]))
-        Y_batch = list(map(lambda labels: torch.cat(labels), columns["labels"]))
+        X_lens = list(map(len, columns['doc_tokens']))
+        X_input_ids = self.tensorfy_and_pad(columns["doc_tokens"])
+        X_source_ids = self.tensorfy_and_pad(columns['source_ind_tokens'])
+        X_sent_ids = self.tensorfy_and_pad(columns['sentence_ind_tokens'])
+        max_len = max(X_lens)
+        attention_mask = list(map(lambda x_len: [1] * x_len + [0] * (max_len - x_len), X_lens))
+        attention_mask = torch.tensor(attention_mask)
+        labels = list(map(int, columns['label']))
         return {
-            "input_ids": torch.cat(X_batch).unsqueeze(dim=0),
-            "labels": torch.cat(Y_batch).unsqueeze(dim=0)
+            "input_ids": X_input_ids,
+            "target_sentence_ids": X_sent_ids,
+            "target_person_ids": X_source_ids,
+            "labels": labels,
+            "attention_mask": attention_mask
         }
+
+
+class SourceQADataModule(BaseFineTuningDataModule):
+    def __init__(
+            self, data_fp, model_type, max_length_seq,
+            batch_size, pretrained_model_path, num_cpus=10,
+            split_type='random', split_perc=.9, spacy_path=None, *args, **kwargs
+    ):
+
+        super().__init__(**format_local_vars(locals()))
+        if spacy_path is not None:
+            self.nlp = spacy.load(spacy_path)
+        else:
+            self.nlp = None
+
+    def get_dataset(self):
+        """
+        Read in dataset as a list of "label \t text" entries.
+        Output flat lists of X = [sent_1, sent_2, ...], y = [label_1, label_2]
+        """
+        split, data_chunk = [], []
+        with open(self.data_fp) as f:
+            csv_reader = csv.reader(f, delimiter="\t")
+            csv_data = list(csv_reader)
+
+        grouped = []
+        for doc_idx, doc in itertools.groupby(csv_data, key=lambda x: x[3]):  # group by doc_id
+            sorted_doc = sorted(doc, key=lambda x: int(x[2]))  # sort by sent_id
+            sorted_doc = list(map(lambda x: [x[0].strip(), x[1], x[2], x[3]], sorted_doc))
+            grouped.append((doc_idx, sorted_doc))
+
+        if self.config.shuffle_data:
+            random.shuffle(grouped)
+
+        i = 0
+        training_data = []
+        for doc_idx, doc_to_group in tqdm(grouped, total=len(grouped)):
+            s = _get_split(doc_idx)
+
+            # contains ambiguous source
+            sources = list(set(map(lambda x: x[1], doc_to_group)))
+            ambiguous_sources = list(filter(lambda x: re.search('-\d', x) is not None, sources))
+            if len(ambiguous_sources) > 0:
+                continue
+
+            # check to see if we're only running this on a small sample
+            if self.config.num_documents is not None:
+                if i > self.config.num_documents:
+                    break
+                i += 1
+
+            # otherwise, continue
+            doc_to_group[0][0] = 'journalist passive-voice ' + doc_to_group[0][0]
+            (
+                doc_tok_by_word,
+                doc_tok_by_sent,
+                all_doc_tokens,
+                word_len_cumsum,
+                sent_lens,
+                sent_len_cumsum
+            ) = cache_doc_tokens_for_qa(doc_to_group, self.tokenizer, self.nlp)
+
+            doc_to_group = sorted(doc_to_group, key=lambda x: x[1])  # sort by source
+
+            for source_heads, source_sentences in itertools.groupby(doc_to_group, key=lambda x: x[1]):
+                if source_heads == 'None':
+                    continue
+
+                for source_head in source_heads.split(';'):
+                    source_head = unidecode(source_head).strip()
+                    source_chunk = find_source_offset(
+                        source_head, source_sentences, doc_to_group, word_len_cumsum, sent_len_cumsum
+                    )
+                    training_chunk = generate_training_chunk_from_source_offset(
+                        source_chunk, all_doc_tokens, sent_lens
+                    )
+                    training_data.append(training_chunk)
+                    split.append(s)
+
+        return SourceDataset(input=training_data, split=split)
+
+    def tensorfy_and_pad(self, list_of_lists):
+        tensors = list(map(torch.tensor, list_of_lists))
+        return pad_sequence(tensors, batch_first=True)[:, :max_num_tokens_in_doc]
+
+    def collate_fn(self, dataset):
+        """
+        Takes in an instance of Torch Dataset (or a subclassed instance).
+        Expects dataset[i]['X'] to be a list of list of sentences
+            and dataset[i]['y'] to be a list of list of labels.
+        Returns dict with key:
+             input_ids: list of tensors of len # docs where each tensor is an entire document.
+             labels: same as `input_ids`, for language modeling.
+        """
+        columns = transpose_dict(dataset)
+        output = {}
+        output['start_positions'] = torch.tensor(columns['start_position'])
+        output['end_positions'] = torch.tensor(columns['end_position'])
+        output['input_ids'] = self.tensorfy_and_pad(columns["context"])
+        output['sentence_ids'] = self.tensorfy_and_pad(columns['sentence_indicator_tokens'])
+
+        output['attention_mask'] = list(map(lambda x: [1] * len(x), columns['context']))
+        output['attention_mask'] = self.tensorfy_and_pad(output['attention_mask'])
+        return output
