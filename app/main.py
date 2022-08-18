@@ -164,7 +164,7 @@ def make_table_html():
 
     # filter to annotator-assigned files
     annotator_assignments = None
-    annotator_assignment_fn = 'data/2022-07-08__annotator-assignments.csv.gz'
+    annotator_assignment_fn = 'data/2022-08-18__annotator-assignments.csv.gz'
     if os.path.exists(annotator_assignment_fn):
         annotator_assignments = pd.read_csv(annotator_assignment_fn)
         annotator_assignments = (

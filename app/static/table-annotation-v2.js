@@ -1137,6 +1137,7 @@ class TablePageManager {
             // submit AJAX
             output['start_time'] = start_time
             output['output_fname'] = output_fname
+            output['annotator'] = annotator
             if (output_fname.indexOf('affil-role') != -1){
                 loc = loc + "?task=affil-role&annotator=" + annotator
             } else if (output_fname.indexOf('diversity') != -1){
