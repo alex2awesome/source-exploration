@@ -43,6 +43,7 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
             target_sentence_ids,
             target_person_ids,
             attention_mask,
+            sent_lens=None,
             *args, **kwargs
     ):
         """

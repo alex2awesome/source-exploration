@@ -138,15 +138,27 @@ def reconcile_candidates_and_annotations(source_cand_df, input_doc, nlp, split):
     return annotation_to_candidate_mapper
 
 
+def encode_sentence_as_words(sent, tokenizer, nlp):
+    words = list(map(str, nlp(sent.strip())))
+    enc = []
+    for w_idx, w in enumerate(words):
+        if w_idx == 0:
+            add_prefix_space = False
+        else:
+            add_prefix_space = True
+        enc.append(
+            tokenizer.encode(w, add_special_tokens=False, add_prefix_space=add_prefix_space)
+        )
+    assert len(enc) == len(words)
+    return enc
+
 # 3. Cache token strings for lookup
 def cache_doc_tokens(input_doc, tokenizer, nlp):
     doc_tokens_by_word = []
     doc_tokens_by_sentence = []
     blank_tokens_by_sentence = []
     for sent, _, _, _ in input_doc:
-        words = list(map(str, nlp(sent.strip())))
-        enc = [tokenizer.encode(x, add_special_tokens=False, add_prefix_space=True) for x in words]
-        assert len(enc) == len(words)
+        enc = encode_sentence_as_words(sent, tokenizer, nlp)
         doc_tokens_by_word.append(enc)
         tokenized_sentence = [tokenizer.bos_token_id] + [i for l in enc for i in l] + [tokenizer.eos_token_id]
         doc_tokens_by_sentence.append(tokenized_sentence)
@@ -162,7 +174,7 @@ def cache_doc_tokens(input_doc, tokenizer, nlp):
 
 
 # 4. Get token-type lists for all source-candidates and for all sentences in document
-def generate_indicator_lists(blank_tokens_by_sentence, doc_tokens_by_word, source_cand_df, input_doc):
+def generate_indicator_lists(blank_tokens_by_sentence, doc_tokens_by_word, source_cand_df, input_doc, add_sep=True):
     # A. Generate source indicator output
     source_indicator_output = []
     for cand, start_idx, end_idx, source_sent_idx, _ in source_cand_df.itertuples(index=False):
@@ -182,7 +194,8 @@ def generate_indicator_lists(blank_tokens_by_sentence, doc_tokens_by_word, sourc
                     source_toks.append([0] * len(sent_toks[w_idx]))
                 #
                 source_toks = [i for s in source_toks for i in s]
-                source_toks = [0] + source_toks + [0]
+                if add_sep:
+                    source_toks = [0] + source_toks + [0]
                 source_tokens_by_word.append(source_toks)
         source_tokens_doc_level = [i for s in source_tokens_by_word for i in s]
         source_indicator_output.append(source_tokens_doc_level)
@@ -348,22 +361,15 @@ def find_source_offset(source_head, source_sents, doc_sents, tok_lens_by_sent, s
     }
 
 
-def cache_doc_tokens_for_qa(input_doc, tokenizer, nlp):
+def cache_doc_tokens_for_qa(input_doc, tokenizer, nlp, add_sep=True):
     doc_tokens_by_word = []
     doc_tokens_by_sentence = []
     for sent, _, _, _ in input_doc:
-        words = list(map(str, nlp(sent.strip())))
-        enc = []
-        for w_idx, w in enumerate(words):
-            if w_idx == 0:
-                add_prefix_space = False
-            else:
-                add_prefix_space = True
-            enc.append(
-                tokenizer.encode(w, add_special_tokens=False, add_prefix_space=add_prefix_space)
-            )
+        enc = encode_sentence_as_words(sent, tokenizer, nlp)
         doc_tokens_by_word.append(enc)
-        tokenized_sentence = [tokenizer.bos_token_id] + [i for l in enc for i in l] + [tokenizer.eos_token_id]
+        tokenized_sentence = [i for l in enc for i in l]
+        if add_sep:
+            tokenized_sentence = [tokenizer.bos_token_id] + tokenized_sentence + [tokenizer.eos_token_id]
         doc_tokens_by_sentence.append(tokenized_sentence)
 
     doc_tokens = [i for l in doc_tokens_by_sentence for i in l]

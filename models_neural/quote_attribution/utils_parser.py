@@ -28,6 +28,7 @@ def attach_model_arguments(parser):
     parser.add_argument('--split_type', type=str, default='random')
     parser.add_argument('--max_length_seq', type=int, default=200)
     parser.add_argument('--max_num_sentences', type=int, default=100)
+    parser.add_argument('--split_sentences', action='store_true')
     parser.add_argument('--num_documents', type=int, default=None)
     parser.add_argument('--num_token_types', type=int, default=3)
     parser.add_argument('--max_num_word_positions', type=int, default=2048)
