@@ -72,11 +72,6 @@ class TransformerContextMixin(nn.Module):
         orig_embed_size = transformer_config.hidden_size
         assert hasattr(self.config, 'num_sent_attn_heads') and hasattr(self.config, 'num_contextual_layers')
         super().__init__(*args, **kwargs)
-        transformer_config.n_head = self.config.num_sent_attn_heads
-        transformer_config.n_layer = self.config.num_contextual_layers
-        transformer_config.n_embd = self.config.hidden_dim
-        transformer_config.n_positions = self.config.max_num_sentences + 20
-        transformer_config.n_ctx = transformer_config.n_positions
         # resize
         if orig_embed_size != self.config.hidden_dim:
             self.resize_layer = nn.Linear(orig_embed_size, self.config.hidden_dim, bias=False)
@@ -85,8 +80,17 @@ class TransformerContextMixin(nn.Module):
             self.do_resize = False
         # load transformer
         if self.config.sentence_contextualizer_model_type == 'gpt2':
+            transformer_config.n_head = self.config.num_sent_attn_heads
+            transformer_config.n_layer = self.config.num_contextual_layers
+            transformer_config.n_embd = self.config.hidden_dim
+            transformer_config.n_positions = self.config.max_num_sentences + 20
+            transformer_config.n_ctx = transformer_config.n_positions
             self.sentence_transformer = GPT2Model(config=transformer_config)
         elif self.config.sentence_contextualizer_model_type == 'roberta':
+            transformer_config.num_attention_heads = self.config.num_sent_attn_heads
+            transformer_config.num_hidden_layers = self.config.num_contextual_layers
+            transformer_config.hidden_size = self.config.hidden_dim
+            transformer_config.max_position_embeddings = self.config.max_num_sentences + 20
             self.sentence_transformer = RobertaModel(config=transformer_config)
         else:
             raise NotImplementedError
@@ -100,12 +104,6 @@ class TransformerContextMixin(nn.Module):
         #  a single sentence/doc has been passed in, but flattened.
         if len(cls_embeddings.shape) == 1:
             cls_embeddings = cls_embeddings.unsqueeze(dim=0)
-        if cls_embeddings.shape[0] != 1 and len(cls_embeddings.shape) == 2 and input_len_eq_one:
-            # what this means is a large batch of inputs has been provided. (IG)
-            # and that they were all sequences of length 1.
-            # `input_embeds` expects argument of size (batch_size, sequence_length, hidden_size), so we'll unsqueeze
-            # so that sequence length is of length 1
-            cls_embeddings = cls_embeddings.unsqueeze(dim=1)
 
         # inputs_embeds: input of shape: (batch_size, sequence_length, hidden_size)
         contextualized_embeds, _ = self.sentence_transformer(inputs_embeds=cls_embeddings, return_dict=False)

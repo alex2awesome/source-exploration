@@ -4,6 +4,7 @@
 # here = os.path.dirname(__file__)
 # sys.path.insert(0, here)
 
+import json
 from models_neural.src.config_helper import training_args
 from models_neural.quote_attribution.utils_parser import attach_model_arguments
 from models_neural.src.utils_general import format_loss_weighting, reformat_model_path
@@ -139,7 +140,6 @@ def main(
         fs.put(best_model_path, remote_path)
 
         # upload config
-        import json
         local_config_path = 'config-%s.json' % args.notes
         remote_config_path = os.path.join('aspangher', 'source-exploration', output_fp, local_config_path)
         with open(local_config_path, 'w') as f:
@@ -188,6 +188,11 @@ if __name__ == "__main__":
     # set up model
     logging.info('MODEL PARAMS:')
     logging.info(config.to_json_string(use_diff=False))
+    dump_config_now = True
+    if dump_config_now:
+        local_config_path = 'config-%s.json' % args.notes
+        with open(local_config_path, 'w') as f:
+            json.dump(config.to_dict(), f)
     logging.info('END MODEL PARAMS')
 
     main(

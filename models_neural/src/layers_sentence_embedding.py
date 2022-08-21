@@ -83,7 +83,7 @@ class SentenceEmbeddingsLayer(PretrainedModelLoader):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.config.sentence_embedding_method == 'attention':
-            self.additive_attention = WordLevelAttention(config=self.config, input_dim=self.embed_size)
+            self.additive_attention = WordLevelAttention(config=self.config)
 
     def get_sentence_embedding(
             self,

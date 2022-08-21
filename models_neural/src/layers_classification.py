@@ -38,25 +38,11 @@ class MultiClassMixin(nn.Module):
         self.criterion = nn.CrossEntropyLoss(reduction='none', ignore_index=-100)
 
     def init_pred_layers(self):
-        label_context_back = getattr(self.config, 'label_context_back', 0)
-        label_context_forward = getattr(self.config, 'label_context_forward', 0)
-        if (label_context_back != 0) or (label_context_forward != 0):
-            self.text_and_label_comb = nn.Linear(self.hidden_dim * 2, self.hidden_dim)
-        if getattr(self.config, 'separate_heads', False):
-            self.pred = nn.Linear(self.hidden_dim, self.config.num_output_tags + 2)
-        else:
-            self.pred = nn.Linear(self.hidden_dim, self.config.num_output_tags)
+        self.pred = nn.Linear(self.hidden_dim, self.config.num_output_tags)
 
     def _init_classifier_prediction_weights(self):
         nn.init.xavier_uniform_(self.pred.state_dict()['weight'])
         self.pred.bias.data.fill_(0)
-
-        # todo: maybe we can remove this...
-        label_context_back = getattr(self.config, 'label_context_back', 0)
-        label_context_forward = getattr(self.config, 'label_context_forward', 0)
-        if (label_context_back != 0) or (label_context_forward != 0):
-            nn.init.xavier_uniform_(self.text_and_label_comb.state_dict()['weight'])
-            self.text_and_label_comb.bias.data.fill_(0)
 
     def calculate_loss(self, preds, labels):
         if len(labels.shape) < len(preds.shape):
@@ -86,20 +72,11 @@ class MultiClassMixin(nn.Module):
             self,
             hidden_embs,
             labels=None,
-            label_embs=None,
-            get_loss=True,
             global_step=None
     ):
         # loss
-        label_context_back = getattr(self.config, 'label_context_back', 0) or 0
-        label_context_forward = getattr(self.config, 'label_context_forward', 0) or 0
-        if (label_context_back != 0) or (label_context_forward != 0):
-            label_embs = label_embs.reshape(hidden_embs.shape)
-            hidden_embs = torch.hstack((hidden_embs, label_embs))
-            hidden_embs = self.text_and_label_comb(self.drop(torch.tanh(hidden_embs)))
-
         prediction = self.pred(self.drop(torch.tanh(hidden_embs)))  # pred = ( batch_size x num_labels)
-        if (get_loss == False) or (labels is None):
+        if labels is None:
             return None, prediction
         #
         loss = self.calculate_loss(prediction, labels)

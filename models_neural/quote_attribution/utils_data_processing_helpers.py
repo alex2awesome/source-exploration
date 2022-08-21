@@ -229,7 +229,7 @@ def build_source_lookup_table(source_candidates_df, source_indicator_output):
 # 7. Generate actual training data.
 def generate_training_data(
         input_doc, annot_to_cand_mapper, source_cand_df, sentence_indicator_output, doc_tokens,
-        negative_downsample=1,
+        negative_downsample=1, *args, **kwargs
 ):
     pos_training_data = []
     neg_training_data = []
@@ -241,12 +241,21 @@ def generate_training_data(
         candidate = annot_to_cand_mapper[annotated_source]
         source_ind_tokens = source_cand_df.loc[candidate]['source_tokenized']
         sentence_ind_tokens = sentence_indicator_output[int(sent_idx)]
-        pos_training_data.append({
+        data_point = {
             'source_ind_tokens': source_ind_tokens,
             'sentence_ind_tokens': sentence_ind_tokens,
             'doc_tokens': doc_tokens,
             'label': True
-        })
+        }
+        if kwargs.get('update_w_doc_tokens'):
+            data_point.update({
+                'doc_idx': kwargs.get('doc_idx'),
+                'sent_idx': kwargs.get('sent_idx'),
+                'annotated_source': annotated_source,
+                'candidate_source': candidate
+            })
+        pos_training_data.append(data_point)
+
         true_pairs.add((candidate, sent_idx))
 
     # generate false-labeled data from all other sentence/candidate pairs

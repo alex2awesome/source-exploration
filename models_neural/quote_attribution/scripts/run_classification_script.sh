@@ -40,6 +40,7 @@ katie compute run \
         --python-module models_neural.quote_attribution.train \
         --identities hadoop=$DEFAULT_HADOOP_IDENTITY bcs=$DEFAULT_BCS_IDENTITY git=$DEFAULT_GIT_IDENTIY \
         --pip-packages $DEFAULT_PACKAGE \
+        --tensorboard-log-dir hdfs:///user/aspangher/source-finding/tensorboard \
         --env NCCL_ASYNC_ERROR_HANDLING=1 NCCL_LL_THRESHOLD=0 NCCL_DEBUG=INFO env=$ENV \
         -- \
         --model_type $model_type \
@@ -55,6 +56,6 @@ katie compute run \
         --accumulate_grad_batches 1 \
         --learning_rate 1e-4 \
         --spacy_model_file spacy/en_core_web_lg \
-        --downsample_negative_data 2 \
+        --downsample_negative_data 1 \
         --shuffle_data
 

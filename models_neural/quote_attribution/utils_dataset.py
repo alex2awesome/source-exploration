@@ -128,7 +128,7 @@ class BaseFineTuningDataModule(pl.LightningDataModule):
         if not os.path.exists(self.data_fp):
             raise FileNotFoundError('Data files... make sure to download them from S3!')
 
-    def setup(self, stage=None):
+    def setup(self, stage=None, split=None):
         """
             Download and split the dataset before training/testing.
             For Nonsequential datasets, this just splits on the sentences.
@@ -137,7 +137,7 @@ class BaseFineTuningDataModule(pl.LightningDataModule):
             Occurs on every GPU.
         """
         if stage in ('fit', None):
-            d = self.get_dataset()
+            d = self.get_dataset(use_split=split)
             # split randomly
             if self.split_type == 'random':
                 train_size = int(self.split_perc * len(d))
@@ -176,7 +176,7 @@ class BaseFineTuningDataModule(pl.LightningDataModule):
             num_workers=self.num_cpus
         )
 
-    def get_dataset(self):
+    def get_dataset(self, use_split=None):
         """
         Read in dataset as a list of "label \t text" entries.
         Output flat lists of X = [sent_1, sent_2, ...], y = [label_1, label_2]
@@ -270,7 +270,7 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
         else:
             self.nlp = None
 
-    def get_dataset(self):
+    def get_dataset(self, use_split=None):
         """
         Read in dataset as a list of "label \t text" entries.
         Output flat lists of X = [sent_1, sent_2, ...], y = [label_1, label_2]
@@ -290,6 +290,10 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
 
         i = 0
         for doc_idx, doc in tqdm(grouped, total=len(grouped)):
+            s = _get_split(doc_idx)
+            if (use_split is not None) and (s != use_split):
+                continue
+
             sorted_doc = sorted(doc, key=lambda x: int(x[2]))                 # sort by sent_id
             sorted_doc = sorted_doc[:self.max_num_sentences]
 
@@ -307,13 +311,14 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
                     break
                 i += 1
 
-            s = _get_split(doc_idx)
             source_cand_df = get_source_candidates(sorted_doc, self.nlp)
             annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp, split=s)
             source_ind_list, sent_ind_list = generate_indicator_lists(blank_toks_by_sent, doc_tok_by_word, source_cand_df, sorted_doc)
             source_cand_df = build_source_lookup_table(source_cand_df, source_ind_list)
             training_data = generate_training_data(
-                sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens, self.config.downsample_negative_data
+                sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
+                self.config.downsample_negative_data, doc_idx=doc_idx,
+                update_w_doc_tokens=self.config.local
             )
 
             # append processed data
@@ -370,7 +375,7 @@ class SourceQADataModule(BaseFineTuningDataModule):
         else:
             self.nlp = None
 
-    def get_dataset(self):
+    def get_dataset(self, use_split=None):
         """
         Read in dataset as a list of "label \t text" entries.
         Output flat lists of X = [sent_1, sent_2, ...], y = [label_1, label_2]

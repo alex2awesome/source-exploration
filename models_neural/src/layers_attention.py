@@ -39,11 +39,11 @@ class AdditiveSelfAttention(nn.Module):
 
 
 class WordLevelAttention(nn.Module):
-    def __init__(self, config, input_dim):
+    def __init__(self, config):
         super().__init__()
         # input_dim is config.hidden_dim * 2 if we're using a bidirectional LSTM
-        self.self_attention = AdditiveSelfAttention(input_dim=input_dim, dropout=config.dropout)
-        self.inner_pred = nn.Linear(input_dim, config.embedding_dim)  # Prafulla 3
+        self.self_attention = AdditiveSelfAttention(input_dim=config.embedding_dim, dropout=config.dropout)
+        self.inner_pred = nn.Linear(config.embedding_dim, config.hidden_dim)  # Prafulla 3
         self.drop = nn.Dropout(config.dropout)
 
         # init weights
@@ -60,7 +60,7 @@ class WordLevelAttention(nn.Module):
             sent_encoding = sent_encoding.squeeze(dim=2)
         if len(sent_encoding.shape) == 3:
             sent_encoding = sent_encoding.squeeze(dim=1)  # sent_encoding: (# sents in batch x (hidden_dim * 2))
-        return self.drop(sent_encoding)
+        return self.drop(self.inner_pred(sent_encoding))
 
 
 class DocLevelAttention(nn.Module):

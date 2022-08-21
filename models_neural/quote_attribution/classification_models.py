@@ -55,11 +55,7 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
             * target_person_ids
             * attention_mask
         """
-        word_embs = self._get_word_embeddings(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-        )
-
+        word_embs = self._get_word_embeddings(input_ids=input_ids, attention_mask=attention_mask)
         source_type_embs = self.person_embedding(target_person_ids)
         sentence_type_embs = self.target_sentence_embedding(target_sentence_ids)
         word_embs = word_embs + source_type_embs + sentence_type_embs
