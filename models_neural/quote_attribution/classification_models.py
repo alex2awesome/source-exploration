@@ -60,6 +60,7 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
         source_type_embs = self.person_embedding(target_person_ids)
         sentence_type_embs = self.target_sentence_embedding(target_sentence_ids)
         word_embs = word_embs + source_type_embs + sentence_type_embs
+
         return self.get_sentence_embs(word_embs, attention_mask)
 
 

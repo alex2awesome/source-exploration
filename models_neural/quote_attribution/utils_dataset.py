@@ -305,7 +305,7 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
 
             sorted_doc[0][0] = 'journalist passive-voice ' + sorted_doc[0][0]
             doc_tok_by_word, doc_tok_by_sent, blank_toks_by_sent, all_doc_tokens = cache_doc_tokens(sorted_doc, self.tokenizer, self.nlp)
-
+            sent_lens = list(map(len, doc_tok_by_sent))
             if self.config.num_documents is not None:
                 if i > self.config.num_documents:
                     break
@@ -318,7 +318,7 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
             training_data = generate_training_data(
                 sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
                 self.config.downsample_negative_data, doc_idx=doc_idx,
-                update_w_doc_tokens=self.config.local
+                update_w_doc_tokens=self.config.local, sent_lens=sent_lens
             )
 
             # append processed data
@@ -347,6 +347,7 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
         X_input_ids = self.tensorfy_and_pad(columns["doc_tokens"])
         X_source_ids = self.tensorfy_and_pad(columns['source_ind_tokens'])
         X_sent_ids = self.tensorfy_and_pad(columns['sentence_ind_tokens'])
+        X_sent_lens = self.tensorfy_and_pad(columns['sent_lens'])
         max_len = max(X_lens)
         attention_mask = list(map(lambda x_len: [1] * x_len + [0] * (max_len - x_len), X_lens))
         attention_mask = self.tensorfy_and_pad(attention_mask)
@@ -358,7 +359,8 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
             "target_sentence_ids": X_sent_ids,
             "target_person_ids": X_source_ids,
             "labels": labels,
-            "attention_mask": attention_mask
+            "attention_mask": attention_mask,
+            "input_lens": X_sent_lens
         }
 
 

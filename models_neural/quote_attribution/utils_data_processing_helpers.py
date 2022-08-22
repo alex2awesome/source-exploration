@@ -242,7 +242,7 @@ def build_source_lookup_table(source_candidates_df, source_indicator_output):
 # 7. Generate actual training data.
 def generate_training_data(
         input_doc, annot_to_cand_mapper, source_cand_df, sentence_indicator_output, doc_tokens,
-        negative_downsample=1, *args, **kwargs
+        negative_downsample=1, include_nones_as_positives=True, *args, **kwargs
 ):
     pos_training_data = []
     neg_training_data = []
@@ -251,6 +251,9 @@ def generate_training_data(
 
     # generate true-labeled data from the annotated document
     for _, annotated_source, sent_idx, _ in input_doc:
+        if (not include_nones_as_positives) and (annotated_source == 'None'):
+            continue
+
         candidate = annot_to_cand_mapper[annotated_source]
         source_ind_tokens = source_cand_df.loc[candidate]['source_tokenized']
         sentence_ind_tokens = sentence_indicator_output[int(sent_idx)]
@@ -258,7 +261,8 @@ def generate_training_data(
             'source_ind_tokens': source_ind_tokens,
             'sentence_ind_tokens': sentence_ind_tokens,
             'doc_tokens': doc_tokens,
-            'label': True
+            'label': True,
+            'sent_lens': kwargs.get('sent_lens')
         }
         if kwargs.get('update_w_doc_tokens'):
             data_point.update({
@@ -273,7 +277,9 @@ def generate_training_data(
 
     # generate false-labeled data from all other sentence/candidate pairs
     for c in candidate_set:
-        for _, _, sent_idx, _ in input_doc:
+        if (not include_nones_as_positives) and (annotated_source == 'None'):
+            continue
+        for _, annotated_source, sent_idx, _ in input_doc:
             if (c, sent_idx) not in true_pairs:
                 source_ind_tokens = source_cand_df.loc[c]['source_tokenized']
                 sentence_ind_tokens = sentence_indicator_output[int(sent_idx)]
@@ -281,7 +287,8 @@ def generate_training_data(
                     'source_ind_tokens': source_ind_tokens,
                     'sentence_ind_tokens': sentence_ind_tokens,
                     'doc_tokens': doc_tokens,
-                    'label': False
+                    'label': False,
+                    'sent_lens': kwargs.get('sent_lens')
                 })
 
     if (negative_downsample is not None) and (negative_downsample < 1):

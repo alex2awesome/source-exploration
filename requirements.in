@@ -9,3 +9,4 @@ torchmetrics==0.5.0
 scikit-learn==0.24.2
 s3fs
 html5lib==0.9999999
+# pyarrow==5.0.0

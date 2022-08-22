@@ -45,7 +45,7 @@ katie compute run \
           NCCL_LL_THRESHOLD=0 \
           NCCL_DEBUG=INFO \
           env=$ENV \
-          TENSORBOARD_LOGDIR=hdfs:///user/aspangher/source-finding/tensorboard \
+          TENSORBOARD_LOGDIR=s3://aspangher/source-exploration/logs/ \
         -- \
         --model_type $model_type \
         --pretrained_model_path $pretrained_model \
@@ -61,5 +61,9 @@ katie compute run \
         --learning_rate 1e-4 \
         --spacy_model_file spacy/en_core_web_lg \
         --downsample_negative_data 1 \
-        --shuffle_data
+        --shuffle_data \
+        --num_documents 10
 
+
+
+#          TENSORBOARD_LOGDIR=hdfs:///user/aspangher/source-finding/tensorboard \

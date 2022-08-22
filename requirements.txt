@@ -108,6 +108,7 @@ numpy==1.21.6
     # via
     #   blis
     #   pandas
+    #   pyarrow
     #   pytorch-lightning
     #   scikit-learn
     #   scipy
@@ -136,6 +137,8 @@ preshed==3.0.6
     #   thinc
 protobuf==3.19.4
     # via tensorboard
+pyarrow==5.0.0
+    # via -r requirements.in
 pyasn1==0.4.8
     # via
     #   pyasn1-modules
