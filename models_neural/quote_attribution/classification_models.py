@@ -109,7 +109,8 @@ class SourceClassifier(LightningOptimizer, LightningQASteps):
          if labels is not None, else
          returns tuple of (None, y_preds, None)
         """
-        sent_embeddings = self.transformer(input_ids, target_sentence_ids, target_person_ids, attention_mask)
+        sent_embeddings = self.transformer(
+            input_ids, target_sentence_ids, target_person_ids, attention_mask, sent_lens=input_lens)
         return self.head.classification(sent_embeddings, labels)
 
 

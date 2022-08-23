@@ -9,6 +9,7 @@ from sklearn.metrics import (
 
 from .config_helper import TransformersConfig
 from torch.nn.functional import pad
+from torch.nn.utils.rnn import pad_sequence
 import os, re
 import csv
 import gzip
@@ -359,6 +360,8 @@ def get_device():
         return 'cpu'
 
 
+
+
 def reshape_and_pad_sequence(hidden, sequence_lens, device=None):
     """
     Take in a flattened sequence of sentences and reshape it into a padded cube.
@@ -374,33 +377,41 @@ def reshape_and_pad_sequence(hidden, sequence_lens, device=None):
     if device is None:
         device = get_device()
 
-    # if multiple documents are passed in, we assume every document is the same length.
-    # this is true if we're testing candidate sentences.
-    max_seq_len = max(sequence_lens)
+    def reshape_and_pad_one_doc(hidden, sent_lens, max_sent_len=None, max_num_sents=None, device=device):
+        num_sents, embedding_dim = hidden.shape
+        if max_sent_len is None: ## it's not none if there's a global max sent len
+            max_sent_len = max(sent_lens)
+        if max_num_sents is None:
+            max_num_sents = len(sent_lens)
+        output_hidden = torch.zeros((
+            max_num_sents,
+            max_sent_len,
+            embedding_dim
+        ), device=device)
+        for idx, (s, e) in enumerate(zip(start_idxs, stop_idxs)):
+            sentence_emb = hidden[s:e]
+            padded_emb = pad(sentence_emb, (0, 0, 0, max_sent_len - (e - s)))
+            output_hidden[idx] = padded_emb
+        return output_hidden
+
     cum_seq_lens = torch.cumsum(sequence_lens, dim=0)
     start_idxs = torch.cat((torch.zeros(1, device=device), cum_seq_lens[:-1])).to(torch.int16)
     stop_idxs = cum_seq_lens
+
     # one document is passed in
     if len(hidden.shape) == 2:
-        num_sents, embedding_dim = hidden.shape
-        max_seq_len = max(sequence_lens)
-        output_hidden = torch.zeros((len(sequence_lens), max_seq_len, embedding_dim), device=device)
-        for idx, (s, e) in enumerate(zip(start_idxs, stop_idxs)):
-            sentence_emb = hidden[s:e]
-            padded_emb = pad(sentence_emb, (0, 0, 0, max_seq_len - (e - s)))
-            output_hidden[idx] = padded_emb
+        return reshape_and_pad_one_doc(hidden, sequence_lens)
 
     # multiple documents passed in.
     elif len(hidden.shape) == 3:
-        num_docs, num_sents, embedding_dim = hidden.shape
-        output_hidden = torch.zeros((num_docs, len(sequence_lens), max_seq_len, embedding_dim), device=device)
-        for doc_idx in range(num_docs):
-            for sent_idx, (s, e) in enumerate(zip(start_idxs, stop_idxs)):
-                curr_sent_len = (e - s)
-                sentence_emb = hidden[doc_idx][s:e]
-                padded_emb = pad(sentence_emb, (0, 0, 0, max_seq_len - curr_sent_len))
-                output_hidden[doc_idx][sent_idx] = padded_emb
-
+        if len(sequence_lens.shape) == 1:
+            sequence_lens = sequence_lens.unsqueeze(dim=0)
+        output_hidden = []
+        num_docs, max_num_sents = sequence_lens.shape
+        max_sent_len = sequence_lens.max()
+        for doc_idx, (hidden_doc, sequence_len) in enumerate(zip(hidden, sequence_lens)):
+            output_hidden.append(reshape_and_pad_one_doc(hidden_doc, sequence_len, max_sent_len, max_num_sents))
+        output_hidden = pad_sequence(output_hidden)
     return output_hidden
 
 
