@@ -127,7 +127,9 @@ def post_validation():
         query = client.query(kind='source-validation-unscored')
 
     else:
-        json.dump(crowd_data, open('data/batch-marked-t.json', 'w'))
+        import os
+        output_fn = os.path.join('data', 'batch-marked-t.json')
+        json.dump(crowd_data, open(output_fn, 'w'))
     return "success"
 
 import time
@@ -164,17 +166,20 @@ def make_table_html():
 
     # filter to annotator-assigned files
     annotator_assignments = None
-    annotator_assignment_fn = 'data/2022-08-18__annotator-assignments.csv.gz'
+    annotator_assignment_fn = os.path.join('data', '2022-08-18__annotator-assignments.csv.gz')
     if os.path.exists(annotator_assignment_fn[:len('.gz')]):
         annotator_assignment_fn = annotator_assignment_fn[:len('.gz')]
     if os.path.exists(annotator_assignment_fn):
         annotator_assignments = pd.read_csv(annotator_assignment_fn)
         annotator_assignments = (
             annotator_assignments
-                .loc[lambda df: df['annotator'] == annotator]['file_id']
+                .loc[lambda df: df['annotator'] == annotator]
+                ['file_id']
                 .tolist()
         )
         to_annotate = list(filter(lambda x: x[0].split('-')[-1] in annotator_assignments, to_annotate))
+        print(annotator)
+        print(len(to_annotate))
 
     input = {}
     if len(to_annotate) > 0:
@@ -225,10 +230,10 @@ def make_table_html():
 
 
 def get_annotated_files(task):
-    annotated_filepattern = os.path.join(basedir, 'data/output_data_%s/*/*' % task)
+    annotated_filepattern = os.path.join(basedir, 'data', 'output_data_%s', '*', '*' % task)
     annotated = glob.glob(annotated_filepattern)
 
-    checked_filepattern = os.path.join(basedir, 'data/checked_data_%s/*/*' % task)
+    checked_filepattern = os.path.join(basedir, 'data', 'checked_data_%s', '*', '*' % task)
     checked = glob.glob(checked_filepattern)
     return annotated, checked
 
@@ -346,4 +351,4 @@ def post_table_html():
     return 'success'
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5002)
