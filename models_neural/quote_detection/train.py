@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
         # download model files
         print('Downloading pretrained discriminator...')
-        pretrained_path = args.pretrained_files
+        pretrained_path = args.pretrained_model_path
         print('downloading pretrained model %s->%s' % (args.pretrained_model_path, pretrained_path))
         if '/' not in args.pretrained_model_path:
             download_model_files_bb(remote_model=args.pretrained_model_path, local_path=here)
