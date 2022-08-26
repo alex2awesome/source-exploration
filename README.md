@@ -52,11 +52,12 @@ In the following sections, we'll describe how to train the neural models.
  the paths in the scripts are valid. 
  
  Also another general point is that, unless specified, the trained model will be uploaded to the 
- following directory: `s3://aspangher/source-exploration/./` with the model-name as the `--notes` flag.
+ following directory: `s3://aspangher/source-exploration/./` with the model-name as the `--notes` flag. See end of this
+ section for more information.  
  
- `quote_detection`: 
+###  `quote_detection`: 
  
- * `quote_detection/train.sh`: Runs training with the default setup: our annotated data and a roberta sentence-classification model.
+ * `quote_detection/scripts/train.sh`: Runs training with the default setup: our annotated data and a roberta sentence-classification model.
 To run training, you must have the following flags set:
 
 ```
@@ -64,11 +65,11 @@ To run training, you must have the following flags set:
         --train_data_file_s3 <INPUT_TRAINING_FILE> \
 ``` 
  
- * `quote_detection/train_polnear_data.sh`: Contains the same setup as the previous script, but for training with 
+ * `quote_detection/scripts/train_polnear_data.sh`: Contains the same setup as the previous script, but for training with 
  the polnear dataset. 
- * `quote_detection/train_local.sh`: A convenient script for testing the training process locally.
+ * `quote_detection/scripts/train_local.sh`: A convenient script for testing the training process locally.
  
- `quote_attribution`:
+### `quote_attribution`:
  
  * `quote_attribution/scripts/run_classification_script.sh`: Runs the classifier-based quote attributor.
  * `quote_attribution/scripts/run_span_detection_script.sh`: Runs the span-based quote attributor. 
@@ -81,11 +82,23 @@ For both of these scripts, they expect the following flags to be set:
         --spacy_model_file <SPACY_MODEL_FILE> \
 ```
  
+### Model Locations 
+ 
+ The default location for all project-independent resources (i.e. Spacy model files, Huggingface model files) is `s3://aspangher`. 
+ Here you'll find the directories `s3://aspangher/transformer-pretrained-models/` (huggingface models) and 
+ `s3://aspangher/spacy/` (spacy models).
+ 
+ The default location for all project-specific resources is `s3://aspangher/source-exploration`. Here, you're find 
+ training data, and previously trained models.
+ 
+ All the data management is found in `models_neural/src/utils_data_access.py`. These methods are called by the various
+ `train.py` methods. To change the default paths either pass in specific full paths or alter this file.
+ 
 ## Inference
 
 `quote_detection`: 
  
- * `quote_detection/test.sh`: Runs inference. To work, you must have the following flags set:
+ * `quote_detection/scripts/test.sh`: Runs inference. To work, you must have the following flags set:
  ```
         --pretrained_files_s3 <PRETRAINED_MODEL>
         --train_data_file_s3 <INPUT_DATA_FILE>
