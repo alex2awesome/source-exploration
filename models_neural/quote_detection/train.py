@@ -164,7 +164,7 @@ if __name__ == "__main__":
             eval_data_file = os.path.join(here, args.eval_data_file)
         pretrained_path = args.pretrained_model_path
     else:
-        from models_neural.src import (
+        from models_neural.src.utils_data_access import (
             get_fs, download_model_files_bb, download_file_to_filepath
         )
         # train (and eval df)
