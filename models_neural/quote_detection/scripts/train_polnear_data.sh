@@ -45,13 +45,13 @@ katie compute run \
         --env NCCL_ASYNC_ERROR_HANDLING=1 NCCL_LL_THRESHOLD=0 NCCL_DEBUG=INFO env=$ENV \
         -- \
         --model_type $model_type \
-        --pretrained_files_s3 $pretrained_model \
+        --pretrained_model_path $pretrained_model \
         --experiment baseline_non-sequential \
         --batch_size 1 \
         --num_train_epochs 3 \
         --do_train \
         --do_eval \
-        --train_data_file_s3 data/polnear-training-data-stage-1.tsv \
+        --train_data_file data/polnear-training-data-stage-1.tsv \
         --notes "Flat Discriminator with Augmented/Balanced Training data" \
         --freeze_transformer \
         --sentence_embedding_method 'attention' \

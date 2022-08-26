@@ -11,31 +11,6 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
         super().__init__(config, *args, **kwargs)
         self.person_embedding = nn.Embedding(2, self.config.embedding_dim)
         self.target_sentence_embedding = nn.Embedding(2, self.config.embedding_dim)
-        if self.config.sentence_embedding_method == 'multiheaded-attention':
-            from models_neural.src.layers_attention_tg import SentenceCompressor
-            self.attention = SentenceCompressor(
-                self.config.hidden_dim,
-                self.config.embedding_dim,
-                8
-            )
-
-    def get_sentence_embs(self, word_embs, attention_mask):
-        # aggregate
-        if self.config.sentence_embedding_method == 'average':
-            return self._avg_representation(word_embs, attention_mask)
-        elif self.config.sentence_embedding_method == 'cls':
-            return self._cls_token(word_embs, attention_mask)
-        elif self.config.sentence_embedding_method == 'attention':
-            return self._attention_representation(word_embs, attention_mask)
-        elif self.config.sentence_embedding_method == 'multiheaded-attention':
-            return self._multiheaded_attention(word_embs, attention_mask)
-        else:
-            raise NotImplementedError(
-                'SENTENCE EMBEDDING METHOD %s not in {average, cls, attention, multiheaded-attention}' % self.config.sentence_embedding_method
-            )
-
-    def _multiheaded_attention(self, hidden, attention_mask):
-        return self.attention(hidden, attention_mask)
 
     def forward(
             self,
@@ -61,7 +36,7 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
         sentence_type_embs = self.target_sentence_embedding(target_sentence_ids)
         word_embs = word_embs + source_type_embs + sentence_type_embs
 
-        return self.get_sentence_embs(word_embs, attention_mask)
+        return self.get_sentence_embed_helper(word_embs, attention_mask)
 
 
 class SourceClassifier(LightningOptimizer, LightningQASteps):

@@ -1,8 +1,8 @@
 def attach_model_arguments(parser):
     ## Required parameters
-    parser.add_argument("--train_data_file_s3", default='data/news-discourse-training-data.csv', type=str)
-    parser.add_argument("--eval_data_file_s3", default=None, type=str)
-    parser.add_argument("--pretrained_files_s3", default='elmo', type=str)
+    parser.add_argument("--train_data_file", default='data/news-discourse-training-data.csv', type=str)
+    parser.add_argument("--eval_data_file", default=None, type=str)
+    parser.add_argument("--pretrained_model_path", default='elmo', type=str)
     parser.add_argument("--finetuned_lm_file", default=None, type=str, help="If you fine-tune the LM.")
     parser.add_argument("--processed_data_fname", default=None, type=str, help="Where to upload the results.")
     parser.add_argument("--discriminator_path", "-D", type=str, default=None, help="Discriminator to use.")

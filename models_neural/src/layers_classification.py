@@ -45,8 +45,6 @@ class MultiClassMixin(nn.Module):
         self.pred.bias.data.fill_(0)
 
     def calculate_loss(self, preds, labels):
-        if len(labels.shape) < len(preds.shape):
-            labels = labels.unsqueeze(dim=0)
         loss = self.criterion(preds, labels)
         return loss
 

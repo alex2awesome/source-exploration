@@ -84,6 +84,24 @@ class SentenceEmbeddingsLayer(PretrainedModelLoader):
         super().__init__(*args, **kwargs)
         if self.config.sentence_embedding_method == 'attention':
             self.additive_attention = WordLevelAttention(config=self.config)
+        if self.config.sentence_embedding_method == 'multiheaded-attention':
+            from models_neural.src.layers_attention_tg import SentenceCompressor
+            self.attention = SentenceCompressor(self.config.hidden_dim, self.config.embedding_dim, 8)
+
+    def get_sentence_embed_helper(self, word_embs, attention_mask):
+        # aggregate
+        if self.config.sentence_embedding_method == 'average':
+            return self._avg_representation(word_embs, attention_mask)
+        elif self.config.sentence_embedding_method == 'cls':
+            return self._cls_token(word_embs, attention_mask)
+        elif self.config.sentence_embedding_method == 'attention':
+            return self._attention_representation(word_embs, attention_mask)
+        elif self.config.sentence_embedding_method == 'multiheaded-attention':
+            return self._multiheaded_attention(word_embs, attention_mask)
+        else:
+            raise NotImplementedError(
+                'SENTENCE EMBEDDING METHOD %s not in {average, cls, attention, multiheaded-attention}' % self.config.sentence_embedding_method
+            )
 
     def get_sentence_embedding(
             self,
@@ -122,17 +140,7 @@ class SentenceEmbeddingsLayer(PretrainedModelLoader):
                 start_of_curr_seq = sequence_lens[-1]
                 hidden = hidden[:, -start_of_curr_seq:]
 
-        # aggregate
-        if self.config.sentence_embedding_method == 'average':
-            return self._avg_representation(hidden, attention_mask)
-        elif self.config.sentence_embedding_method == 'cls':
-            return self._cls_token(hidden, attention_mask)
-        elif self.config.sentence_embedding_method == 'attention':
-            return self._attention_representation(hidden, attention_mask)
-        else:
-            raise NotImplementedError(
-                'SENTENCE EMBEDDING METHOD %s not in {average, cls, attention}' % self.config.sentence_embedding_method
-            )
+        return self.get_sentence_embed_helper(hidden, attention_mask)
 
     def _get_word_embeddings(self, input_ids=None, inputs_embeds=None, attention_mask=None):
         if hasattr(self.encoder_model, 'transformer'):
@@ -183,6 +191,9 @@ class SentenceEmbeddingsLayer(PretrainedModelLoader):
             return list(map(lambda x: self.additive_attention(x, attention_mask), hidden))
         else:
             return self.additive_attention(hidden, attention_mask)
+
+    def _multiheaded_attention(self, hidden, attention_mask):
+        return self.attention(hidden, attention_mask)
 
     def get_lmhead_logits_and_past_and_hidden(self, input_ids=None, attention_mask=None, past_key_values=None, input_embeds=None):
         """Pass-through method, here for convenience (Used in the generator_pplm.)"""

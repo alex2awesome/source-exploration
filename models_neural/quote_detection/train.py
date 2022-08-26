@@ -52,7 +52,6 @@ def main(
     datasetclass, discriminator_class = experiments[experiment]
     dataset = datasetclass(
         data_fp=config.main_data_file,
-        pretrained_model_path=config.pretrained_model_path,
         num_cpus=config.num_dataloader_cpus,
         config=config,
         **kwargs
@@ -160,31 +159,31 @@ if __name__ == "__main__":
     if args.local:
         # train and eval files
         args.num_gpus = 0
-        main_data_file = os.path.join(here, '..', args.train_data_file_s3)
-        if args.eval_data_file_s3 is not None:
-            eval_data_file = os.path.join(here, '..', args.eval_data_file_s3)
-        pretrained_path = args.pretrained_files_s3
+        main_data_file = os.path.join(here, args.train_data_file)
+        if args.eval_data_file is not None:
+            eval_data_file = os.path.join(here, args.eval_data_file)
+        pretrained_path = args.pretrained_model_path
     else:
         from models_neural.src import (
             get_fs, download_model_files_bb, download_file_to_filepath
         )
         # train (and eval df)
         print('Downloading data...')
-        fn = 'input_data.csv.gz' if args.train_data_file_s3.endswith('.gz') else 'input_data.csv'
+        fn = 'input_data.csv.gz' if args.train_data_file.endswith('.gz') else 'input_data.csv'
         main_data_file = os.path.join(here, fn)
-        download_file_to_filepath(remote_file_name=args.train_data_file_s3, local_path=main_data_file)
-        if args.eval_data_file_s3 is not None:
+        download_file_to_filepath(remote_file_name=args.train_data_file, local_path=main_data_file)
+        if args.eval_data_file is not None:
             eval_data_file = os.path.join(here, 'eval_data.csv')
-            download_file_to_filepath(remote_file_name=args.eval_data_file_s3, local_path=eval_data_file)
+            download_file_to_filepath(remote_file_name=args.eval_data_file, local_path=eval_data_file)
 
         # download model files
         print('Downloading pretrained discriminator...')
-        pretrained_path = args.pretrained_files_s3
-        print('downloading pretrained model %s->%s' % (args.pretrained_files_s3, pretrained_path))
-        if '/' not in args.pretrained_files_s3:
-            download_model_files_bb(remote_model=args.pretrained_files_s3, local_path=here)
+        pretrained_path = args.pretrained_files
+        print('downloading pretrained model %s->%s' % (args.pretrained_model_path, pretrained_path))
+        if '/' not in args.pretrained_model_path:
+            download_model_files_bb(remote_model=args.pretrained_model_path, local_path=here)
         else:
-            download_file_to_filepath(remote_file_name=args.pretrained_files_s3)
+            download_file_to_filepath(remote_file_name=args.pretrained_model_path)
 
         print(glob.glob(os.path.join(pretrained_path, '*')))
         if args.finetuned_lm_file is not None:

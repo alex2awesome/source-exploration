@@ -36,13 +36,13 @@ class TransformersConfig(PretrainedConfig):
     use_cpu: bool = False
 
     def __init__(self, cmd_args=None, *args, **kwargs):
-        pretrained_config = AutoConfig.from_pretrained(cmd_args.pretrained_model_path)
-        for k in pretrained_config.__dict__:
-            self.__dict__[k] = pretrained_config.__dict__[k]
-
-        self.embedding_dim = pretrained_config.hidden_size
-
         if cmd_args is not None:
+            # load in default values from transformer config
+            pretrained_config = AutoConfig.from_pretrained(cmd_args.pretrained_model_path)
+            for k in pretrained_config.__dict__:
+                self.__dict__[k] = pretrained_config.__dict__[k]
+            self.embedding_dim = pretrained_config.hidden_size
+
             # pass in all args
             for k in cmd_args.__dict__:
                 self.__dict__[k] = cmd_args.__dict__[k]

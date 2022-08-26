@@ -30,7 +30,7 @@ class BiLSTMContextMixin(nn.Module):
         assert hasattr(self.config, 'num_contextual_layers') and hasattr(self.config, 'bidirectional')
         super().__init__(*args, **kwargs)
         self.lstm = nn.LSTM(
-            input_size=self.config.embedding_dim,
+            input_size=self.config.hidden_dim,
             hidden_size=self.config.hidden_dim,
             num_layers=self.config.num_contextual_layers,
             bidirectional=self.config.bidirectional

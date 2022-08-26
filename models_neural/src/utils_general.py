@@ -461,32 +461,19 @@ def get_fh(fp):
     return fh
 
 def get_idx2class(dataset_fp, config=None, use_headline=False):
-    if (config is not None) and config.do_multitask:
-        tasks_idx2class = []
-        with get_fh(dataset_fp) as f:
-            csv_reader = csv.reader(f, delimiter="\t")
-            for row_idx, row in enumerate(csv_reader):
-                if row:
-                    ls = row[0].split('|||')
-                    if row_idx == 0:
-                        for _ in ls:
-                            tasks_idx2class.append(set())
-                    for l_idx, l in enumerate(ls):
-                        tasks_idx2class[l_idx].add(l)
-        tasks_class2idx = list(map(lambda idx2class: {v:k for k,v in enumerate(idx2class)}, tasks_idx2class))
-        return tasks_idx2class, tasks_class2idx
-    else:
-        classes = set()
-        with get_fh(dataset_fp) as f:
-            csv_reader = csv.reader(f, delimiter="\t")
-            for row in csv_reader:
-                if row:
-                    classes.add(row[0])
-        if use_headline or ((config is not None) and config.use_headline):
-            classes.add('headline')
-        idx2class = sorted(classes)
-        class2idx = {v:k for k,v in enumerate(idx2class)}
-        return idx2class, class2idx
+    classes = set()
+    with get_fh(dataset_fp) as f:
+        csv_reader = csv.reader(f, delimiter="\t")
+        for idx, row in enumerate(csv_reader):
+            if idx == 0:
+                continue
+            if row:
+                classes.add(row[0])
+    if use_headline or ((config is not None) and config.use_headline):
+        classes.add('headline')
+    idx2class = sorted(classes)
+    class2idx = {v:k for k,v in enumerate(idx2class)}
+    return idx2class, class2idx
 
 
 def format_local_vars(locals):

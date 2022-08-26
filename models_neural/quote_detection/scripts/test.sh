@@ -38,13 +38,13 @@ MODEL="$SCRIPT_DIR/../trained_models/trial-Stage 1: Quote Detection. Second run,
 
 python $SCRIPT_DIR/../eval.py \
         --model_type "$model_type" \
-        --pretrained_files_s3 "$pretrained_model" \
+        --pretrained_model_path "$pretrained_model" \
         --experiment lstm_sequential \
         --batch_size 1 \
         --num_train_epochs 3 \
         --do_train \
         --do_eval \
-        --train_data_file_s3 "$SCRIPT_DIR/../data/our-annotated-data-full.csv.gz" \
+        --train_data_file "$SCRIPT_DIR/../data/our-annotated-data-full.csv.gz" \
         --notes "Score sentence edits" \
         --freeze_transformer \
         --discriminator_path "$MODEL" \

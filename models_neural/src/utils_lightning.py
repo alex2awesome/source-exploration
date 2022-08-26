@@ -26,24 +26,13 @@ class LightningBase(pl.LightningModule):
 
     def __init__(self, config=None, *args, **kwargs):
         super().__init__()
-        config = get_config(config=config, kwargs=kwargs)
-        self.save_hyperparameters(
-            # config.to_dict(),
-            ignore=[
-                'train_data_file_s3', 'log_all_metrics', 'save_model', 'do_train', 'do_eval', 'notes', 'local', 'use_cpu',
-                'transformer_model_name', 'model_name', 'pretrained_model_path', 'main_data_file', 'pad_id',
-                'num_steps_per_epoch', 'total_steps'
-        ])
-        self.config = config
+        self.config = get_config(config=config, kwargs=kwargs)
         #####
         # metrics
         dist_sync_on_step = kwargs.get('accelerator') == 'dp'
         self.log_all_metrics = self.config.log_all_metrics
         self.training_report = get_classification_report_metric(self.config, dist_sync_on_step)
         self.validation_report = get_classification_report_metric(self.config, dist_sync_on_step)
-        if not self.is_multitask():
-            self.entropy = Entropy(num_classes=self.config.num_output_tags)
-            self.max_count = MaxCount(num_classes=self.config.num_output_tags)
         self.hp_metric_list = []  # to store f1-scores and then take the max
 
     def is_multitask(self):
@@ -98,9 +87,6 @@ class LightningBase(pl.LightningModule):
                 self.training_report(batch_parts['y_pred'], batch_parts['y_true'], head=batch_parts.get('head'))
             else:
                 self.training_report(batch_parts['y_pred'], batch_parts['y_true'])
-            if not self.is_multitask() and (not self.separate_heads()):
-                self.max_count(batch_parts['y_pred'])
-                self.entropy(batch_parts['y_pred'])
             return batch_parts['loss']
 
     def validation_step_end(self, batch_parts):
@@ -115,9 +101,6 @@ class LightningBase(pl.LightningModule):
                 self.validation_report(batch_parts['y_pred'], batch_parts['y_true'], head=batch_parts.get('head'))
             else:
                 self.validation_report(batch_parts['y_pred'], batch_parts['y_true'])
-            if not self.is_multitask() and (not self.separate_heads()):
-                self.entropy(batch_parts['y_pred'])
-                self.max_count(batch_parts['y_pred'])
 
     def training_epoch_end(self, outputs):
         report = self.training_report.compute()
@@ -135,10 +118,6 @@ class LightningBase(pl.LightningModule):
             self.log('f1 weighted', report['Weighted F1'])
             self.hp_metric_list.append(report['Macro F1'])
             self.log('hp_metric', max(self.hp_metric_list))
-            self.log('entropy', self.entropy.compute())
-            self.log('max count', self.max_count.compute())
-            self.entropy.reset()
-            self.max_count.reset()
 
     def on_validation_end(self):
         if not self.is_multitask() and not self.separate_heads():

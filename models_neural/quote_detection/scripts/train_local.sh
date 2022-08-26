@@ -16,14 +16,14 @@ SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 python $SCRIPT_DIR/../train.py \
         --model_type $model_type \
-        --pretrained_files_s3 $pretrained_model \
+        --pretrained_model_path $pretrained_model \
         --experiment baseline_non-sequential \
         --batch_size 1 \
         --num_train_epochs 3 \
         --do_train \
         --local \
         --do_eval \
-        --train_data_file_s3 "$project_dir/data/polnear-training-data-stage-1.csv" \
+        --train_data_file "$project_dir/data/polnear-training-data-stage-1.csv" \
         --notes "Flat Discriminator with polnear sentence data" \
         --freeze_transformer \
         --sentence_embedding_method 'attention' \
