@@ -242,6 +242,7 @@ def get_annotated_files(task):
 def check_table():
     task = request.args.get('task', 'full')
     shuffle = request.args.get('shuffle', False)
+    file_id = request.args.get('file_id', None)
 
     to_check, checked = get_annotated_files(task)
     to_check = list(map(lambda x: (x, re.findall('annotated-\d+', x)[0]), to_check))
@@ -288,6 +289,7 @@ def check_table():
 def check_specific_file():
     task = request.args.get('task', 'full')
     file_id = request.args.get('file_id')
+    submit = bool(request.args.get('submit', 'False'))
     annotated, checked = get_annotated_files(task)
 
     if file_id is not None:
@@ -328,7 +330,7 @@ def check_specific_file():
             headline=orig_input_data['headline'],
             published_date=orig_input_data['published_date'],
             do_mturk=False,
-            submit=False,
+            submit=submit,
             start_time=time.time(),
         )
 
