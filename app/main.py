@@ -230,27 +230,34 @@ def make_table_html():
 
 
 def get_annotated_files(task):
-    annotated_filepattern = os.path.join(basedir, 'data', 'output_data_%s', '*', '*' % task)
-    annotated = glob.glob(annotated_filepattern)
+    annotated_foldername = 'output_data_%s' % task
+    annotated = glob.glob(os.path.join(basedir, 'data', annotated_foldername, '*', '*.json')) + \
+                glob.glob(os.path.join(basedir, 'data', annotated_foldername, '*.json'))
 
-    checked_filepattern = os.path.join(basedir, 'data', 'checked_data_%s', '*', '*' % task)
-    checked = glob.glob(checked_filepattern)
+    checked_foldername = 'checked_data_%s' % task
+    checked = glob.glob(os.path.join(basedir, 'data', checked_foldername, '*', '*.json')) + \
+              glob.glob(os.path.join(basedir, 'data', checked_foldername, '*.json'))
     return annotated, checked
 
 
 @app.route('/check_table', methods=['GET'])
 def check_table():
     task = request.args.get('task', 'full')
-    shuffle = request.args.get('shuffle', False)
-    file_id = request.args.get('file_id', None)
+    annotator = request.args.get('annotator', None)
+    shuffle = bool(request.args.get('shuffle', False))
 
-    to_check, checked = get_annotated_files(task)
+    file_path_signifier = task
+    if annotator:
+        file_path_signifier += '_' + annotator
+    to_check, checked = get_annotated_files(file_path_signifier)
     to_check = list(map(lambda x: (x, re.findall('annotated-\d+', x)[0]), to_check))
     to_check = sorted(map(lambda x: (x[0], x[1].replace('annotated', 'checked')), to_check))
     checked_files = set(map(lambda x: re.findall('checked-\d+', x)[0], checked))
     to_check = list(filter(lambda x: x[1] not in checked_files, to_check))
 
     if len(to_check) > 0:
+        if shuffle:
+            random.shuffle(to_check)
         fname, file_id = to_check[0]
         output_fn = fname.replace('output_data', 'checked_data')
         output_dir = os.path.dirname(output_fn)
@@ -262,12 +269,14 @@ def check_table():
             if isinstance(data_to_check, dict):
                 data_to_check = data_to_check['row_data']
 
-        orig_input_fname = fname.replace('output_data_%s' % task, 'input_data').replace('annotated', 'to-annotate')
+        orig_input_fname = os.path.basename(fname).replace('annotated', 'to-annotate')
+        orig_input_fname = glob.glob(os.path.join('data', 'input_data', '*', orig_input_fname))[0]
         with open(orig_input_fname) as f:
             orig_input_data = json.load(f)
 
         return render_template(
             'check-%s.html' % task,
+            annotator=annotator,
             annotated_data=data_to_check,
             orig_input_data=orig_input_data['html_data'],
             entry_id=orig_input_data['entry_id'],

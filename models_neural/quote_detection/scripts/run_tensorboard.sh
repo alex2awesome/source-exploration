@@ -2,7 +2,7 @@ katie tensorboard run \
   --identities hadoop=aspangher-cluster-test \
   --job-name test \
   --tensorflow-framework tensorflow-1.14-python-3.7 \
-  --log-dir hdfs:///user/aspangher/source-finding/tensorboard/default \
+  --log-dir s3://aspangher/source-exploration/logs/quote_detection \
   --node-size Custom \
   --memory 20G \
   --cores 1

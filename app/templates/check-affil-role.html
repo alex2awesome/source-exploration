@@ -138,7 +138,16 @@ $(document).ready(function() {
                 console.log('Submitting!')
                 var start_time = "{{ start_time }}"
                 var output_fname = "{{ output_fname }}"
-                pm.record_data(output, submit_click_event, do_mturk, start_time, output_fname, '/check_table')
+                var annotator = "{{ annotator }}"
+                pm.record_data(
+                    output,
+                    submit_click_event,
+                    do_mturk,
+                    start_time,
+                    output_fname,
+                    '/check_table',
+                    annotator,
+                )
             }
         } );
     {% endif %}

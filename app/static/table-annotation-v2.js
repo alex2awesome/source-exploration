@@ -848,8 +848,15 @@ class TablePageManager {
         this.add_color(row_idx, source_idx)
     }
 
-    max_source_idx() {
-        return parseInt(d3.max(d3.keys(this.source_row_nums)))
+    max_source_idx(annotated_data) {
+        if (annotated_data === undefined)
+            return parseInt(d3.max(d3.keys(this.source_row_nums)))
+        else {
+            let s = annotated_data
+                    .map(function(d){return d['s_idx']})
+                    .filter(function(d){return d != undefined})
+            return d3.max(s)
+        }
     }
 
     get_source_color(source_idx){
@@ -858,9 +865,8 @@ class TablePageManager {
         return avail_colors[0]
     }
 
-    register_typed_source(row_idx) {
+    register_typed_source(row_idx, source_idx) {
         let source_head = $('#row_' + row_idx).find('.head').find('input').val()
-        let source_idx;
 
         // if we're changing sources, remove row from the old source
         if (this.row_source_state_dict[row_idx] != undefined){
@@ -873,7 +879,9 @@ class TablePageManager {
         // if it's a new source, assign it a new id and generate new colors
         if (this.source_head_to_idx[source_head] === undefined) {
             let max_source_idx = this.max_source_idx()
-            source_idx = max_source_idx + 1
+            if (source_idx === undefined){
+                source_idx = max_source_idx + 1
+            }
             this.source_head_to_idx[source_head] = source_idx
             this.source_row_nums[source_idx] = { 'selected': row_idx, 'vals': [] }
             this.source_idx_to_color[source_idx] = this.get_source_color(source_idx)
@@ -1296,11 +1304,19 @@ class TablePageManager {
 
     populate_data_to_check(annotated_data){
         let that = this
-        annotated_data.forEach(function(row, i ){
+        annotated_data.forEach(function(row, i){
             let row_idx = row['row_idx']
             that.set_background_color_white(row_idx)
-            let s_idx = row['s_idx']
-            if (s_idx != undefined) {
+            if ((row['s_idx'] == undefined) & (row['head']['field_value'] != '' )){
+                let found_s_idx = that.source_head_to_idx[row['head']['field_value']]
+                if (found_s_idx != undefined){
+                    row['s_idx'] = found_s_idx
+                } else {
+                    let max_idx = that.max_source_idx(annotated_data);
+                    row['s_idx'] = max_idx + 1
+                }
+            }
+            if (row['s_idx'] != undefined) {
                 that.change_all_questions(row_idx, 'enable')
                 // select fields
                 that.set_select_field(row_idx, row, 'quote_type',)
@@ -1312,7 +1328,7 @@ class TablePageManager {
                 that.set_input_text_field(row_idx, row, 'tagline')
                 that.set_input_text_field(row_idx, row, 'head')
                 // coloring
-                that.register_typed_source(row_idx)
+                that.register_typed_source(row_idx, row['s_idx'])
             }
             // error
             let error_type = that.determine_error_type(that.data[i], row)
