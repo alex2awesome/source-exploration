@@ -62,7 +62,7 @@ katie compute run \
         --spacy_model_file spacy/en_core_web_lg \
         --downsample_negative_data 1 \
         --shuffle_data \
-        --num_documents 10
+        --num_contextual_layers 0 \
 
 
 
