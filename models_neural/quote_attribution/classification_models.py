@@ -3,7 +3,8 @@ from torch import nn
 from models_neural.src.layers_sentence_embedding import PretrainedModelLoader, SentenceEmbeddingsLayer
 from models_neural.src.utils_general import get_config
 from models_neural.src.layers_head import HeadLayerBinaryFF, HeadLayerBinaryLSTM, HeadLayerBinaryTransformer
-from models_neural.src.utils_lightning import LightningMixin, LightningLMSteps, LightningOptimizer, LightningQASteps
+from models_neural.src.utils_lightning import LightningOptimizer
+from models_neural.quote_attribution.utils_lightning import LightningClassificationSteps
 from torch.nn import CrossEntropyLoss
 
 class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
@@ -39,7 +40,7 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
         return self.get_sentence_embed_helper(word_embs, attention_mask)
 
 
-class SourceClassifier(LightningOptimizer, LightningQASteps):
+class SourceClassifier(LightningOptimizer, LightningClassificationSteps):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.config = get_config(kwargs=kwargs)

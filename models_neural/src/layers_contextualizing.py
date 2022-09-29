@@ -10,7 +10,9 @@ class FFContextMixin(nn.Module):
     def __init__(self, *args, **kwargs):
         self.config = get_config(kwargs=kwargs)
         super().__init__(*args, **kwargs)
-        self.embedding_to_hidden = nn.Linear(self.config.embedding_dim, self.config.hidden_dim, bias=False)
+        self.embedding_to_hidden = nn.Linear(
+            self.config.embedding_dim, self.config.hidden_dim, bias=False
+        )
         self._init_weights()
 
     def _init_weights(self):
@@ -101,6 +103,7 @@ class TransformerContextMixin(nn.Module):
     def get_contextualized_embeddings(self, cls_embeddings, input_len_eq_one=None, *args, **kwargs):
         if self.do_resize: # pass vector through a linear layer to resize it
             cls_embeddings = self.resize_layer(cls_embeddings)
+
         #  a single sentence/doc has been passed in, but flattened.
         if len(cls_embeddings.shape) == 1:
             cls_embeddings = cls_embeddings.unsqueeze(dim=0)
