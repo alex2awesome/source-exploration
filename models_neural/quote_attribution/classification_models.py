@@ -4,7 +4,7 @@ from models_neural.src.layers_sentence_embedding import PretrainedModelLoader, S
 from models_neural.src.utils_general import get_config
 from models_neural.src.layers_head import HeadLayerBinaryFF, HeadLayerBinaryLSTM, HeadLayerBinaryTransformer
 from models_neural.src.utils_lightning import LightningOptimizer
-from models_neural.quote_attribution.utils_lightning import LightningClassificationSteps
+from models_neural.quote_attribution.utils_lightning import LightningClassificationSteps, LightningQASteps
 from torch.nn import CrossEntropyLoss
 
 class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
