@@ -8,15 +8,17 @@ import json
 from models_neural.src.config_helper import training_args
 from models_neural.quote_attribution.utils_parser import attach_model_arguments
 from models_neural.src.utils_general import format_loss_weighting, reformat_model_path
-from models_neural.src.config_helper import TransformersConfig, get_transformer_config
-from models_neural.quote_attribution.language_models import LMModel, GPT2LMHeadModel, RobertaForCausalLM
+from models_neural.src.config_helper import TransformersConfig
+from models_neural.quote_attribution.language_models import LMModel
 from models_neural.quote_attribution.utils_dataset import (
     SourceConditionalGenerationDataset,
     SourceClassificationDataModule,
+    SourceClassificationExtraTokens,
     SourceQADataModule
 )
 from models_neural.quote_attribution.classification_models import (
     SourceClassifier,
+    SourceClassifierWithSourceSentVecs,
     SourceQA
 )
 
@@ -33,6 +35,8 @@ logging.basicConfig(level=logging.INFO)
 experiments = {
     'roberta_generation': ('roberta', SourceConditionalGenerationDataset, LMModel),
     'roberta_classification': ('roberta', SourceClassificationDataModule, SourceClassifier),
+    'roberta_classification_vecs': ('roberta', SourceClassificationDataModule, SourceClassifierWithSourceSentVecs),
+    'roberta_classification_toks': ('roberta', SourceClassificationExtraTokens, SourceClassifier),
     'roberta_qa': ('roberta', SourceQADataModule, SourceQA)
 }
 

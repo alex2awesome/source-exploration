@@ -270,6 +270,19 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
         else:
             self.nlp = None
 
+    def core_processing(self, sorted_doc, d_idx, split, blank_toks_by_sent, doc_tok_by_word, all_doc_tokens, sent_lens):
+        source_cand_df = get_source_candidates(sorted_doc, self.nlp)
+        annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp, split=split)
+        source_ind_list, sent_ind_list = generate_indicator_lists(
+            blank_toks_by_sent, doc_tok_by_word, source_cand_df, sorted_doc
+        )
+        source_cand_df = build_source_lookup_table(source_cand_df, source_ind_list)
+        return generate_training_data(
+            sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
+            self.config.downsample_negative_data, doc_idx=d_idx,
+            update_w_doc_tokens=self.config.local, sent_lens=sent_lens
+        )
+
     def get_dataset(self, use_split=None):
         """
         Read in dataset as a list of "label \t text" entries.
@@ -304,22 +317,14 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
                 continue
 
             sorted_doc[0][0] = 'journalist passive-voice ' + sorted_doc[0][0]
-            doc_tok_by_word, doc_tok_by_sent, blank_toks_by_sent, all_doc_tokens = cache_doc_tokens(sorted_doc, self.tokenizer, self.nlp)
-            sent_lens = list(map(len, doc_tok_by_sent))
+            toks_by_word, toks_by_sent, blanks_by_sent, all_toks = cache_doc_tokens(sorted_doc, self.tokenizer, self.nlp)
+            s_lens = list(map(len, toks_by_sent))
             if self.config.num_documents is not None:
                 if i > self.config.num_documents:
                     break
                 i += 1
 
-            source_cand_df = get_source_candidates(sorted_doc, self.nlp)
-            annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp, split=s)
-            source_ind_list, sent_ind_list = generate_indicator_lists(blank_toks_by_sent, doc_tok_by_word, source_cand_df, sorted_doc)
-            source_cand_df = build_source_lookup_table(source_cand_df, source_ind_list)
-            training_data = generate_training_data(
-                sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
-                self.config.downsample_negative_data, doc_idx=doc_idx,
-                update_w_doc_tokens=self.config.local, sent_lens=sent_lens
-            )
+            training_data = self.core_processing(sorted_doc, doc_idx, s, blanks_by_sent, toks_by_word, all_toks, s_lens)
 
             # append processed data
             data_chunk.extend(training_data)
@@ -362,6 +367,56 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
             "attention_mask": attention_mask,
             "input_lens": X_sent_lens
         }
+
+import copy
+class SourceClassificationExtraTokens(SourceClassificationDataModule):
+    def get_tokens_from_lists(self, indicator_list, token_list):
+        toks = list(filter(lambda x: x[0] == 1, zip(indicator_list, token_list)))
+        return list(map(lambda x: x[1], toks))
+
+    def augment_training_data(self, vanilla_training_data):
+        output_data = []
+        sep_token_chunk = [self.tokenizer.eos_token_id] * 5
+        for vanilla_datum in vanilla_training_data:
+            output_datum = {}
+            output_datum['label'] = vanilla_datum['label']
+            output_datum['sent_lens'] = vanilla_datum['sent_lens']
+            source_inds = vanilla_datum['source_ind_tokens']
+            sent_inds = vanilla_datum['sentence_ind_tokens']
+            doc_toks = copy.copy(vanilla_datum['doc_tokens'])
+
+            #
+            source_toks = self.get_tokens_from_lists(source_inds, doc_toks)
+            sent_toks = self.get_tokens_from_lists(sent_inds, doc_toks)
+            new_doc_toks = doc_toks + sep_token_chunk + source_toks + sep_token_chunk + sent_toks
+            len_added = len(sep_token_chunk) + len(source_toks) + len(sep_token_chunk) + len(sent_toks)
+
+            new_source_inds = source_inds + [0] * len_added
+            new_sent_inds = sent_inds + [0] * len_added
+
+            output_datum['doc_tokens'] = new_doc_toks
+            output_datum['source_ind_tokens'] = new_source_inds
+            output_datum['sentence_ind_tokens'] = new_sent_inds
+            assert len(new_doc_toks) == len(new_source_inds)
+            assert len(new_doc_toks) == len(new_sent_inds)
+
+            output_data.append(output_datum)
+        return output_data
+
+    def core_processing(self, sorted_doc, d_idx, split, blank_toks_by_sent, doc_tok_by_word, all_doc_tokens, sent_lens):
+        source_cand_df = get_source_candidates(sorted_doc, self.nlp)
+        annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp, split=split)
+        source_ind_list, sent_ind_list = generate_indicator_lists(
+            blank_toks_by_sent, doc_tok_by_word, source_cand_df, sorted_doc
+        )
+        source_cand_df = build_source_lookup_table(source_cand_df, source_ind_list)
+        vanilla_training_data = generate_training_data(
+            sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
+            self.config.downsample_negative_data, doc_idx=d_idx,
+            update_w_doc_tokens=self.config.local, sent_lens=sent_lens
+        )
+
+        return self.augment_training_data(vanilla_training_data)
 
 
 class SourceQADataModule(BaseFineTuningDataModule):

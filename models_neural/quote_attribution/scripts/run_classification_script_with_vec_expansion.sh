@@ -49,11 +49,11 @@ katie compute run \
         -- \
         --model_type $model_type \
         --pretrained_model_path $pretrained_model \
-        --experiment roberta_classification \
+        --experiment roberta_classification_vecs \
         --batch_size 1 \
         --num_train_epochs 3 \
         --train_data_file data/our-annotated-data__stage-2.tsv \
-        --notes "Stage 2: Quote Attribution + Detection. Classification. Method 2. Our full dataset only." \
+        --notes "Stage 2: Quote Attribution + Detection. Classification. Vec expansion. Our full dataset only." \
         --freeze_encoder_layers $frozen_layers \
         --sentence_embedding_method 'attention' \
         --dropout .1 \

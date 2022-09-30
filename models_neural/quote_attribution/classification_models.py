@@ -36,7 +36,6 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
         source_type_embs = self.person_embedding(target_person_ids)
         sentence_type_embs = self.target_sentence_embedding(target_sentence_ids)
         word_embs = word_embs + source_type_embs + sentence_type_embs
-
         return self.get_sentence_embed_helper(word_embs, attention_mask)
 
 
@@ -88,6 +87,49 @@ class SourceClassifier(LightningOptimizer, LightningClassificationSteps):
         sent_embeddings = self.transformer(
             input_ids, target_sentence_ids, target_person_ids, attention_mask, sent_lens=input_lens)
         return self.head.classification(sent_embeddings, labels)
+
+
+class SourceClassifierWithSourceSentVecs(SourceClassifier):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.head = self.get_head_layer()(hidden_dim=self.config.hidden_dim * 3, *args, **kwargs)
+
+    def get_tokens_from_input_tensors(self, token_tensor, selector_tensor):
+        idx = (selector_tensor == 1).nonzero()
+        return token_tensor[:, idx[:, 1]]
+        # return self.dim2_index_select(token_tensor, idx)
+
+    # def dim2_index_select(self, vec, idx):
+    #     idx_0, idx_1 = idx.T
+    #     return vec[idx_0, idx_1]
+
+    def _get_sentence_embeddings(self, tokens, attention_mask):
+        word_embs = self.transformer._get_word_embeddings(tokens, attention_mask=attention_mask)
+        return self.transformer.get_sentence_embed_helper(word_embs, attention_mask)
+
+    def forward(
+            self,
+            input_ids,
+            target_sentence_ids,
+            target_person_ids,
+            labels=None,
+            attention_mask=None,
+            input_lens=None,
+            *args,
+            **kwargs
+    ):
+        # todo: this method will fail if batch_size > 1.
+        orig_sent_embs = self.transformer(
+            input_ids, target_sentence_ids, target_person_ids, attention_mask, sent_lens=input_lens)
+        source_toks = self.get_tokens_from_input_tensors(input_ids, target_person_ids)
+        if source_toks.shape[1] == 0:
+            source_embs = torch.zeros_like(orig_sent_embs, device=orig_sent_embs.device)
+        else:
+            source_embs = self._get_sentence_embeddings(source_toks, attention_mask=None)
+        sent_toks = self.get_tokens_from_input_tensors(input_ids, target_sentence_ids)
+        sent_embs = self._get_sentence_embeddings(sent_toks, attention_mask=None)
+        all_embs = torch.hstack((orig_sent_embs, source_embs, sent_embs))
+        return self.head.classification(all_embs, labels)
 
 
 class SourceQA(LightningOptimizer, LightningQASteps):
