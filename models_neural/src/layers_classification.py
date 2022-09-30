@@ -27,9 +27,8 @@ class MultiClassMixin(nn.Module):
 
     def __init__(self, *args, **kwargs):#  config, num_output_tags):
         super().__init__(*args, **kwargs)
-        # final classification head
-        # accounts for 1 of them.
-        self.hidden_dim = self.config.hidden_dim
+        # final classification head accounts for 1 of them.
+        self.hidden_dim = kwargs.get('hidden_dim') or self.config.hidden_dim
         self.config = get_config(kwargs=kwargs)
         self.use_tsa = self.config.use_tsa
         self.init_pred_layers()
