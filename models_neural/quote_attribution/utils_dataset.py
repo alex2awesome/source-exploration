@@ -280,7 +280,8 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
         return generate_training_data(
             sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
             self.config.downsample_negative_data, doc_idx=d_idx,
-            update_w_doc_tokens=self.config.local, sent_lens=sent_lens
+            update_w_doc_tokens=self.config.local, sent_lens=sent_lens,
+            include_nones_as_positives=self.config.include_nones_as_positives
         )
 
     def get_dataset(self, use_split=None):
@@ -413,7 +414,8 @@ class SourceClassificationExtraTokens(SourceClassificationDataModule):
         vanilla_training_data = generate_training_data(
             sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
             self.config.downsample_negative_data, doc_idx=d_idx,
-            update_w_doc_tokens=self.config.local, sent_lens=sent_lens
+            update_w_doc_tokens=self.config.local, sent_lens=sent_lens,
+            include_nones_as_positives=self.config.include_nones_as_positives
         )
 
         return self.augment_training_data(vanilla_training_data)
@@ -483,7 +485,7 @@ class SourceQADataModule(BaseFineTuningDataModule):
 
             for source_heads, source_sentences in itertools.groupby(doc_to_group, key=lambda x: x[1]):
                 source_sentences = list(source_sentences)
-                if (not self.config.train_on_none) and (source_heads == 'None'):
+                if (not self.config.include_nones_as_positives) and (source_heads == 'None'):
                     continue
 
                 for source_head in source_heads.split(';'):
