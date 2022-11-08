@@ -7,6 +7,7 @@ from models_neural.src.utils_lightning import LightningOptimizer
 from models_neural.quote_attribution.utils_lightning import LightningClassificationSteps, LightningQASteps
 from torch.nn import CrossEntropyLoss
 
+
 class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
     def __init__(self, config, *args, **kwargs):
         super().__init__(config, *args, **kwargs)
@@ -39,20 +40,64 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
         return self.get_sentence_embed_helper(word_embs, attention_mask)
 
 
+class BinaryClassificationHead(nn.Module):
+    def __init__(self, config, *args, **kwargs):
+        super().__init__()
+        self.config = config
+        # for FFNN
+        self.embedding_to_hidden = nn.Linear(self.config.embedding_dim, self.config.hidden_dim, bias=False)
+
+        self.pred = nn.Linear(self.config.hidden_dim, self.config.num_output_tags)
+        self.drop = nn.Dropout(self.config.dropout)
+        self.criterion = nn.BCEWithLogitsLoss(reduction='none')
+        self._init_weights()
+
+    def _init_weights(self):
+        nn.init.xavier_uniform_(self.embedding_to_hidden.state_dict()['weight'])
+        nn.init.xavier_uniform_(self.pred.state_dict()['weight'])
+        self.pred.bias.data.fill_(0)
+
+    def get_contextualized_embeddings(self, cls_embeddings, *args, **kwargs):
+        """Determines whether we contextualize the sentence-level embeddings with an LSTM or Transformer layer, or
+        whether we just pass through a FFNN."""
+        hidden_output = self.embedding_to_hidden(cls_embeddings)
+        return hidden_output
+
+    def calculate_loss(self, preds, labels):
+        if labels.shape != preds.shape:
+            labels = labels.reshape_as(preds)
+        loss = self.criterion(preds, labels)
+        return loss
+
+    def classification(self, hidden_embs, labels=None):
+        prediction = self.pred(self.drop(torch.tanh(hidden_embs)))  # pred = ( batch_size x num_labels)
+        if labels is None:
+            return None, prediction
+
+        loss = self.calculate_loss(prediction, labels)
+        loss = torch.mean(loss)
+        return loss, prediction, labels
+
+    def forward(self, sent_embs, labels):
+        sent_embs = self.get_contextualized_embeddings(sent_embs)
+        return self.classification(sent_embs, labels)
+
+
 class SourceClassifier(LightningOptimizer, LightningClassificationSteps):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.config = get_config(kwargs=kwargs)
         self.transformer = SourceSentenceEmbeddingLayer(*args, **kwargs)
-        self.head = self.get_head_layer()(*args, **kwargs)
+        self.head = self.get_head_layer() # (*args, **kwargs)
 
     def get_head_layer(self):
-        if self.config.num_contextual_layers == 0:
-            return HeadLayerBinaryFF
-        if self.config.context_layer == 'lstm':
-            return HeadLayerBinaryLSTM
-        elif self.config.context_layer == 'gpt2-sentence':
-            return HeadLayerBinaryTransformer
+        # if self.config.num_contextual_layers == 0:
+        #     return HeadLayerBinaryFF
+        # if self.config.context_layer == 'lstm':
+        #     return HeadLayerBinaryLSTM
+        # elif self.config.context_layer == 'gpt2-sentence':
+        #     return HeadLayerBinaryTransformer
+        return BinaryClassificationHead(self.config)
 
     def forward(
             self,
