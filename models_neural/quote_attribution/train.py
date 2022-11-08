@@ -102,6 +102,7 @@ def main(
         #         'gradient_accumulation': config.accumulate_grad_batches,
         #     }
         # )
+        tb_logger.save()
     else:
         tb_logger = None
 
