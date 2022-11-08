@@ -49,16 +49,15 @@ katie compute run \
         -- \
         --model_type $model_type \
         --pretrained_model_path $pretrained_model \
-        --experiment roberta_classification \
+        --experiment roberta_classification_toks \
         --batch_size 1 \
         --num_train_epochs 3 \
         --train_data_file data/quote-attribution-classification__sanity-check-data.tsv \
         --notes "Stage 2: Quote Attribution + Detection. Classification. Method 2. Sanity Check." \
-        --freeze_encoder_layers $frozen_layers \
         --sentence_embedding_method 'attention' \
         --dropout .1 \
         --accumulate_grad_batches 1 \
-        --learning_rate 1e-4 \
+        --learning_rate 1e-8 \
         --spacy_model_file spacy/en_core_web_lg \
         --downsample_negative_data 1 \
         --shuffle_data \
@@ -66,7 +65,7 @@ katie compute run \
 
 
 
-
+# --freeze_encoder_layers $frozen_layers \
 
 
 #          TENSORBOARD_LOGDIR=hdfs:///user/aspangher/source-finding/tensorboard \

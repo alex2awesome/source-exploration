@@ -53,7 +53,7 @@ katie compute run \
         --batch_size 1 \
         --num_train_epochs 3 \
         --train_data_file data/our-annotated-data__stage-2.tsv \
-        --notes "Stage 2: Quote Attribution + Detection. Classification. Method 2. Our full dataset only. No train on None." \
+          --notes "Stage 2: Quote Attribution + Detection. Classification. Method 2. Our full dataset only. No train on None." \
         --freeze_encoder_layers $frozen_layers \
         --sentence_embedding_method 'attention' \
         --dropout .1 \
