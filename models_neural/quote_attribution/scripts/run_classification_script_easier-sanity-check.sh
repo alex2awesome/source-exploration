@@ -53,8 +53,8 @@ katie compute run \
         --batch_size 1 \
         --num_train_epochs 3 \
         --train_data_file data/quote-attribution-classification__easier-sanity-check-data.tsv \
-        --notes "Stage 2: Quote Attribution + Detection. Classification. Method 2. Easier Sanity Check." \
-        --sentence_embedding_method 'attention' \
+        --notes "Stage 2: Quote Attribution + Detection. Classification. Method 2. Easier Sanity Check. CLS for sentence vectors." \
+        --sentence_embedding_method 'cls' \
         --dropout .1 \
         --accumulate_grad_batches 1 \
         --learning_rate 1e-8 \
