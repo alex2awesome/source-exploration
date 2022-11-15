@@ -1,5 +1,11 @@
 import torch
 
+def tensor_to_float(inp):
+    if isinstance(inp, torch.Tensor):
+        if len(inp.shape) > 0:
+            inp = inp[0]
+            return float(inp.to('cpu'))
+    return float(inp)
 
 class BasicAccuracy():
     def __init__(self, num_window_tokens=2):
@@ -25,12 +31,7 @@ class BasicAccuracy():
         start_label, end_label = labels
 
         pred = self.calculate_overlap(start_label, end_label, start_logits, end_logits)
-
-        if isinstance(pred, torch.Tensor):
-            if len(pred.shape) > 0:
-                pred = pred[0]
-                pred = float(pred.to('cpu'))
-        self.internal_list.append(pred )
+        self.internal_list.append(pred)
 
     def compute(self):
         if len(self.internal_list) == 0:
@@ -46,19 +47,29 @@ class SequenceF1():
         self.internal_list = []
 
     def calculate_f1(self, start_label, end_label, start_logits, end_logits):
-        start_pred = start_logits.argmax()
-        end_pred = end_logits.argmax()
+        start_label = tensor_to_float(start_label)
+        end_label = tensor_to_float(end_label)
+        start_pred = tensor_to_float(start_logits.argmax())
+        end_pred = tensor_to_float(end_logits.argmax())
         start_pred, end_pred = min(start_pred, end_pred), max(start_pred, end_pred)
 
         common_start = max(start_pred, start_label)
+        common_start = tensor_to_float(common_start)
         common_end = min(end_pred, end_label)
-        common_tokens = common_end - common_start
+        common_end = tensor_to_float(common_end)
+        if common_end >= common_start:
+            len_common_tokens = common_end - common_start
+        else:
+            len_common_tokens = 0
 
         len_pred_tokens = end_pred - start_pred
         len_truth_tokens = end_label - start_label
 
-        prec = len(common_tokens) / len_pred_tokens
-        rec = len(common_tokens) / len_truth_tokens
+        prec = len_common_tokens / len_pred_tokens
+        rec = len_common_tokens / len_truth_tokens
+
+        if prec + rec == 0:
+            return 0
 
         return 2 * (prec * rec) / (prec + rec)
 
