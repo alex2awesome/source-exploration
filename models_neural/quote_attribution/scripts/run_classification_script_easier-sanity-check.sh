@@ -49,11 +49,11 @@ katie compute run \
         -- \
         --model_type $model_type \
         --pretrained_model_path $pretrained_model \
-        --experiment roberta_classification_toks \
+        --experiment roberta_classification \
         --batch_size 1 \
         --num_train_epochs 3 \
-        --train_data_file data/quote-attribution-classification__sanity-check-data.tsv \
-        --notes "Stage 2: Quote Attribution + Detection. Classification. Method 2. Sanity Check. Toks." \
+        --train_data_file data/quote-attribution-classification__easier-sanity-check-data.tsv \
+        --notes "Stage 2: Quote Attribution + Detection. Classification. Method 2. Easier Sanity Check." \
         --sentence_embedding_method 'attention' \
         --dropout .1 \
         --accumulate_grad_batches 1 \

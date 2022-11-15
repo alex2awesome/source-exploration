@@ -89,19 +89,14 @@ def main(
         tb_logger = loggers.TensorBoardLogger(
             save_dir=os.environ['TENSORBOARD_LOGDIR'],
         )
-        tb_logger.log_hyperparams(config.to_dict())
-        # tb_logger.log_hyperparams({
-        #         'notes': args.notes,
-        #         'embedding_model_type': config.model_type,
-        #         'dataset_size': len(dataset.train_dataset),
-        #         'experiment': args.experiment,
-        #         # trainer params
-        #         'batch_size': config.batch_size,
-        #         'warmup_steps': config.warmup_steps,
-        #         'learning_rate': config.learning_rate,
-        #         'gradient_accumulation': config.accumulate_grad_batches,
-        #     }
-        # )
+        # tb_logger.log_hyperparams(config.to_dict())
+        tb_logger.log_hyperparams({
+                'notes': args.notes,
+                'embedding_model_type': config.model_type,
+                'dataset_size': len(dataset.train_dataset),
+                'experiment': args.experiment,
+            }
+        )
         tb_logger.save()
     else:
         tb_logger = None

@@ -18,6 +18,7 @@ import itertools
 import spacy
 import random
 from tqdm.auto import tqdm
+import copy
 
 try: # version 3.0.2
     from transformers.tokenization_gpt2 import AddedToken
@@ -211,6 +212,34 @@ class BaseFineTuningDataModule(pl.LightningDataModule):
         return Dataset(X, y, split=split)
 
 
+class SanityCheckClassificationDataset(BaseFineTuningDataModule):
+    """Processes a different sentence-level classification dataset."""
+
+    def process_row(self, text, label, has_label=True):
+        x_seq = self.tokenizer.encode(text)
+        x_seq = torch.tensor(x_seq)
+        y_seq = torch.tensor(y_seq)
+
+        return x_seq, y_seq
+
+    def collate_fn(self, dataset):
+        """
+        Takes in an instance of Torch Dataset (or a subclassed instance).
+        Expects dataset[i]['X'] to be a list of list of sentences
+            and dataset[i]['y'] to be a list of list of labels.
+        Returns dict with key:
+             input_ids: list of tensors of len # docs where each tensor is an entire document.
+             labels: same as `input_ids`, for language modeling.
+        """
+        columns = transpose_dict(dataset)
+        X_batch = list(map(lambda sents: torch.cat(sents), columns["input_ids"]))
+        Y_batch = list(map(lambda labels: torch.cat(labels), columns["labels"]))
+        return {
+            "input_ids": torch.cat(X_batch).unsqueeze(dim=0),
+            "labels": torch.cat(Y_batch).unsqueeze(dim=0)
+        }
+
+
 class SourceConditionalGenerationDataset(BaseFineTuningDataModule):
     def __init__(
             self, data_fp, model_type, max_length_seq,
@@ -369,8 +398,10 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
             "input_lens": X_sent_lens
         }
 
-import copy
+
 class SourceClassificationExtraTokens(SourceClassificationDataModule):
+    """Append extra tokens to the input to signify sources and sentences."""
+
     def get_tokens_from_lists(self, indicator_list, token_list):
         toks = list(filter(lambda x: x[0] == 1, zip(indicator_list, token_list)))
         return list(map(lambda x: x[1], toks))
