@@ -40,7 +40,12 @@ katie compute run \
         --python-module models_neural.quote_attribution.train \
         --identities hadoop=$DEFAULT_HADOOP_IDENTITY bcs=$DEFAULT_BCS_IDENTITY git=$DEFAULT_GIT_IDENTIY \
         --pip-packages $DEFAULT_PACKAGE \
-        --env NCCL_ASYNC_ERROR_HANDLING=1 NCCL_LL_THRESHOLD=0 NCCL_DEBUG=INFO env=$ENV \
+        --env \
+          NCCL_ASYNC_ERROR_HANDLING=1 \
+          NCCL_LL_THRESHOLD=0 \
+          NCCL_DEBUG=INFO \
+          env=$ENV \
+          TENSORBOARD_LOGDIR=s3://aspangher/source-exploration/logs/ \
         -- \
         --model_type $model_type \
         --pretrained_model_path $pretrained_model \
