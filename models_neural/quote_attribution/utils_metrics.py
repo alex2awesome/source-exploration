@@ -65,6 +65,9 @@ class SequenceF1():
         len_pred_tokens = end_pred - start_pred
         len_truth_tokens = end_label - start_label
 
+        if (len_pred_tokens == 0) or (len_truth_tokens == 0):
+            return 0 
+
         prec = len_common_tokens / len_pred_tokens
         rec = len_common_tokens / len_truth_tokens
 
