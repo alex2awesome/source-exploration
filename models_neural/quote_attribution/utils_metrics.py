@@ -22,8 +22,8 @@ class BasicAccuracy():
         start_pred, end_pred = min(start_pred, end_pred), max(start_pred, end_pred)
 
         has_overlap = (start_pred <= start_label and end_pred >= start_label) or \
-                      (start_pred <= start_label and end_pred >= end_label)
-        two_tokens = (abs(start_pred - start_label) <= self.w) and (abs(end_pred - end_label))
+                      (start_pred <= end_label and end_pred >= end_label)
+        two_tokens = (abs(start_pred - start_label) <= self.w) and (abs(end_pred - end_label) <= self.w)
         return has_overlap and two_tokens
 
     def __call__(self, preds, labels):
@@ -66,7 +66,7 @@ class SequenceF1():
         len_truth_tokens = end_label - start_label
 
         if (len_pred_tokens == 0) or (len_truth_tokens == 0):
-            return 0 
+            return 0
 
         prec = len_common_tokens / len_pred_tokens
         rec = len_common_tokens / len_truth_tokens
