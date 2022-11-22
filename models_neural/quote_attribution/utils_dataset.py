@@ -129,6 +129,10 @@ class BaseFineTuningDataModule(pl.LightningDataModule):
         if not os.path.exists(self.data_fp):
             raise FileNotFoundError('Data files... make sure to download them from S3!')
 
+    def tensorfy_and_pad(self, list_of_lists):
+        tensors = list(map(torch.tensor, list_of_lists))
+        return pad_sequence(tensors, batch_first=True)[:, :max_num_tokens_in_doc]
+
     def setup(self, stage=None, split=None):
         """
             Download and split the dataset before training/testing.
@@ -218,8 +222,7 @@ class SanityCheckClassificationDataset(BaseFineTuningDataModule):
     def process_row(self, text, label, has_label=True):
         x_seq = self.tokenizer.encode(text)
         x_seq = torch.tensor(x_seq)
-        y_seq = torch.tensor(y_seq)
-
+        y_seq = torch.tensor(label)
         return x_seq, y_seq
 
     def collate_fn(self, dataset):
@@ -364,10 +367,6 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
 
         return SourceDataset(input=data_chunk, split=split)
 
-    def tensorfy_and_pad(self, list_of_lists):
-        tensors = list(map(torch.tensor, list_of_lists))
-        return pad_sequence(tensors, batch_first=True)[:, :max_num_tokens_in_doc]
-
     def collate_fn(self, dataset):
         """
         Takes in an instance of Torch Dataset (or a subclassed instance).
@@ -450,6 +449,29 @@ class SourceClassificationExtraTokens(SourceClassificationDataModule):
         )
 
         return self.augment_training_data(vanilla_training_data)
+
+
+class EasiestSanityCheckDataModule(SourceClassificationDataModule):
+    def __init__(self, data_fp, *args, **kwargs):
+        super().__init__(**format_local_vars(locals()))
+
+    def get_dataset(self, use_split=None):
+        training_data = []
+        with open(self.data_fp) as f:
+            csv_reader = csv.reader(f, delimiter="\t")
+            csv_data = list(csv_reader)
+            for X, y in csv_data:
+                doc_tokens = self.tokenizer.encode(X)
+                training_data.append({
+                    'doc_tokens': doc_tokens,
+                    'source_ind_tokens': [1] * len(doc_tokens),
+                    'sentence_ind_tokens': [1] * len(doc_tokens),
+                    'sent_lens': [len(doc_tokens)],
+                    'label': int(y)
+                })
+
+        split = np.random.choice(['train', 'test'], size=len(training_data), p=[self.split_perc, 1-self.split_perc])
+        return SourceDataset(input=training_data, split=split)
 
 
 class SourceQADataModule(BaseFineTuningDataModule):

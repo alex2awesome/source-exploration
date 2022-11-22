@@ -14,21 +14,19 @@ from models_neural.quote_attribution.utils_dataset import (
     SourceConditionalGenerationDataset,
     SourceClassificationDataModule,
     SourceClassificationExtraTokens,
+    EasiestSanityCheckDataModule,
     SourceQADataModule
 )
 from models_neural.quote_attribution.classification_models import (
     SourceClassifier,
+    SanityCheckClassifier,
     SourceClassifierWithSourceSentVecs,
     SourceQA
 )
 
-
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning import loggers
-import torch
-from transformers import AutoConfig
-
 import logging
 logging.basicConfig(level=logging.INFO)
 
@@ -37,6 +35,7 @@ experiments = {
     'roberta_classification': ('roberta', SourceClassificationDataModule, SourceClassifier),
     'roberta_classification_vecs': ('roberta', SourceClassificationDataModule, SourceClassifierWithSourceSentVecs),
     'roberta_classification_toks': ('roberta', SourceClassificationExtraTokens, SourceClassifier),
+    'roberta_sanity_check': ('roberta', EasiestSanityCheckDataModule, SourceClassifier),
     'roberta_qa': ('roberta', SourceQADataModule, SourceQA)
 }
 
@@ -70,7 +69,7 @@ def main(
         pretrained_model_path=config.pretrained_model_path,
         num_cpus=config.num_dataloader_cpus,
         split_type=args.split_type,
-        split_perc=.95,
+        split_perc=.9,
         model_type=lm_type,
         batch_size=args.batch_size,
         max_length_seq=args.max_length_seq,
@@ -81,7 +80,6 @@ def main(
     config.num_steps_per_epoch = len(dataset.train_dataset)
 
     model = lm_class(config=config)  # our experimental setup
-
 
     #########
     # get TB logger
@@ -189,7 +187,7 @@ if __name__ == "__main__":
     # set up model
     logging.info('MODEL PARAMS:')
     logging.info(config.to_json_string(use_diff=False))
-    dump_config_now = True
+    dump_config_now = False
     if dump_config_now:
         local_config_path = 'config-%s.json' % args.notes
         with open(local_config_path, 'w') as f:

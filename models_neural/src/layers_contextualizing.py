@@ -10,9 +10,7 @@ class FFContextMixin(nn.Module):
     def __init__(self, *args, **kwargs):
         self.config = get_config(kwargs=kwargs)
         super().__init__(*args, **kwargs)
-        self.embedding_to_hidden = nn.Linear(
-            self.config.embedding_dim, self.config.hidden_dim, bias=False
-        )
+        self.embedding_to_hidden = nn.Linear(self.config.embedding_dim, self.config.hidden_dim, bias=False)
         self._init_weights()
 
     def _init_weights(self):

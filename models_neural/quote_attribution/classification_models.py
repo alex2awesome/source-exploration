@@ -99,17 +99,8 @@ class SourceClassifier(LightningOptimizer, LightningClassificationSteps):
         #     return HeadLayerBinaryTransformer
         return BinaryClassificationHead(self.config)
 
-    def forward(
-            self,
-            input_ids,
-            target_sentence_ids,
-            target_person_ids,
-            labels=None,
-            attention_mask=None,
-            input_lens=None,
-            *args,
-            **kwargs
-    ):
+    def forward(self, input_ids, target_sentence_ids, target_person_ids,
+                labels=None, attention_mask=None, input_lens=None, *args, **kwargs):
         """
         Step that's shared between training loop and validation loop. Contains sequence-specific processing,
         so we're keeping it in the child class.
@@ -131,6 +122,18 @@ class SourceClassifier(LightningOptimizer, LightningClassificationSteps):
         """
         sent_embeddings = self.transformer(
             input_ids, target_sentence_ids, target_person_ids, attention_mask, sent_lens=input_lens)
+        return self.head(sent_embeddings, labels)
+
+
+class SanityCheckClassifier(LightningOptimizer, LightningClassificationSteps):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.config = get_config(kwargs=kwargs)
+        self.transformer = SentenceEmbeddingsLayer(*args, **kwargs)
+        self.head = BinaryClassificationHead(self.config)
+
+    def forward(self, input_ids, labels=None, attention_mask=None, input_lens=None, *args, **kwargs):
+        sent_embeddings = self.transformer.get_sentence_embedding(input_ids, attention_mask)
         return self.head(sent_embeddings, labels)
 
 
@@ -216,6 +219,7 @@ class SourceQA(LightningOptimizer, LightningQASteps):
                 start_positions = start_positions.squeeze(-1)
             if len(end_positions.size()) > 1:
                 end_positions = end_positions.squeeze(-1)
+
             # sometimes the start/end positions are outside our model inputs, we ignore these terms
             ignored_index = start_logits.size(1)
             start_positions = start_positions.clamp(0, ignored_index)
