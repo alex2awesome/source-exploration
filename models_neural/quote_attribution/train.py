@@ -169,6 +169,8 @@ if __name__ == "__main__":
         # train and eval files
         args.num_gpus = 0
         args.train_data_file = os.path.join(here, args.train_data_file)
+        if args.auxiliary_train_data_file is not None:
+            args.auxiliary_train_data_file = os.path.join(here, args.auxiliary_train_data_file)
     else:
         from models_neural.src.utils_data_access import download_all_necessary_files
         download_all_necessary_files(args)

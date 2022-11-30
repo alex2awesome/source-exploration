@@ -487,13 +487,9 @@ class SourceQADataModule(BaseFineTuningDataModule):
         else:
             self.nlp = None
 
-    def get_dataset(self, use_split=None):
-        """
-        Read in dataset as a list of "label \t text" entries.
-        Output flat lists of X = [sent_1, sent_2, ...], y = [label_1, label_2]
-        """
+    def process_one_csv_file(self, filepath, num_documents=None):
         split, data_chunk = [], []
-        with open(self.data_fp) as f:
+        with open(filepath) as f:
             csv_reader = csv.reader(f, delimiter="\t")
             csv_data = list(csv_reader)
 
@@ -503,6 +499,7 @@ class SourceQADataModule(BaseFineTuningDataModule):
             sorted_doc = list(map(lambda x: [x[0].strip(), x[1], x[2], x[3]], sorted_doc))
             grouped.append((doc_idx, sorted_doc))
 
+        n_total_docs = num_documents or len(grouped)
         if self.config.shuffle_data:
             random.shuffle(grouped)
 
@@ -518,8 +515,8 @@ class SourceQADataModule(BaseFineTuningDataModule):
                 continue
 
             # check to see if we're only running this on a small sample
-            if self.config.num_documents is not None:
-                if i > self.config.num_documents:
+            if num_documents is not None:
+                if i > num_documents:
                     break
                 i += 1
 
@@ -552,7 +549,25 @@ class SourceQADataModule(BaseFineTuningDataModule):
                     training_data.extend(training_chunks)
                     split.extend([s] * len(source_sentences))
 
-        return SourceDataset(input=training_data, split=split)
+        return training_data, split, n_total_docs
+
+    def get_dataset(self, use_split=None):
+        """
+        Read in dataset as a list of "label \t text" entries.
+        Output flat lists of X = [sent_1, sent_2, ...], y = [label_1, label_2]
+        """
+        all_training_data, all_splits, n_docs = self.process_one_csv_file(self.data_fp, self.config.num_documents)
+
+        if self.config.auxiliary_train_data_file is not None:
+            num_aux_docs = None
+            if self.config.auxiliary_train_dat_downsample is not None:
+                num_aux_docs = int(self.config.auxiliary_train_dat_downsample * n_docs)
+            aux_training_data, _, _ = self.process_one_csv_file(self.config.auxiliary_train_data_file, num_aux_docs)
+            aux_splits = ['train'] * len(aux_training_data)
+            all_training_data += aux_training_data
+            all_splits += aux_splits
+
+        return SourceDataset(input=all_training_data, split=all_splits)
 
     def tensorfy_and_pad(self, list_of_lists):
         tensors = list(map(torch.tensor, list_of_lists))

@@ -2,6 +2,7 @@ def attach_model_arguments(parser):
     # setup params
     parser.add_argument('--env', type=str, default='local', help='Whether to download from BB or not.')
     parser.add_argument('--train_data_file', type=str, help='What dataset to use.')
+    parser.add_argument('--auxiliary_train_data_file', type=str, help='What secondary dataset to use.')
     parser.add_argument('--eval_data_file', type=str, help='What dataset to use.')
     parser.add_argument('--pretrained_model_path', type=str, help='What lm to use.')
     parser.add_argument('--pretrained_lm_model_path', type=str, default=None, help="if there's a specific LM model checkpoint to use.")
@@ -15,6 +16,7 @@ def attach_model_arguments(parser):
     parser.add_argument('--log_all_metrics', action='store_true')
     parser.add_argument('--shuffle_data', action='store_true')
     parser.add_argument('--downsample_negative_data', default=None, type=float, help="rate at which to downsample negative datapoints.")
+    parser.add_argument('--auxiliary_train_dat_downsample', default=None, type=float)
     parser.add_argument('--include_nones_as_positives', action='store_true')
 
     # hardware params
