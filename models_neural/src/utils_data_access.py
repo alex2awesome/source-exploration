@@ -58,6 +58,11 @@ def get_data_file_path(args):
         return args.train_data_file
 
 
+def get_aux_data_file_path(args):
+    if hasattr(args, 'auxiliary_train_data_file'):
+        return args.auxiliary_train_data_file
+
+
 def download_all_necessary_files(args):
     # Download model files
     if get_lm_path(args) is not None:
@@ -88,6 +93,13 @@ def download_all_necessary_files(args):
         if not is_local(args):
             logging.info('Downloading data file')
             download_file_to_filepath(get_data_file_path(args))
+
+    # Download auxiliary data file
+    if get_aux_data_file_path(args):
+        # download data file
+        if not is_local(args):
+            logging.info('Downloading data file')
+            download_file_to_filepath(get_aux_data_file_path(args))
 
     if hasattr(args, 'pretrained_lm_model_path') and args.pretrained_lm_model_path is not None:
         if not is_local(args):
