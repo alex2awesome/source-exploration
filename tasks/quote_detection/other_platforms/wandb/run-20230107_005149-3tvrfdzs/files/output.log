@@ -1,0 +1,124 @@
+
+normalizer.cc(50) LOG(INFO) precompiled_charsmap is empty. use identity normalization.
+    6 training samples
+    6 validation samples
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.bias']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+***** Running training *****
+  Num examples = 6
+  Num Epochs = 3
+  Instantaneous batch size per device = 1
+  Total train batch size (w. parallel, distributed & accumulation) = 1
+  Gradient Accumulation steps = 1
+  Total optimization steps = 18
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  0% 0/18 [00:00<?, ?it/s]Attention type 'block_sparse' is not possible if sequence_length: 162 <= num global tokens: 2 * config.block_size + min. num sliding tokens: 3 * config.block_size + config.num_random_blocks * config.block_size + additional buffer: config.num_random_blocks * config.block_size = 704 with config.block_size = 64, config.num_random_blocks = 3. Changing attention type to 'original_full'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 89% 16/18 [00:34<00:03,  1.97s/it]
+100% 18/18 [00:37<00:00,  1.67s/it]
+Training completed. Do not forget to share your model on huggingface.co/models =)
+100% 18/18 [00:37<00:00,  2.09s/it]
+Saving model checkpoint to .
+Trainer.model is not a `PreTrainedModel`, only saving its state dict.
+***** train metrics *****
+  epoch                    =        3.0
+  train_loss               =     0.5219
+  train_runtime            = 0:00:37.65
+  train_samples            =          6
+  train_samples_per_second =      0.478
+  train_steps_per_second   =      0.478
+*** Evaluate ***
+***** Running Evaluation *****
+  Num examples = 6
+  Batch size = 1
+
+
+100% 6/6 [00:05<00:00,  1.32it/s]
+Python 3.7.6 (default, Jan  8 2020, 13:42:34)
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.22.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.22.0
+Out[1]:
+EvalPrediction(predictions=array([[  -1.0853192 ,   -1.2066237 ,   -0.9343072 ,   -0.98531836,
+          -2.4123485 , -100.        , -100.        , -100.        ,
+        -100.        ],
+       [  -2.1189172 ,   -1.8884207 ,   -1.1134299 ,   -1.3324311 ,
+          -1.8624943 ,   -1.4766207 , -100.        , -100.        ,
+        -100.        ],
+       [  -1.1789132 ,   -0.67313594,   -1.708551  , -100.        ,
+        -100.        , -100.        , -100.        , -100.        ,
+        -100.        ],
+       [  -1.281248  ,   -0.6404671 ,   -1.8375102 ,   -1.3886002 ,
+          -1.4687079 ,   -1.6991638 ,   -1.5390099 ,   -1.8476471 ,
+          -0.6451745 ],
+       [  -1.5217019 ,   -0.95009714,   -1.8523082 ,   -1.9887415 ,
+          -0.8404545 ,   -1.9887415 ,   -0.48352915, -100.        ,
+        -100.        ],
+       [  -1.6570811 ,   -1.7431179 ,   -1.6419371 ,   -1.5594321 ,
+          -1.2898253 ,   -1.4405123 ,   -2.2365334 ,   -1.093778  ,
+        -100.        ]], dtype=float32), label_ids=array([[   1.,    1.,    1.,    0.,    1., -100., -100., -100., -100.],
+       [   0.,    0.,    0.,    0.,    0.,    0., -100., -100., -100.],
+       [   0.,    0.,    0., -100., -100., -100., -100., -100., -100.],
+       [   1.,    1.,    1.,    1.,    0.,    1.,    1.,    0.,    1.],
+       [   0.,    1.,    1.,    1.,    1.,    0.,    1., -100., -100.],
+       [   0.,    0.,    0.,    0.,    0.,    0.,    0.,    0., -100.]]))
+Out[3]:
+array([[  -1.0853192 ,   -1.2066237 ,   -0.9343072 ,   -0.98531836,
+          -2.4123485 , -100.        , -100.        , -100.        ,
+        -100.        ],
+       [  -2.1189172 ,   -1.8884207 ,   -1.1134299 ,   -1.3324311 ,
+          -1.8624943 ,   -1.4766207 , -100.        , -100.        ,
+        -100.        ],
+       [  -1.1789132 ,   -0.67313594,   -1.708551  , -100.        ,
+        -100.        , -100.        , -100.        , -100.        ,
+        -100.        ],
+       [  -1.281248  ,   -0.6404671 ,   -1.8375102 ,   -1.3886002 ,
+          -1.4687079 ,   -1.6991638 ,   -1.5390099 ,   -1.8476471 ,
+          -0.6451745 ],
+       [  -1.5217019 ,   -0.95009714,   -1.8523082 ,   -1.9887415 ,
+          -0.8404545 ,   -1.9887415 ,   -0.48352915, -100.        ,
+        -100.        ],
+       [  -1.6570811 ,   -1.7431179 ,   -1.6419371 ,   -1.5594321 ,
+          -1.2898253 ,   -1.4405123 ,   -2.2365334 ,   -1.093778  ,
+        -100.        ]], dtype=float32)
+Out[4]:
+array([[0.25250074, 0.230299  , 0.28205168, 0.2718378 , 0.0822359 ,
+        0.        , 0.        , 0.        , 0.        ],
+       [0.10727172, 0.13142465, 0.24723202, 0.20875752, 0.13441259,
+        0.18593839, 0.        , 0.        , 0.        ],
+       [0.23524766, 0.33779502, 0.15335175, 0.        , 0.        ,
+        0.        , 0.        , 0.        , 0.        ],
+       [0.21733788, 0.34514096, 0.13734601, 0.19963132, 0.18713908,
+        0.15457451, 0.17667925, 0.13614939, 0.34407777],
+       [0.17921105, 0.27886528, 0.13560212, 0.12039006, 0.30143908,
+        0.12039006, 0.3814191 , 0.        , 0.        ],
+       [0.16015421, 0.14891733, 0.16220164, 0.17372814, 0.21588238,
+        0.19146603, 0.09651741, 0.2509075 , 0.        ]], dtype=float32)
+Out[5]:
+array([[False, False, False, False, False, False, False, False, False],
+       [False, False, False, False, False, False, False, False, False],
+       [False, False, False, False, False, False, False, False, False],
+       [False, False, False, False, False, False, False, False, False],
+       [False, False, False, False, False, False, False, False, False],
+       [False, False, False, False, False, False, False, False, False]])
+Out[6]:
+array([[0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 0, 0, 0, 0],

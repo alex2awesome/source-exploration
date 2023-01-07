@@ -1,0 +1,169 @@
+2023-01-07 00:22:30,982 INFO    MainThread:11132 [internal.py:wandb_internal():89] W&B internal server running at pid: 11132, started at: 2023-01-07 00:22:30.982508
+2023-01-07 00:22:30,984 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: check_version
+2023-01-07 00:22:30,984 INFO    WriterThread:11132 [datastore.py:open_for_write():77] open: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/run-pe7vunsk.wandb
+2023-01-07 00:22:30,986 DEBUG   SenderThread:11132 [sender.py:send():185] send: header
+2023-01-07 00:22:30,986 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: check_version
+2023-01-07 00:22:31,382 DEBUG   SenderThread:11132 [sender.py:send():185] send: run
+2023-01-07 00:22:31,798 INFO    SenderThread:11132 [dir_watcher.py:__init__():169] watching files in: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files
+2023-01-07 00:22:31,798 INFO    SenderThread:11132 [sender.py:_start_run_threads():749] run started: pe7vunsk with start time 1673068949
+2023-01-07 00:22:31,798 DEBUG   SenderThread:11132 [sender.py:send():185] send: summary
+2023-01-07 00:22:31,799 INFO    SenderThread:11132 [sender.py:_save_file():879] saving file wandb-summary.json with policy end
+2023-01-07 00:22:31,800 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: run_start
+2023-01-07 00:22:32,950 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/wandb-summary.json
+2023-01-07 00:22:37,227 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:22:37,603 DEBUG   HandlerThread:11132 [meta.py:__init__():40] meta init
+2023-01-07 00:22:37,603 DEBUG   HandlerThread:11132 [meta.py:__init__():54] meta init done
+2023-01-07 00:22:37,603 DEBUG   HandlerThread:11132 [meta.py:probe():211] probe
+2023-01-07 00:22:37,604 DEBUG   HandlerThread:11132 [meta.py:_setup_git():201] setup git
+2023-01-07 00:22:37,646 DEBUG   HandlerThread:11132 [meta.py:_setup_git():208] setup git done
+2023-01-07 00:22:37,647 DEBUG   HandlerThread:11132 [meta.py:_save_pip():58] save pip
+2023-01-07 00:22:37,650 DEBUG   HandlerThread:11132 [meta.py:_save_pip():72] save pip done
+2023-01-07 00:22:37,650 DEBUG   HandlerThread:11132 [meta.py:_save_conda():79] save conda
+2023-01-07 00:22:38,230 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/requirements.txt
+2023-01-07 00:22:38,230 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/conda-environment.yaml
+2023-01-07 00:22:43,177 DEBUG   HandlerThread:11132 [meta.py:_save_conda():87] save conda done
+2023-01-07 00:22:43,177 DEBUG   HandlerThread:11132 [meta.py:probe():249] probe done
+2023-01-07 00:22:43,184 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:22:43,184 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:22:43,240 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/wandb-metadata.json
+2023-01-07 00:22:43,508 DEBUG   SenderThread:11132 [sender.py:send():185] send: files
+2023-01-07 00:22:43,508 INFO    SenderThread:11132 [sender.py:_save_file():879] saving file wandb-metadata.json with policy now
+2023-01-07 00:22:44,397 INFO    Thread-11 :11132 [upload_job.py:push():137] Uploaded file /var/folders/89/6dsq1ymj63x009t6wpt25f9h0000gp/T/tmp0z4dlj0bwandb/26ew2qdu-wandb-metadata.json
+2023-01-07 00:22:45,249 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:22:46,137 DEBUG   SenderThread:11132 [sender.py:send():185] send: config
+2023-01-07 00:22:46,137 DEBUG   SenderThread:11132 [sender.py:send():185] send: metric
+2023-01-07 00:22:46,137 DEBUG   SenderThread:11132 [sender.py:send():185] send: metric
+2023-01-07 00:22:46,137 WARNING SenderThread:11132 [sender.py:send_metric():837] Seen metric with glob (shouldnt happen)
+2023-01-07 00:22:47,257 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:22:49,262 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:22:51,265 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:22:53,268 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:22:55,279 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:22:57,283 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:22:58,511 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:22:58,511 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:22:59,289 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:01,298 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:02,298 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/config.yaml
+2023-01-07 00:23:03,302 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:05,312 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:06,282 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:23:07,313 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:09,317 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:11,323 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:13,330 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:13,881 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:23:13,881 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:23:15,137 DEBUG   SenderThread:11132 [sender.py:send():185] send: metric
+2023-01-07 00:23:15,137 DEBUG   SenderThread:11132 [sender.py:send():185] send: metric
+2023-01-07 00:23:15,137 DEBUG   SenderThread:11132 [sender.py:send():185] send: metric
+2023-01-07 00:23:15,137 DEBUG   SenderThread:11132 [sender.py:send():185] send: metric
+2023-01-07 00:23:15,137 DEBUG   SenderThread:11132 [sender.py:send():185] send: metric
+2023-01-07 00:23:15,138 DEBUG   SenderThread:11132 [sender.py:send():185] send: metric
+2023-01-07 00:23:15,138 DEBUG   SenderThread:11132 [sender.py:send():185] send: history
+2023-01-07 00:23:15,138 DEBUG   SenderThread:11132 [sender.py:send():185] send: summary
+2023-01-07 00:23:15,138 INFO    SenderThread:11132 [sender.py:_save_file():879] saving file wandb-summary.json with policy end
+2023-01-07 00:23:15,334 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/wandb-summary.json
+2023-01-07 00:23:15,335 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:17,341 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:19,349 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:21,357 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:23:29,282 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:23:29,286 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:23:33,407 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/config.yaml
+2023-01-07 00:23:37,107 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:23:44,735 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:23:44,738 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:24:00,200 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:24:00,203 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:24:07,841 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:24:15,656 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:24:15,656 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:24:31,043 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:24:31,043 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:24:38,686 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:24:46,392 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:24:46,392 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:25:01,726 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:25:01,726 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:25:09,591 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:25:17,053 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:25:17,053 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:25:32,373 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:25:32,373 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:25:33,839 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:25:37,851 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:25:40,559 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:25:47,754 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:25:47,755 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:26:03,114 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:26:03,115 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:26:07,902 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:26:11,328 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:26:17,936 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:26:18,534 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:26:18,534 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:26:33,869 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:26:33,870 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:26:42,275 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:26:49,452 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:26:49,472 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:27:04,788 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:27:04,789 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:27:10,130 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:27:12,133 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:27:13,204 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:27:16,148 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:27:20,174 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:27:20,177 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:27:35,575 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:27:35,575 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:27:44,052 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:27:50,273 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:27:50,899 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:27:50,899 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:28:06,213 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:28:06,216 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:28:14,966 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:28:21,562 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:28:21,567 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:28:37,307 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:28:37,308 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:28:45,758 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:28:52,670 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:28:52,671 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:29:08,023 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:29:08,024 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:29:16,684 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:29:23,337 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:29:23,337 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:29:38,662 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:29:38,663 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:29:47,699 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:29:53,994 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:29:53,995 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:30:09,312 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:30:09,312 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:30:18,630 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:30:24,617 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:30:24,618 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:30:39,919 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:30:39,920 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:30:49,542 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:30:57,612 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:30:57,615 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:31:12,997 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:31:13,000 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:31:20,368 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:31:28,406 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:31:28,406 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:31:43,729 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:31:43,730 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:31:51,390 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:31:52,110 INFO    Thread-8  :11132 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230107_002227-pe7vunsk/files/output.log
+2023-01-07 00:31:59,201 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:31:59,201 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:32:14,515 DEBUG   HandlerThread:11132 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-07 00:32:14,515 DEBUG   SenderThread:11132 [sender.py:send_request():199] send_request: stop_status
+2023-01-07 00:32:22,326 DEBUG   SenderThread:11132 [sender.py:send():185] send: stats
+2023-01-07 00:32:26,236 WARNING MainThread:11132 [internal.py:wandb_internal():145] Internal process interrupt: 1
