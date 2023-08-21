@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 import sys
 sys.path.insert(0, '../scripts/')
-import coref_resolution_util
+import rules_method_num_3
 import pickle
 from tqdm.auto import tqdm
 import numpy as np
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     output = []
     for entry_id, (version, summary, label) in tqdm(df.iterrows(), total=len(df)):
         try:
-            quote_idxes, sent_words, _ = coref_resolution_util.perform_quote_extraction_and_clustering(summary)
+            quote_idxes, sent_words, _ = rules_method_num_3.perform_quote_extraction_and_clustering(summary)
             output.append({
                 'entry_id': entry_id,
                 'version': version,
@@ -54,6 +54,9 @@ if __name__ == '__main__':
             })
         except:
             pass
+
     s, e = args.start_row, args.start_row + args.n_rows
     with open('%s/output_chunk__start-%s_end-%s.pkl' % (args.output_dir, s, e), 'wb') as f:
         pickle.dump(output, f)
+
+
