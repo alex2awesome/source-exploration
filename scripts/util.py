@@ -14,16 +14,28 @@ import sys
 
 here = os.path.dirname(__file__)
 sys.path.insert(0, here)
-from params import (
-    orig_speaking_lexicon,
-    full_speaking_lexicon,
-    orig_ner_list,
-    full_ner_list,
-    multiword_phrases_present_tense,
-    multiword_phrases_past_tense,
-    desired_checklist_of_anonymous_sources,
-    desired_checklist_of_documents
-)
+try:
+    from .params import (
+        orig_speaking_lexicon,
+        full_speaking_lexicon,
+        orig_ner_list,
+        full_ner_list,
+        multiword_phrases_present_tense,
+        multiword_phrases_past_tense,
+        desired_checklist_of_anonymous_sources,
+        desired_checklist_of_documents
+    )
+except:
+    from params import (
+        orig_speaking_lexicon,
+        full_speaking_lexicon,
+        orig_ner_list,
+        full_ner_list,
+        multiword_phrases_present_tense,
+        multiword_phrases_past_tense,
+        desired_checklist_of_anonymous_sources,
+        desired_checklist_of_documents
+    )
 
 
 _nlp = None
@@ -126,30 +138,55 @@ def is_background_or_quote(text_sentence, speaking_lexicon):
         background_or_quote = 'quote sentence'
     return background_or_quote
 
-def get_quotes_method_1(doc, orig_speaking=True, orig_ner=True, find_anon=True, find_docs=True):
+def get_quotes_method_1(doc, orig_speaking=True, orig_ner=True, find_anon=True, find_docs=True, return_sents=False):
+    if isinstance(doc, list):
+        sents = doc
+    else:
+        sents = doc.sents
+
     ## extract quotes
     speaking_lexicon = orig_speaking_lexicon if orig_speaking else full_speaking_lexicon
     ner_list = orig_ner_list if orig_ner else full_ner_list
     extra_source_list = (desired_checklist_of_anonymous_sources if find_anon else []) + (desired_checklist_of_documents if find_docs else [])
 
     entities = defaultdict(lambda: {'background sentence': [], 'quote sentence': []})
-    for s_idx, sent in enumerate(doc.sents):
+    output_sents = []
+    for s_idx, sent in enumerate(sents):
+        if isinstance(sent, str):
+            sent = get_nlp()(sent)
+
         ## 
         text_sentence = ' '.join([word.text for word in sent]).strip()
         sent, text_sentence = clean_multiword_phrases(sent, text_sentence)
 
+        sources_in_sent = []
         # get person-entities
         for ent in sent.ents:
             if ent.label_ in ner_list:
                 background_or_quote = is_background_or_quote(text_sentence, speaking_lexicon)
                 entities[ent.text][background_or_quote].append((s_idx, text_sentence))
+                sources_in_sent.append({
+                    'head': ent.text,
+                    'quote_type': background_or_quote
+                })
 
         for anon_source_sig in extra_source_list:
             if anon_source_sig in text_sentence:
                 background_or_quote = is_background_or_quote(text_sentence, speaking_lexicon)
                 entities[anon_source_sig][background_or_quote].append((s_idx, text_sentence))
+                sources_in_sent.append({
+                    'head': anon_source_sig,
+                    'quote_type': background_or_quote
+                })
+        output_sents.append({
+            'sent': sent,
+            'sources': sources_in_sent
+        })
 
-    return entities
+    if return_sents:
+        return entities, output_sents
+    else:
+        return entities
 
 
 _nlp = None
@@ -177,8 +214,14 @@ def get_coref_nlp(greedyness=0.5, max_dist=50):
 def get_quotes_method_2(
         doc=None, text=None, cluster=True,
         resolve_coref=False, dedupe_sents=False,
-        greedyness=0.5, max_dist=50, orig_ner=True, orig_speaking=True
+        greedyness=0.5, max_dist=50, orig_ner=True, orig_speaking=True,
+        return_sents=False,
 ):
+    if isinstance(doc, list):
+        sents = doc
+    else:
+        sents = doc.sents
+
     """Get quoted people by finding the nsubj of a 'say', 'said' or 'according to' verb."""
     ner_list = orig_ner_list if orig_ner else full_ner_list
     speaking_lexicon = orig_speaking_lexicon if orig_speaking else full_speaking_lexicon
@@ -193,13 +236,17 @@ def get_quotes_method_2(
     entities = defaultdict(lambda: {'background sentence': [], 'quote sentence': []})
     seen = set()
     ## get quotes
-    for s_idx, sent in enumerate(doc.sents):
+    output_sents = []
+    for s_idx, sent in enumerate(sents):
+        if isinstance(sent, str):
+            sent = get_nlp()(sent)
         #
         text_sentence = ' '.join([word.text for word in sent]).strip()
 
         # hack to pick up common phrasal signifiers
         sent, text_sentence = clean_multiword_phrases(sent, text_sentence)
 
+        sources_in_sent = []
         ## extract all nsubj of VERB if VERB is 'said', 'says' or 'say'
         nsubjs = []
         for possible_subject in sent:
@@ -211,15 +258,32 @@ def get_quotes_method_2(
                 nsubjs.append(possible_subject.text)
                 entities[possible_subject.text]['quote sentence'].append((s_idx, text_sentence))
                 seen.add(s_idx)
+                sources_in_sent.append({
+                    'head': possible_subject.text,
+                    'quote_type': 'quote'
+                })
+
                 
         for noun_phrase in sent.noun_chunks:
             for nsubj in nsubjs:
                 if nsubj in noun_phrase.text:
                     entities[noun_phrase.text]['quote sentence'].append((s_idx, text_sentence))
                     seen.add(s_idx)
+                    sources_in_sent.append({
+                        'head': noun_phrase.text,
+                        'quote_type': 'quote'
+                    })
+
+        output_sents.append({
+            'sent': sent,
+            'sources': sources_in_sent
+        })
 
     # get background
-    for s_idx, sent in enumerate(doc.sents):
+    for s_idx, sent in enumerate(sents):
+        if isinstance(sent, str):
+            sent = get_nlp()(sent)
+
         if s_idx not in seen:
             # get person-entities
             for ent in sent.ents:
@@ -230,7 +294,10 @@ def get_quotes_method_2(
         entities = cluster_by_name_overlap_jaro(entities)
     if dedupe_sents:
         entities = dedupe_sents_in_entities(entities)
-    return entities
+    if return_sents:
+        return entities, output_sents
+    else:
+        return entities
 
 
 def dedupe_sents_in_entities(quotes):

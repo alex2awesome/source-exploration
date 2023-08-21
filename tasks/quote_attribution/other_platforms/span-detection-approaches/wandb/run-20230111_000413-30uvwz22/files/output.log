@@ -1,0 +1,54 @@
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.bias']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+100%|██████████| 2/2 [00:00<00:00, 98.80it/s]
+100%|██████████| 2/2 [00:00<00:00, 53.69it/s]
+***** Running Prediction *****
+  Num examples = 87
+  Batch size = 1
+Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py:978: UserWarning: __floordiv__ is deprecated, and its behavior will change in a future version of pytorch. It currently rounds toward 0 (like the 'trunc' function NOT 'floor'). This results in incorrect rounding for negative values. To keep the current behavior, use torch.div(a, b, rounding_mode='trunc'), or for actual floor division, use torch.div(a, b, rounding_mode='floor').
+  * num_indices_to_pick_from
+   56 training samples
+   87 validation samples
+  0%|          | 0/87 [00:00<?, ?it/s]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+  2%|▏         | 2/87 [00:05<03:56,  2.78s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+  3%|▎         | 3/87 [00:11<05:31,  3.95s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+  5%|▍         | 4/87 [00:16<06:22,  4.61s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+Traceback (most recent call last):
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py", line 147, in <module>
+    preds = trainer.predict(eval_dataset)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2186, in predict
+    test_dataloader, description="Prediction", ignore_keys=ignore_keys, metric_key_prefix=metric_key_prefix
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2285, in evaluation_loop
+    loss, logits, labels = self.prediction_step(model, inputs, prediction_loss_only, ignore_keys=ignore_keys)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2505, in prediction_step
+    outputs = model(**inputs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "./qa_model.py", line 54, in forward
+    outputs = self.base_model(input_ids, attention_mask=attention_mask)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 2154, in forward
+    return_dict=return_dict,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 1641, in forward
+    output_attentions,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 1494, in forward
+    to_blocked_mask=blocked_encoder_mask,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 1397, in forward
+    hidden_states, band_mask, from_mask, to_mask, from_blocked_mask, to_blocked_mask, output_attentions
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 490, in forward
+    output_attentions=output_attentions,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 825, in bigbird_block_sparse_attention
+    last_product = self.torch_bmm_nd_transpose(blocked_query_matrix[:, :, -1], key_layer, ndim=4)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 511, in torch_bmm_nd_transpose
+    inp_1.reshape((-1,) + inp_1.shape[-2:]), inp_2.reshape((-1,) + inp_2.shape[-2:]).transpose(1, 2)

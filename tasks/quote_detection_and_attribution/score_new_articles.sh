@@ -1,0 +1,13 @@
+python score_new_articles.py \
+  --detection_model alex2awesome/quote-detection__roberta-base-sentence \
+  --detection_tokenizer roberta-base \
+  --detection_outfile data_with_detection.jsonl \
+  --attribution_tokenizer google/bigbird-roberta-base \
+  --attribution_model alex2awesome/quote-attribution__qa-model \
+  --attribution_outfile test_new.jsonl \
+  --dataset_name data_to_score_longer.jsonl \
+  --do_attribution \
+  --do_detection \
+  --n_docs 10 \
+  --attribution_outfile temp.jsonl \
+  --platform gcp

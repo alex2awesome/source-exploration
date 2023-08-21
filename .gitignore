@@ -1,6 +1,10 @@
 *.pkl
 *.data
 *.txt
+*.pkl
+*.txt.with-source
+*.mov
+*.zip
 *.metadata
 models/ACL2013_Personas/input*
 models/ACL2013_Personas/output/slurm*
@@ -12,6 +16,7 @@ models/Quotebank
 app/data
 tmp/
 notebooks/.ipynb_checkpoints
+notebooks/cache
 data/
 data/news-article-flatlist/
 app/demo

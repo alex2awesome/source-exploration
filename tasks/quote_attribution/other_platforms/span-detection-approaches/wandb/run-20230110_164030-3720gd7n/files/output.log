@@ -1,0 +1,18 @@
+401 Client Error: Unauthorized for url: https://huggingface.co/longformer-base/resolve/main/config.json
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/configuration_utils.py", line 558, in get_config_dict
+    user_agent=user_agent,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/file_utils.py", line 1499, in cached_path
+    local_files_only=local_files_only,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/file_utils.py", line 1663, in get_from_cache
+    r.raise_for_status()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/longformer-base/resolve/main/config.json
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/configuration_utils.py", line 575, in get_config_dict
+    raise EnvironmentError(msg)
+OSError: Can't load config for 'longformer-base'. Make sure that:
+- 'longformer-base' is a correct model identifier listed on 'https://huggingface.co/models'
+  (make sure 'longformer-base' is not a path to a local directory with something else, in that case)

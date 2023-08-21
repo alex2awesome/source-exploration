@@ -1,0 +1,55 @@
+2023-01-16 16:19:34,413 INFO    StreamThr :83620 [internal.py:wandb_internal():90] W&B internal server running at pid: 83620, started at: 2023-01-16 16:19:34.412355
+2023-01-16 16:19:34,414 DEBUG   HandlerThread:83620 [handler.py:handle_request():139] handle_request: status
+2023-01-16 16:19:34,417 DEBUG   SenderThread:83620 [sender.py:send_request():317] send_request: status
+2023-01-16 16:19:34,419 DEBUG   SenderThread:83620 [sender.py:send():303] send: header
+2023-01-16 16:19:34,419 INFO    WriterThread:83620 [datastore.py:open_for_write():75] open: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/run-ofm5a51f.wandb
+2023-01-16 16:19:34,450 DEBUG   SenderThread:83620 [sender.py:send():303] send: run
+2023-01-16 16:19:34,733 DEBUG   HandlerThread:83620 [handler.py:handle_request():139] handle_request: check_version
+2023-01-16 16:19:34,734 INFO    SenderThread:83620 [dir_watcher.py:__init__():216] watching files in: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files
+2023-01-16 16:19:34,734 INFO    SenderThread:83620 [sender.py:_start_run_threads():931] run started: ofm5a51f with start time 1673903974.41025
+2023-01-16 16:19:34,734 DEBUG   SenderThread:83620 [sender.py:send():303] send: summary
+2023-01-16 16:19:34,734 INFO    SenderThread:83620 [sender.py:_save_file():1171] saving file wandb-summary.json with policy end
+2023-01-16 16:19:34,735 DEBUG   SenderThread:83620 [sender.py:send_request():317] send_request: check_version
+2023-01-16 16:19:34,813 DEBUG   HandlerThread:83620 [handler.py:handle_request():139] handle_request: run_start
+2023-01-16 16:19:34,814 DEBUG   HandlerThread:83620 [system_info.py:__init__():31] System info init
+2023-01-16 16:19:34,814 DEBUG   HandlerThread:83620 [system_info.py:__init__():46] System info init done
+2023-01-16 16:19:34,814 INFO    HandlerThread:83620 [system_monitor.py:start():150] Starting system monitor
+2023-01-16 16:19:34,814 INFO    SystemMonitor:83620 [system_monitor.py:_start():116] Starting system asset monitoring threads
+2023-01-16 16:19:34,815 INFO    SystemMonitor:83620 [interfaces.py:start():168] Started cpu
+2023-01-16 16:19:34,815 INFO    HandlerThread:83620 [system_monitor.py:probe():171] Collecting system info
+2023-01-16 16:19:34,816 INFO    SystemMonitor:83620 [interfaces.py:start():168] Started disk
+2023-01-16 16:19:34,816 DEBUG   HandlerThread:83620 [system_info.py:probe():195] Probing system
+2023-01-16 16:19:34,816 INFO    SystemMonitor:83620 [interfaces.py:start():168] Started memory
+2023-01-16 16:19:34,817 INFO    SystemMonitor:83620 [interfaces.py:start():168] Started network
+2023-01-16 16:19:34,818 DEBUG   HandlerThread:83620 [system_info.py:_probe_git():180] Probing git
+2023-01-16 16:19:34,856 DEBUG   HandlerThread:83620 [system_info.py:_probe_git():188] Probing git done
+2023-01-16 16:19:34,856 DEBUG   HandlerThread:83620 [system_info.py:probe():241] Probing system done
+2023-01-16 16:19:34,857 DEBUG   HandlerThread:83620 [system_monitor.py:probe():180] {'os': 'Darwin-21.6.0-x86_64-i386-64bit', 'python': '3.7.6', 'heartbeatAt': '2023-01-16T21:19:34.816626', 'startedAt': '2023-01-16T21:19:34.394499', 'docker': None, 'cuda': None, 'args': ('--dataset_name', 'data_split_annotated_sources.jsonl', '--output_dir', "''", '--model_name_or_path', 'google/bigbird-roberta-base', '--per_device_eval_batch_size', '1', '--per_device_train_batch_size', '1', '--report_to', 'wandb', '--overwrite_output_dir', '--evaluation_strategy', 'steps', '--eval_steps', '1', '--do_train', '--do_eval', '--max_train_samples', '2', '--max_val_samples', '2', '--datum_order', 'shortest-first', '--max_num_sentences', '30'), 'state': 'running', 'program': '/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/token_classification_trainer.py', 'codePath': 'tasks/quote_attribution/other_platforms/span-detection-approaches/token_classification_trainer.py', 'git': {'remote': 'git@github.com:alex2awesome/source-exploration.git', 'commit': '3ccdcc62a26b248b7ddcfdec3953b438afa00778'}, 'email': 'alex2awesome@gmail.com', 'root': '/Users/alex/Projects/usc-research/source-exploration', 'host': 'C02CJKQ2MD6M', 'username': 'alex', 'executable': '/Users/alex/opt/anaconda3/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 2600, 'min': 2600, 'max': 2600}, 'cpu_freq_per_core': [{'current': 2600, 'min': 2600, 'max': 2600}], 'disk': {'total': 465.62699127197266, 'used': 424.8871955871582}, 'memory': {'total': 16.0}}
+2023-01-16 16:19:34,857 INFO    HandlerThread:83620 [system_monitor.py:probe():181] Finished collecting system info
+2023-01-16 16:19:34,857 INFO    HandlerThread:83620 [system_monitor.py:probe():184] Publishing system info
+2023-01-16 16:19:34,857 DEBUG   HandlerThread:83620 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2023-01-16 16:19:34,860 DEBUG   HandlerThread:83620 [system_info.py:_save_pip():67] Saving pip packages done
+2023-01-16 16:19:34,860 DEBUG   HandlerThread:83620 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment
+2023-01-16 16:19:35,739 INFO    Thread-13 :83620 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files/wandb-summary.json
+2023-01-16 16:19:35,740 INFO    Thread-13 :83620 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files/conda-environment.yaml
+2023-01-16 16:19:35,740 INFO    Thread-13 :83620 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files/requirements.txt
+2023-01-16 16:19:42,055 DEBUG   HandlerThread:83620 [system_info.py:_save_conda():86] Saving conda packages done
+2023-01-16 16:19:42,056 INFO    HandlerThread:83620 [system_monitor.py:probe():186] Finished publishing system info
+2023-01-16 16:19:42,409 DEBUG   HandlerThread:83620 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-16 16:19:42,411 DEBUG   SenderThread:83620 [sender.py:send_request():317] send_request: stop_status
+2023-01-16 16:19:42,496 DEBUG   SenderThread:83620 [sender.py:send():303] send: telemetry
+2023-01-16 16:19:42,496 DEBUG   SenderThread:83620 [sender.py:send():303] send: files
+2023-01-16 16:19:42,496 INFO    SenderThread:83620 [sender.py:_save_file():1171] saving file wandb-metadata.json with policy now
+2023-01-16 16:19:42,759 INFO    Thread-13 :83620 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files/wandb-metadata.json
+2023-01-16 16:19:42,845 INFO    Thread-16 :83620 [upload_job.py:push():143] Uploaded file /var/folders/89/6dsq1ymj63x009t6wpt25f9h0000gp/T/tmpzd3qga13wandb/1cm6fxht-wandb-metadata.json
+2023-01-16 16:19:43,103 DEBUG   SenderThread:83620 [sender.py:send():303] send: config
+2023-01-16 16:19:43,104 DEBUG   SenderThread:83620 [sender.py:send():303] send: metric
+2023-01-16 16:19:43,104 DEBUG   SenderThread:83620 [sender.py:send():303] send: telemetry
+2023-01-16 16:19:43,105 DEBUG   SenderThread:83620 [sender.py:send():303] send: metric
+2023-01-16 16:19:43,105 WARNING SenderThread:83620 [sender.py:send_metric():1127] Seen metric with glob (shouldn't happen)
+2023-01-16 16:19:43,105 DEBUG   SenderThread:83620 [sender.py:send():303] send: telemetry
+2023-01-16 16:19:43,763 INFO    Thread-13 :83620 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files/output.log
+2023-01-16 16:19:45,772 INFO    Thread-13 :83620 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files/output.log
+2023-01-16 16:19:47,777 INFO    Thread-13 :83620 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files/output.log
+2023-01-16 16:19:51,788 INFO    Thread-13 :83620 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files/output.log
+2023-01-16 16:19:53,792 INFO    Thread-13 :83620 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230116_161934-ofm5a51f/files/output.log

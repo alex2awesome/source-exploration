@@ -1,0 +1,29 @@
+Some weights of the model checkpoint at roberta-base were not used when initializing RobertaModel: ['lm_head.dense.bias', 'lm_head.layer_norm.weight', 'lm_head.layer_norm.bias', 'lm_head.dense.weight', 'lm_head.decoder.weight', 'lm_head.bias']
+- This IS expected if you are initializing RobertaModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+***** Running Prediction *****
+  Num examples = 528
+  Batch size = 1
+4,301 training samples
+  528 validation samples
+./sentence_model.py:238: UserWarning: The use of `x.T` on tensors of dimension other than 2 to reverse their shape is deprecated and it will throw an error in a future release. Consider `x.mT` to transpose batches of matrices or `x.permute(*torch.arange(x.ndim - 1, -1, -1))` to reverse the dimensions of a tensor. (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/aten/src/ATen/native/TensorShape.cpp:3281.)
+  return (hidden.T * attention_mask.T).T.mean(axis=1)
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2493, in prediction_step
+    loss, outputs = self.compute_loss(model, inputs, return_outputs=True)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 1881, in compute_loss
+    outputs = model(**inputs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "./sentence_model.py", line 308, in forward
+    outputs = list(map(lambda x: self.process_one_doc(**x), item_kwargs))
+  File "./sentence_model.py", line 308, in <lambda>
+    outputs = list(map(lambda x: self.process_one_doc(**x), item_kwargs))
+  File "./sentence_model.py", line 303, in process_one_doc
+    loss = self.loss_fct(logits, labels)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/loss.py", line 723, in forward
+    reduction=self.reduction)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/functional.py", line 3160, in binary_cross_entropy_with_logits
+    raise ValueError("Target size ({}) must be the same as input size ({})".format(target.size(), input.size()))

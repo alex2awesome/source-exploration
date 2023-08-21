@@ -1,0 +1,23 @@
+/Users/alex/opt/anaconda3/lib/python3.7/site-packages/spacy/util.py:885: UserWarning: [W094] Model 'en_core_web_sm' (2.1.0) specifies an under-constrained spaCy version requirement: >=2.1.0. This can lead to compatibility problems with older versions, or as new spaCy versions are released, because the model may say it's compatible when it's not. Consider changing the "spacy_version" in your meta.json to a version range, with a lower and upper pin. For example: >=3.4.4,<3.5.0
+  warnings.warn(warn_msg)
+Traceback (most recent call last):
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/pydevd.py", line 1438, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/_pydev_imps/_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py", line 108, in <module>
+    spacy_model = spacy.load(model_args.spacy_model_name)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/spacy/__init__.py", line 60, in load
+    config=config,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/spacy/util.py", line 432, in load_model
+    return load_model_from_package(name, **kwargs)  # type: ignore[arg-type]
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/spacy/util.py", line 468, in load_model_from_package
+    return cls.load(vocab=vocab, disable=disable, enable=enable, exclude=exclude, config=config)  # type: ignore[attr-defined]
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/en_core_web_sm/__init__.py", line 12, in load
+    return load_model_from_init_py(__file__, **overrides)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/spacy/util.py", line 656, in load_model_from_init_py
+    config=config,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/spacy/util.py", line 505, in load_model_from_path
+    config = load_config(config_path, overrides=overrides)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/spacy/util.py", line 681, in load_config
+    raise IOError(Errors.E053.format(path=config_path, name="config file"))

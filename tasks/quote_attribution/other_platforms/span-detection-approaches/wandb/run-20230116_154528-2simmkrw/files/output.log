@@ -1,0 +1,27 @@
+[Errno 1] Operation not permitted: '/dev/d7643b757353be56f05bdd19496d6e3fb5bb9edfdf5f9e5eca88d6f479e32324.dc98375bb3e19a644a5cadd5c305949ec470186fcc20bd8c8b959a43dcc3ff21.lock'
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/configuration_utils.py", line 558, in get_config_dict
+    user_agent=user_agent,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/file_utils.py", line 1499, in cached_path
+    local_files_only=local_files_only,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/file_utils.py", line 1726, in get_from_cache
+    with FileLock(lock_path):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/filelock/_api.py", line 213, in __enter__
+    self.acquire()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/filelock/_api.py", line 169, in acquire
+    self._acquire()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/filelock/_unix.py", line 30, in _acquire
+    fd = os.open(self._lock_file, open_mode)
+PermissionError: [Errno 1] Operation not permitted: '/dev/d7643b757353be56f05bdd19496d6e3fb5bb9edfdf5f9e5eca88d6f479e32324.dc98375bb3e19a644a5cadd5c305949ec470186fcc20bd8c8b959a43dcc3ff21.lock'
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "token_classification_trainer.py", line 217, in <module>
+    config = AutoConfig.from_pretrained(model_args.model_name_or_path, cache_dir=model_args.cache_dir)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/auto/configuration_auto.py", line 558, in from_pretrained
+    config_dict, _ = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/configuration_utils.py", line 575, in get_config_dict
+    raise EnvironmentError(msg)
+OSError: Can't load config for 'google/bigbird-roberta-base'. Make sure that:
+- 'google/bigbird-roberta-base' is a correct model identifier listed on 'https://huggingface.co/models'
+  (make sure 'google/bigbird-roberta-base' is not a path to a local directory with something else, in that case)
+- or 'google/bigbird-roberta-base' is the correct path to a directory containing a config.json file

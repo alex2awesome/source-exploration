@@ -1,0 +1,199 @@
+2023-01-12 02:12:00,518 INFO    StreamThr :44931 [internal.py:wandb_internal():90] W&B internal server running at pid: 44931, started at: 2023-01-12 02:12:00.517239
+2023-01-12 02:12:00,519 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: status
+2023-01-12 02:12:00,523 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: status
+2023-01-12 02:12:00,526 DEBUG   SenderThread:44931 [sender.py:send():303] send: header
+2023-01-12 02:12:00,526 INFO    WriterThread:44931 [datastore.py:open_for_write():75] open: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/run-2ddbeoiv.wandb
+2023-01-12 02:12:00,564 DEBUG   SenderThread:44931 [sender.py:send():303] send: run
+2023-01-12 02:12:00,790 INFO    SenderThread:44931 [dir_watcher.py:__init__():216] watching files in: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files
+2023-01-12 02:12:00,791 INFO    SenderThread:44931 [sender.py:_start_run_threads():931] run started: 2ddbeoiv with start time 1673507520.513685
+2023-01-12 02:12:00,795 DEBUG   SenderThread:44931 [sender.py:send():303] send: summary
+2023-01-12 02:12:00,797 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: check_version
+2023-01-12 02:12:00,798 INFO    SenderThread:44931 [sender.py:_save_file():1171] saving file wandb-summary.json with policy end
+2023-01-12 02:12:00,799 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: check_version
+2023-01-12 02:12:00,937 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: run_start
+2023-01-12 02:12:00,939 DEBUG   HandlerThread:44931 [system_info.py:__init__():31] System info init
+2023-01-12 02:12:00,939 DEBUG   HandlerThread:44931 [system_info.py:__init__():46] System info init done
+2023-01-12 02:12:00,939 INFO    HandlerThread:44931 [system_monitor.py:start():150] Starting system monitor
+2023-01-12 02:12:00,939 INFO    SystemMonitor:44931 [system_monitor.py:_start():116] Starting system asset monitoring threads
+2023-01-12 02:12:00,940 INFO    HandlerThread:44931 [system_monitor.py:probe():171] Collecting system info
+2023-01-12 02:12:00,941 INFO    SystemMonitor:44931 [interfaces.py:start():168] Started cpu
+2023-01-12 02:12:00,942 DEBUG   HandlerThread:44931 [system_info.py:probe():195] Probing system
+2023-01-12 02:12:00,942 INFO    SystemMonitor:44931 [interfaces.py:start():168] Started disk
+2023-01-12 02:12:00,943 INFO    SystemMonitor:44931 [interfaces.py:start():168] Started memory
+2023-01-12 02:12:00,944 INFO    SystemMonitor:44931 [interfaces.py:start():168] Started network
+2023-01-12 02:12:00,946 DEBUG   HandlerThread:44931 [system_info.py:_probe_git():180] Probing git
+2023-01-12 02:12:01,015 DEBUG   HandlerThread:44931 [system_info.py:_probe_git():188] Probing git done
+2023-01-12 02:12:01,016 DEBUG   HandlerThread:44931 [system_info.py:probe():241] Probing system done
+2023-01-12 02:12:01,016 DEBUG   HandlerThread:44931 [system_monitor.py:probe():180] {'os': 'Darwin-21.6.0-x86_64-i386-64bit', 'python': '3.7.6', 'heartbeatAt': '2023-01-12T07:12:00.942557', 'startedAt': '2023-01-12T07:12:00.494372', 'docker': None, 'cuda': None, 'args': ('--dataset_name', 'data_split_annotated_sources.jsonl', '--output_dir', "''", '--model_name_or_path', 'google/bigbird-roberta-base', '--per_device_eval_batch_size', '1', '--per_device_train_batch_size', '1', '--report_to', 'wandb', '--overwrite_output_dir', '--evaluation_strategy', 'steps', '--eval_steps', '2000', '--do_train', '--do_eval', '--max_train_samples', '5', '--max_val_samples', '1', '--datum_order', 'shortest-first', '--max_num_sentences', '30'), 'state': 'running', 'program': '/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/token_classification_trainer.py', 'codePath': 'tasks/quote_attribution/other_platforms/span-detection-approaches/token_classification_trainer.py', 'git': {'remote': 'git@github.com:alex2awesome/source-exploration.git', 'commit': 'eebcbec45bb7973c0d9e544b905d55525ab3251e'}, 'email': 'alex2awesome@gmail.com', 'root': '/Users/alex/Projects/usc-research/source-exploration', 'host': 'C02CJKQ2MD6M', 'username': 'alex', 'executable': '/Users/alex/opt/anaconda3/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 2600, 'min': 2600, 'max': 2600}, 'cpu_freq_per_core': [{'current': 2600, 'min': 2600, 'max': 2600}], 'disk': {'total': 465.62699127197266, 'used': 422.66661071777344}, 'memory': {'total': 16.0}}
+2023-01-12 02:12:01,016 INFO    HandlerThread:44931 [system_monitor.py:probe():181] Finished collecting system info
+2023-01-12 02:12:01,017 INFO    HandlerThread:44931 [system_monitor.py:probe():184] Publishing system info
+2023-01-12 02:12:01,017 DEBUG   HandlerThread:44931 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2023-01-12 02:12:01,020 DEBUG   HandlerThread:44931 [system_info.py:_save_pip():67] Saving pip packages done
+2023-01-12 02:12:01,020 DEBUG   HandlerThread:44931 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment
+2023-01-12 02:12:01,795 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/conda-environment.yaml
+2023-01-12 02:12:01,796 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/wandb-summary.json
+2023-01-12 02:12:01,796 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/requirements.txt
+2023-01-12 02:12:09,424 DEBUG   HandlerThread:44931 [system_info.py:_save_conda():86] Saving conda packages done
+2023-01-12 02:12:09,425 INFO    HandlerThread:44931 [system_monitor.py:probe():186] Finished publishing system info
+2023-01-12 02:12:09,819 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/wandb-metadata.json
+2023-01-12 02:12:09,847 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:12:09,847 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:12:09,934 DEBUG   SenderThread:44931 [sender.py:send():303] send: telemetry
+2023-01-12 02:12:09,934 DEBUG   SenderThread:44931 [sender.py:send():303] send: files
+2023-01-12 02:12:09,935 INFO    SenderThread:44931 [sender.py:_save_file():1171] saving file wandb-metadata.json with policy now
+2023-01-12 02:12:10,302 INFO    Thread-16 :44931 [upload_job.py:push():143] Uploaded file /var/folders/89/6dsq1ymj63x009t6wpt25f9h0000gp/T/tmpzla5hov6wandb/31q95mz6-wandb-metadata.json
+2023-01-12 02:12:10,481 DEBUG   SenderThread:44931 [sender.py:send():303] send: config
+2023-01-12 02:12:10,482 DEBUG   SenderThread:44931 [sender.py:send():303] send: metric
+2023-01-12 02:12:10,482 DEBUG   SenderThread:44931 [sender.py:send():303] send: telemetry
+2023-01-12 02:12:10,483 DEBUG   SenderThread:44931 [sender.py:send():303] send: metric
+2023-01-12 02:12:10,483 WARNING SenderThread:44931 [sender.py:send_metric():1127] Seen metric with glob (shouldn't happen)
+2023-01-12 02:12:10,483 DEBUG   SenderThread:44931 [sender.py:send():303] send: telemetry
+2023-01-12 02:12:10,819 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:12,826 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:14,831 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:18,845 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:20,851 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:22,857 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:24,861 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:24,939 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:12:24,940 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:12:26,869 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:28,876 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:31,879 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/config.yaml
+2023-01-12 02:12:32,884 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:36,902 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:38,906 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:40,031 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:12:40,032 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:12:40,912 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:42,918 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:44,924 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:46,928 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:48,935 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:50,940 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:52,945 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:54,955 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:55,140 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:12:55,140 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:12:56,959 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:12:58,967 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:00,947 DEBUG   SystemMonitor:44931 [system_monitor.py:_start():130] Starting system metrics aggregation loop
+2023-01-12 02:13:00,950 DEBUG   SenderThread:44931 [sender.py:send():303] send: stats
+2023-01-12 02:13:02,980 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:04,986 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:06,992 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:10,234 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:13:10,235 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:13:11,011 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:13,018 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:15,022 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:17,029 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:19,037 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:21,046 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:23,051 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:25,060 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:25,336 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:13:25,336 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:13:27,064 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:29,071 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:30,952 DEBUG   SenderThread:44931 [sender.py:send():303] send: stats
+2023-01-12 02:13:31,080 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:33,083 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:35,090 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:37,095 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:39,101 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:40,434 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:13:40,434 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:13:43,118 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:45,124 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:47,133 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:49,140 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:51,146 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:53,157 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:55,161 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:55,534 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:13:55,534 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:13:57,165 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:13:59,168 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:00,954 DEBUG   SenderThread:44931 [sender.py:send():303] send: stats
+2023-01-12 02:14:03,183 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:05,191 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:07,193 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:10,631 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:14:10,632 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:14:13,207 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:15,212 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:19,228 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:21,235 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:23,244 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:25,252 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:25,698 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: partial_history
+2023-01-12 02:14:25,702 DEBUG   SenderThread:44931 [sender.py:send():303] send: metric
+2023-01-12 02:14:25,703 DEBUG   SenderThread:44931 [sender.py:send():303] send: metric
+2023-01-12 02:14:25,703 DEBUG   SenderThread:44931 [sender.py:send():303] send: metric
+2023-01-12 02:14:25,703 DEBUG   SenderThread:44931 [sender.py:send():303] send: metric
+2023-01-12 02:14:25,704 DEBUG   SenderThread:44931 [sender.py:send():303] send: metric
+2023-01-12 02:14:25,704 DEBUG   SenderThread:44931 [sender.py:send():303] send: metric
+2023-01-12 02:14:25,704 DEBUG   SenderThread:44931 [sender.py:send():303] send: history
+2023-01-12 02:14:25,704 DEBUG   SenderThread:44931 [sender.py:send():303] send: summary
+2023-01-12 02:14:25,706 INFO    SenderThread:44931 [sender.py:_save_file():1171] saving file wandb-summary.json with policy end
+2023-01-12 02:14:25,729 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:14:25,729 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:14:26,257 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/wandb-summary.json
+2023-01-12 02:14:27,261 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:29,267 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:30,958 DEBUG   SenderThread:44931 [sender.py:send():303] send: stats
+2023-01-12 02:14:31,277 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:33,282 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:34,297 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/config.yaml
+2023-01-12 02:14:35,300 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/config.yaml
+2023-01-12 02:14:35,301 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:37,309 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:39,315 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:41,268 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:14:41,268 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:14:41,318 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:43,328 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:47,342 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:49,349 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:51,356 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:53,366 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:55,373 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:56,355 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:14:56,355 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:14:57,380 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:14:59,386 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:15:00,960 DEBUG   SenderThread:44931 [sender.py:send():303] send: stats
+2023-01-12 02:15:01,393 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:15:03,402 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:15:05,410 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:15:07,420 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:15:09,430 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:15:11,702 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:15:11,703 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:15:13,446 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:15:26,808 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:15:26,808 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:15:30,963 DEBUG   SenderThread:44931 [sender.py:send():303] send: stats
+2023-01-12 02:15:42,003 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:15:42,003 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:15:43,550 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:15:57,102 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:15:57,102 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:15:57,611 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:16:00,966 DEBUG   SenderThread:44931 [sender.py:send():303] send: stats
+2023-01-12 02:16:07,649 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:16:12,199 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:16:12,199 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:16:17,677 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:16:25,709 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:16:27,287 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:16:27,288 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:16:30,968 DEBUG   SenderThread:44931 [sender.py:send():303] send: stats
+2023-01-12 02:16:33,737 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:16:41,760 INFO    Thread-13 :44931 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230112_021200-2ddbeoiv/files/output.log
+2023-01-12 02:16:42,390 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:16:42,390 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:16:57,486 DEBUG   HandlerThread:44931 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-12 02:16:57,487 DEBUG   SenderThread:44931 [sender.py:send_request():317] send_request: stop_status
+2023-01-12 02:17:00,973 DEBUG   SenderThread:44931 [sender.py:send():303] send: stats

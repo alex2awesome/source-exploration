@@ -1,0 +1,25 @@
+2023-01-10 22:04:02,539 INFO    MainThread:19806 [wandb_setup.py:_flush():68] Configure stats pid to 19806
+2023-01-10 22:04:02,539 INFO    MainThread:19806 [wandb_setup.py:_flush():68] Loading settings from /Users/alex/.config/wandb/settings
+2023-01-10 22:04:02,540 INFO    MainThread:19806 [wandb_setup.py:_flush():68] Loading settings from /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/settings
+2023-01-10 22:04:02,540 INFO    MainThread:19806 [wandb_setup.py:_flush():68] Loading settings from environment variables: {'_require_service': 'True'}
+2023-01-10 22:04:02,540 INFO    MainThread:19806 [wandb_setup.py:_flush():68] Inferring run settings from compute environment: {'program_relpath': 'tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py', 'program': '/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py'}
+2023-01-10 22:04:02,540 INFO    MainThread:19806 [wandb_init.py:_log_setup():476] Logging user logs to /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_220402-2n3324lc/logs/debug.log
+2023-01-10 22:04:02,540 INFO    MainThread:19806 [wandb_init.py:_log_setup():477] Logging internal logs to /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_220402-2n3324lc/logs/debug-internal.log
+2023-01-10 22:04:02,541 INFO    MainThread:19806 [wandb_init.py:init():516] calling init triggers
+2023-01-10 22:04:02,541 INFO    MainThread:19806 [wandb_init.py:init():520] wandb.init called with sweep_config: {}
+config: {}
+2023-01-10 22:04:02,541 INFO    MainThread:19806 [wandb_init.py:init():569] starting backend
+2023-01-10 22:04:02,541 INFO    MainThread:19806 [wandb_init.py:init():573] setting up manager
+2023-01-10 22:04:02,546 INFO    MainThread:19806 [backend.py:_multiprocessing_setup():104] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2023-01-10 22:04:02,551 INFO    MainThread:19806 [wandb_init.py:init():580] backend started and connected
+2023-01-10 22:04:02,562 INFO    MainThread:19806 [wandb_init.py:init():658] updated telemetry
+2023-01-10 22:04:02,594 INFO    MainThread:19806 [wandb_init.py:init():694] communicating run to backend with 60 second timeout
+2023-01-10 22:04:02,902 INFO    MainThread:19806 [wandb_run.py:_on_init():2006] communicating current version
+2023-01-10 22:04:02,981 INFO    MainThread:19806 [wandb_run.py:_on_init():2010] got version response upgrade_message: "wandb version 0.13.8 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-01-10 22:04:02,981 INFO    MainThread:19806 [wandb_init.py:init():728] starting run threads in backend
+2023-01-10 22:04:08,000 INFO    MainThread:19806 [wandb_run.py:_console_start():1986] atexit reg
+2023-01-10 22:04:08,000 INFO    MainThread:19806 [wandb_run.py:_redirect():1844] redirect: SettingsConsole.WRAP_RAW
+2023-01-10 22:04:08,003 INFO    MainThread:19806 [wandb_run.py:_redirect():1909] Wrapping output streams.
+2023-01-10 22:04:08,003 INFO    MainThread:19806 [wandb_run.py:_redirect():1931] Redirects installed.
+2023-01-10 22:04:08,004 INFO    MainThread:19806 [wandb_init.py:init():765] run started, returning control to user process

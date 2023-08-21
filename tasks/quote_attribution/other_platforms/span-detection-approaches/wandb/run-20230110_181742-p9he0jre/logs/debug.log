@@ -1,0 +1,39 @@
+2023-01-10 18:17:42,984 INFO    MainThread:17818 [wandb_setup.py:_flush():68] Configure stats pid to 17818
+2023-01-10 18:17:42,985 INFO    MainThread:17818 [wandb_setup.py:_flush():68] Loading settings from /Users/alex/.config/wandb/settings
+2023-01-10 18:17:42,985 INFO    MainThread:17818 [wandb_setup.py:_flush():68] Loading settings from /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/settings
+2023-01-10 18:17:42,985 INFO    MainThread:17818 [wandb_setup.py:_flush():68] Loading settings from environment variables: {'_require_service': 'True'}
+2023-01-10 18:17:42,985 INFO    MainThread:17818 [wandb_setup.py:_flush():68] Inferring run settings from compute environment: {'program_relpath': 'tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py', 'program': '/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py'}
+2023-01-10 18:17:42,986 INFO    MainThread:17818 [wandb_init.py:_log_setup():476] Logging user logs to /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_181742-p9he0jre/logs/debug.log
+2023-01-10 18:17:42,986 INFO    MainThread:17818 [wandb_init.py:_log_setup():477] Logging internal logs to /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_181742-p9he0jre/logs/debug-internal.log
+2023-01-10 18:17:42,987 INFO    MainThread:17818 [wandb_init.py:init():516] calling init triggers
+2023-01-10 18:17:42,987 INFO    MainThread:17818 [wandb_init.py:init():520] wandb.init called with sweep_config: {}
+config: {}
+2023-01-10 18:17:42,987 INFO    MainThread:17818 [wandb_init.py:init():569] starting backend
+2023-01-10 18:17:42,987 INFO    MainThread:17818 [wandb_init.py:init():573] setting up manager
+2023-01-10 18:17:42,993 INFO    MainThread:17818 [backend.py:_multiprocessing_setup():104] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2023-01-10 18:17:42,998 INFO    MainThread:17818 [wandb_init.py:init():580] backend started and connected
+2023-01-10 18:17:43,010 INFO    MainThread:17818 [wandb_init.py:init():658] updated telemetry
+2023-01-10 18:17:43,040 INFO    MainThread:17818 [wandb_init.py:init():694] communicating run to backend with 60 second timeout
+2023-01-10 18:17:43,275 INFO    MainThread:17818 [wandb_run.py:_on_init():2006] communicating current version
+2023-01-10 18:17:43,354 INFO    MainThread:17818 [wandb_run.py:_on_init():2010] got version response upgrade_message: "wandb version 0.13.8 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-01-10 18:17:43,354 INFO    MainThread:17818 [wandb_init.py:init():728] starting run threads in backend
+2023-01-10 18:17:43,918 WARNING MainThread:17818 [wandb_init.py:init():1099] interrupted
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 1078, in init
+    run = wi.init()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/sdk/wandb_init.py", line 739, in init
+    _ = backend.interface.communicate_run_start(run_obj)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/sdk/interface/interface.py", line 235, in communicate_run_start
+    result = self._communicate_run_start(run_start)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/sdk/interface/interface_shared.py", line 486, in _communicate_run_start
+    result = self._communicate(rec)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/sdk/interface/interface_shared.py", line 255, in _communicate
+    return self._communicate_async(rec, local=local).get(timeout=timeout)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/sdk/interface/router.py", line 36, in get
+    is_set = self._object_ready.wait(timeout)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/threading.py", line 552, in wait
+    signaled = self._cond.wait(timeout)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/threading.py", line 300, in wait
+    gotit = waiter.acquire(True, timeout)
+KeyboardInterrupt

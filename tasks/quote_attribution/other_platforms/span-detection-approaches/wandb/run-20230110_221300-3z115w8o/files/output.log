@@ -1,0 +1,28 @@
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.bias', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+
+100%|██████████| 516/516 [00:04<00:00, 127.81it/s]
+ 67%|██████▋   | 58/86 [00:01<00:00, 41.01it/s]
+10,136 training samples
+100%|██████████| 86/86 [00:01<00:00, 50.21it/s]
+***** Running Prediction *****
+  Num examples = 3576
+  Batch size = 8
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 521, in __next__
+    data = self._next_data()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 561, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    return self.collate_fn(data)
+  File "./dataset.py", line 73, in collate_fn
+    output[col] = pad_sequence(batch_by_columns[col], batch_first=True)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/utils/rnn.py", line 363, in pad_sequence
+    return torch._C._nn.pad_sequence(sequences, batch_first, padding_value)
+TypeError: expected Tensor as element 0 in argument 0, but got int
+Python 3.7.6 (default, Jan  8 2020, 13:42:34)
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.22.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.22.0
+Out[1]: [697, 697, 697, 697, 594, 895, 895, 895]

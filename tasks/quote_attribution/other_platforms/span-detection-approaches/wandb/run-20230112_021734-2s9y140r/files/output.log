@@ -1,0 +1,136 @@
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdForTokenClassification: ['cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.seq_relationship.bias', 'cls.predictions.decoder.bias']
+- This IS expected if you are initializing BigBirdForTokenClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdForTokenClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BigBirdForTokenClassification were not initialized from the model checkpoint at google/bigbird-roberta-base and are newly initialized: ['classifier.weight', 'classifier.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+100%|██████████| 5/5 [00:00<00:00, 182.28it/s]
+100%|██████████| 1/1 [00:00<00:00, 77.30it/s]
+***** Running training *****
+  Num examples = 19
+  Num Epochs = 3
+  Instantaneous batch size per device = 1
+  Total train batch size (w. parallel, distributed & accumulation) = 1
+  Gradient Accumulation steps = 1
+  Total optimization steps = 57
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  0%|          | 0/57 [00:00<?, ?it/s]
+   19 training samples
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 98%|█████████▊| 56/57 [02:43<00:02,  2.39s/it]
+100%|██████████| 57/57 [02:45<00:00,  2.38s/it]
+Training completed. Do not forget to share your model on huggingface.co/models =)
+100%|██████████| 57/57 [02:45<00:00,  2.91s/it]
+Saving model checkpoint to ''
+Configuration saved in ''/config.json
+***** train metrics *****
+  epoch                    =        3.0
+  train_loss               =     0.0852
+  train_runtime            = 0:02:45.86
+  train_samples            =          5
+  train_samples_per_second =      0.344
+  train_steps_per_second   =      0.344
+*** Evaluate ***
+Model weights saved in ''/pytorch_model.bin
+***** Running Prediction *****
+  Num examples = 21
+  Batch size = 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+100%|██████████| 21/21 [00:38<00:00,  1.88s/it]Traceback (most recent call last):
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/pydevd.py", line 1438, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/_pydev_imps/_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/token_classification_trainer.py", line 248, in <module>
+    preds, labels, metrics = trainer.predict(eval_dataset)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2186, in predict
+    test_dataloader, description="Prediction", ignore_keys=ignore_keys, metric_key_prefix=metric_key_prefix
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2354, in evaluation_loop
+    metrics = self.compute_metrics(EvalPrediction(predictions=all_preds, label_ids=all_labels))
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/token_classification_trainer.py", line 127, in compute_metrics
+    return {'f1': np.mean(f1s)}
+  File "<__array_function__ internals>", line 6, in mean
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py", line 3441, in mean
+    out=out, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/numpy/core/_methods.py", line 179, in _mean
+    ret = umr_sum(arr, axis, dtype, out, keepdims, where=where)
+TypeError: unsupported operand type(s) for +: 'dict' and 'dict'
+Python 3.7.6 (default, Jan  8 2020, 13:42:34)
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.22.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.22.0
+Out[1]:
+array([{'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0},
+       {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0},
+       {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0},
+       {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0}, {'f1': 0.0},

@@ -1,0 +1,123 @@
+2023-01-10 16:41:42,224 INFO    StreamThr :14532 [internal.py:wandb_internal():90] W&B internal server running at pid: 14532, started at: 2023-01-10 16:41:42.223523
+2023-01-10 16:41:42,225 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: status
+2023-01-10 16:41:42,229 DEBUG   SenderThread:14532 [sender.py:send_request():317] send_request: status
+2023-01-10 16:41:42,230 DEBUG   SenderThread:14532 [sender.py:send():303] send: header
+2023-01-10 16:41:42,230 INFO    WriterThread:14532 [datastore.py:open_for_write():75] open: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_164142-1jr0mhga/run-1jr0mhga.wandb
+2023-01-10 16:41:42,269 DEBUG   SenderThread:14532 [sender.py:send():303] send: run
+2023-01-10 16:41:47,284 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: keepalive
+2023-01-10 16:41:52,302 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: keepalive
+2023-01-10 16:41:57,323 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: keepalive
+2023-01-10 16:42:02,336 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: keepalive
+2023-01-10 16:42:07,355 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: keepalive
+2023-01-10 16:42:12,371 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: keepalive
+2023-01-10 16:42:17,387 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: keepalive
+2023-01-10 16:42:17,703 ERROR   SenderThread:14532 [retry.py:__call__():154] Retry attempt failed:
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py", line 426, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py", line 421, in _make_request
+    httplib_response = conn.getresponse()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/http/client.py", line 1344, in getresponse
+    response.begin()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/http/client.py", line 306, in begin
+    version, status, reason = self._read_status()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/http/client.py", line 267, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/Users/alex/opt/anaconda3/lib/python3.7/socket.py", line 589, in readinto
+    return self._sock.recv_into(b)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/ssl.py", line 1071, in recv_into
+    return self.read(nbytes, buffer)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/ssl.py", line 929, in read
+    return self._sslobj.read(len, buffer)
+socket.timeout: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/requests/adapters.py", line 499, in send
+    timeout=timeout,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py", line 727, in urlopen
+    method, url, error=e, _pool=self, _stacktrace=sys.exc_info()[2]
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/urllib3/util/retry.py", line 410, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/urllib3/packages/six.py", line 735, in reraise
+    raise value
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py", line 677, in urlopen
+    chunked=chunked,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py", line 428, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py", line 336, in _raise_timeout
+    self, url, "Read timed out. (read timeout=%s)" % timeout_value
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Read timed out. (read timeout=10)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/sdk/lib/retry.py", line 113, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/sdk/internal/internal_api.py", line 209, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/transport/requests.py", line 38, in execute
+    request = requests.post(self.url, **post_args)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/requests/sessions.py", line 587, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/requests/sessions.py", line 701, in send
+    r = adapter.send(request, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/requests/adapters.py", line 578, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.wandb.ai', port=443): Read timed out. (read timeout=10)
+2023-01-10 16:42:22,401 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: keepalive
+2023-01-10 16:42:24,825 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: check_version
+2023-01-10 16:42:24,835 INFO    SenderThread:14532 [dir_watcher.py:__init__():216] watching files in: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_164142-1jr0mhga/files
+2023-01-10 16:42:24,836 INFO    SenderThread:14532 [sender.py:_start_run_threads():931] run started: 1jr0mhga with start time 1673386902.219923
+2023-01-10 16:42:24,836 DEBUG   SenderThread:14532 [sender.py:send():303] send: summary
+2023-01-10 16:42:24,836 INFO    SenderThread:14532 [sender.py:_save_file():1171] saving file wandb-summary.json with policy end
+2023-01-10 16:42:24,837 DEBUG   SenderThread:14532 [sender.py:send_request():317] send_request: check_version
+2023-01-10 16:42:24,923 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: run_start
+2023-01-10 16:42:24,926 DEBUG   HandlerThread:14532 [system_info.py:__init__():31] System info init
+2023-01-10 16:42:24,926 DEBUG   HandlerThread:14532 [system_info.py:__init__():46] System info init done
+2023-01-10 16:42:24,926 INFO    HandlerThread:14532 [system_monitor.py:start():150] Starting system monitor
+2023-01-10 16:42:24,926 INFO    SystemMonitor:14532 [system_monitor.py:_start():116] Starting system asset monitoring threads
+2023-01-10 16:42:24,928 INFO    HandlerThread:14532 [system_monitor.py:probe():171] Collecting system info
+2023-01-10 16:42:24,928 DEBUG   HandlerThread:14532 [system_info.py:probe():195] Probing system
+2023-01-10 16:42:24,928 INFO    SystemMonitor:14532 [interfaces.py:start():168] Started cpu
+2023-01-10 16:42:24,929 INFO    SystemMonitor:14532 [interfaces.py:start():168] Started disk
+2023-01-10 16:42:24,929 INFO    SystemMonitor:14532 [interfaces.py:start():168] Started memory
+2023-01-10 16:42:24,930 INFO    SystemMonitor:14532 [interfaces.py:start():168] Started network
+2023-01-10 16:42:24,932 DEBUG   HandlerThread:14532 [system_info.py:_probe_git():180] Probing git
+2023-01-10 16:42:24,978 DEBUG   HandlerThread:14532 [system_info.py:_probe_git():188] Probing git done
+2023-01-10 16:42:24,979 DEBUG   HandlerThread:14532 [system_info.py:probe():241] Probing system done
+2023-01-10 16:42:24,980 DEBUG   HandlerThread:14532 [system_monitor.py:probe():180] {'os': 'Darwin-21.6.0-x86_64-i386-64bit', 'python': '3.7.6', 'heartbeatAt': '2023-01-10T21:42:24.928704', 'startedAt': '2023-01-10T21:41:42.198850', 'docker': None, 'cuda': None, 'args': ('--dataset_name', 'data_split_annotated_sources.jsonl', '--output_dir', "''", '--model_name_or_path', 'google/bigbird-roberta-base'), 'state': 'running', 'program': '/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py', 'codePath': 'tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py', 'git': {'remote': 'git@github.com:alex2awesome/source-exploration.git', 'commit': 'ef9fa0536c78504db099a77d4cdedb867b3f97c8'}, 'email': 'alex2awesome@gmail.com', 'root': '/Users/alex/Projects/usc-research/source-exploration', 'host': 'C02CJKQ2MD6M', 'username': 'alex', 'executable': '/Users/alex/opt/anaconda3/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 2600, 'min': 2600, 'max': 2600}, 'cpu_freq_per_core': [{'current': 2600, 'min': 2600, 'max': 2600}], 'disk': {'total': 465.62699127197266, 'used': 454.2632751464844}, 'memory': {'total': 16.0}}
+2023-01-10 16:42:24,980 INFO    HandlerThread:14532 [system_monitor.py:probe():181] Finished collecting system info
+2023-01-10 16:42:24,980 INFO    HandlerThread:14532 [system_monitor.py:probe():184] Publishing system info
+2023-01-10 16:42:24,980 DEBUG   HandlerThread:14532 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2023-01-10 16:42:24,983 DEBUG   HandlerThread:14532 [system_info.py:_save_pip():67] Saving pip packages done
+2023-01-10 16:42:24,984 DEBUG   HandlerThread:14532 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment
+2023-01-10 16:42:25,842 INFO    Thread-13 :14532 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_164142-1jr0mhga/files/conda-environment.yaml
+2023-01-10 16:42:25,843 INFO    Thread-13 :14532 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_164142-1jr0mhga/files/wandb-summary.json
+2023-01-10 16:42:25,843 INFO    Thread-13 :14532 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_164142-1jr0mhga/files/requirements.txt
+2023-01-10 16:42:31,906 DEBUG   HandlerThread:14532 [system_info.py:_save_conda():86] Saving conda packages done
+2023-01-10 16:42:31,907 INFO    HandlerThread:14532 [system_monitor.py:probe():186] Finished publishing system info
+2023-01-10 16:42:32,269 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-10 16:42:32,269 DEBUG   SenderThread:14532 [sender.py:send_request():317] send_request: stop_status
+2023-01-10 16:42:32,353 DEBUG   SenderThread:14532 [sender.py:send():303] send: telemetry
+2023-01-10 16:42:32,354 DEBUG   SenderThread:14532 [sender.py:send():303] send: files
+2023-01-10 16:42:32,354 INFO    SenderThread:14532 [sender.py:_save_file():1171] saving file wandb-metadata.json with policy now
+2023-01-10 16:42:32,744 INFO    Thread-16 :14532 [upload_job.py:push():143] Uploaded file /var/folders/89/6dsq1ymj63x009t6wpt25f9h0000gp/T/tmpt24k19y3wandb/350tbdbl-wandb-metadata.json
+2023-01-10 16:42:32,891 INFO    Thread-13 :14532 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_164142-1jr0mhga/files/wandb-metadata.json
+2023-01-10 16:42:32,891 INFO    Thread-13 :14532 [dir_watcher.py:_on_file_created():275] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_164142-1jr0mhga/files/output.log
+2023-01-10 16:42:34,893 INFO    Thread-13 :14532 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_164142-1jr0mhga/files/output.log
+2023-01-10 16:42:47,356 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-10 16:42:47,357 DEBUG   SenderThread:14532 [sender.py:send_request():317] send_request: stop_status
+2023-01-10 16:42:55,977 INFO    Thread-13 :14532 [dir_watcher.py:_on_file_modified():292] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_164142-1jr0mhga/files/config.yaml
+2023-01-10 16:43:02,457 DEBUG   HandlerThread:14532 [handler.py:handle_request():139] handle_request: stop_status
+2023-01-10 16:43:02,457 DEBUG   SenderThread:14532 [sender.py:send_request():317] send_request: stop_status

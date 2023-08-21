@@ -1,0 +1,17 @@
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.bias', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+
+100%|██████████| 516/516 [00:03<00:00, 136.60it/s]
+100%|██████████| 86/86 [00:01<00:00, 62.05it/s]
+***** Running Prediction *****
+  Num examples = 3576
+  Batch size = 1
+Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py:978: UserWarning: __floordiv__ is deprecated, and its behavior will change in a future version of pytorch. It currently rounds toward 0 (like the 'trunc' function NOT 'floor'). This results in incorrect rounding for negative values. To keep the current behavior, use torch.div(a, b, rounding_mode='trunc'), or for actual floor division, use torch.div(a, b, rounding_mode='floor').
+  * num_indices_to_pick_from
+10,136 training samples
+3,576 validation samples
+  0%|          | 0/3576 [00:00<?, ?it/s]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+  0%|          | 2/3576 [00:05<2:42:00,  2.72s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+  0%|          | 3/3576 [00:11<3:53:16,  3.92s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64

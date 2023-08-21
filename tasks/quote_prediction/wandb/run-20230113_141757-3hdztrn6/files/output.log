@@ -1,0 +1,18 @@
+Some weights of the model checkpoint at roberta-base were not used when initializing RobertaModel: ['lm_head.dense.weight', 'lm_head.decoder.weight', 'lm_head.layer_norm.weight', 'lm_head.bias', 'lm_head.layer_norm.bias', 'lm_head.dense.bias']
+- This IS expected if you are initializing RobertaModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Traceback (most recent call last):
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/pydevd.py", line 1438, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/_pydev_imps/_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_prediction/trainer.py", line 135, in <module>
+    max_length=data_args.max_sequence_len)
+  File "./sentence_model.py", line 49, in __init__
+    self.process_data(doc_list)
+  File "./sentence_model.py", line 53, in process_data
+    input_ids, input_att_mask, source_ids, source_att_mask, doc_label = self.process_one_doc(doc)
+  File "./sentence_model.py", line 84, in process_one_doc
+    source_lookup = {v + 1: k for k, v in enumerate(set(doc['attribution']))}
+  File "./sentence_model.py", line 84, in <dictcomp>
+    source_lookup = {v + 1: k for k, v in enumerate(set(doc['attribution']))}

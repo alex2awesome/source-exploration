@@ -1,5 +1,41 @@
-from util import clean_multiword_phrases, get_nlp
-from params import speaking_lexicon, ner_list
+try:
+    from .util import (
+        clean_multiword_phrases,
+        get_nlp,
+        cluster_by_last_name_equality,
+        cluster_by_name_overlap_jaro,
+        get_name_cluster_head_by_length
+    )
+    from .params import full_ner_list as ner_list
+    from .params import full_speaking_lexicon as speaking_lexicon
+    from .coref_resolution_util import (
+        get_span_noun_indices, get_cluster_head, get_span,
+        get_cluster_model,
+        fuzzy_span_match
+    )
+except:
+    from util import (
+        clean_multiword_phrases,
+        get_nlp,
+        cluster_by_last_name_equality,
+        cluster_by_name_overlap_jaro,
+        get_name_cluster_head_by_length
+    )
+    from params import full_ner_list as ner_list
+    from params import full_speaking_lexicon as speaking_lexicon
+    from coref_resolution_util import (
+        get_span_noun_indices, get_cluster_head, get_span,
+        get_cluster_model,
+        fuzzy_span_match
+)
+
+
+
+from collections import defaultdict
+from unidecode import unidecode
+from more_itertools import unique_everseen
+from copy import deepcopy, copy
+import pandas as pd
 
 
 def flatten_list_of_lists(l_of_l):
@@ -45,7 +81,7 @@ def extract_quotes_from_nsubj(doc, return_dict=False):
         text_sentence = ' '.join([word.text for word in sent]).strip()
         sent, text_sentence = clean_multiword_phrases(sent, text_sentence)
 
-        ## extract all nsubj of VERB if VERB is 'said', 'says' or 'say'
+        # extract all nsubj of VERB if VERB is 'said', 'says' or 'say'
         for possible_subject in sent:
             if (
                     possible_subject.dep_ == 'nsubj' and
@@ -83,6 +119,7 @@ def extract_quotes_from_nsubj(doc, return_dict=False):
         return entities
     else:
         return spans
+
 
 def get_adjacent_quotes(already_extracted_quote_chunks, doc):
     # 1. extract all quote sentences
@@ -124,7 +161,8 @@ def get_adjacent_quotes(already_extracted_quote_chunks, doc):
     new_quote_sent_chunks = list(map(lambda x: list(set(x)), new_quote_sent_chunks))
     return new_quote_sent_chunks
 
-## helper functions
+
+# helper functions
 def format_span_with_word_list(adj, sent, span, span_color=None, bold=False):
     span_s, span_e = span[0] - adj, span[1] - adj
     if (span_s > 0) and (span_e > 0) and (span_s < len(sent)) and (span_e <= len(sent)):
@@ -152,7 +190,6 @@ def format_sent_with_word_list(sent, sent_color):
     return '<span style="background-color: %s">%s</span>' % (sent_color, sent)
 
 
-import util
 def perform_quote_extraction_and_clustering(text):
     # 1. Cluster coref
     fuzzy = get_cluster_model()
@@ -181,8 +218,8 @@ def perform_quote_extraction_and_clustering(text):
     head_keys = list(head_to_span_mapper_spacy_corr.keys())
 
     # 4. Cluster NE's based on string matching
-    name_c = util.cluster_by_last_name_equality(person_ents_df['ent'])
-    _, h_to_c, _, c_to_h = util.get_name_cluster_head_by_length(name_c)
+    name_c = cluster_by_last_name_equality(person_ents_df['ent'])
+    _, h_to_c, _, c_to_h = get_name_cluster_head_by_length(name_c)
 
     # 5. Identify which NSUBJs are quotes
     q = extract_quotes_from_nsubj(doc, return_dict=True)
@@ -191,17 +228,14 @@ def perform_quote_extraction_and_clustering(text):
     # 6. Match them using NE clusters and CoRef clusters
     t = (
         person_ents_df
-            .assign(coref_heads=lambda df:
-        df['span'].apply(lambda x: list(filter(lambda y: fuzzy_span_match(x, y), head_keys)))
-                    )
+            .assign(coref_heads=lambda df: df['span'].apply(lambda x: list(filter(lambda y: fuzzy_span_match(x, y), head_keys))))
             .assign(head_ref=pd.Series(c_to_h).sort_index())
             .assign(head_span=lambda df: df.apply(lambda x: df.loc[x['head_ref']]['span'], axis=1))
             .assign(head_s_idx=lambda df: df.apply(lambda x: df.loc[x['head_ref']]['s_idx'], axis=1))
-            .assign(all_corefs=lambda df:
-        df['coref_heads']
-                    .apply(lambda x: list(map(lambda y: head_to_span_mapper_spacy_corr[y], x)))
-                    .apply(lambda x: flatten_list_of_lists(x))
-                    )
+            .assign(all_corefs=lambda df: df['coref_heads']
+                                            .apply(lambda x: list(map(lambda y: head_to_span_mapper_spacy_corr[y], x)))
+                                            .apply(lambda x: flatten_list_of_lists(x))
+            )
             .groupby('head_ref')
             .aggregate(list)
             .drop('coref_heads', axis=1)
@@ -220,17 +254,16 @@ def perform_quote_extraction_and_clustering(text):
             .assign(head_s_idx=lambda df: df['head_s_idx'].str.get(0))
             # get sentences/entities that are quotes
             .assign(
-            quote_span=lambda df: df
-                .apply(lambda x: list(set(x['ne_span'] + x['coref_span'])), axis=1)
-                .apply(lambda x: flatten_list_of_lists(
-                list(map(lambda y: list(filter(lambda z: fuzzy_span_match(y, z), quote_spans)), x))))
-        )
+                quote_span=lambda df: df
+                    .apply(lambda x: list(set(x['ne_span'] + x['coref_span'])), axis=1)
+                    .apply(lambda x: flatten_list_of_lists(
+                    list(map(lambda y: list(filter(lambda z: fuzzy_span_match(y, z), quote_spans)), x))))
+            )
             .assign(quote_sent_idxs=lambda df: df['quote_span'].apply(
             lambda x: list(map(lambda y: get_sent_idx_from_sent(doc[y[0]:y[1]].sent, doc), x)))
                     )
             # chunk the quotes
-            .assign(
-            quote_chunks=lambda df: df.apply(lambda x: list(zip(x['quote_sent_idxs'], x['quote_span'])), axis=1))
+            .assign(quote_chunks=lambda df: df.apply(lambda x: list(zip(x['quote_sent_idxs'], x['quote_span'])), axis=1))
             .assign(quote_chunks=lambda df: get_adjacent_quotes(df['quote_chunks'], doc))
     )
 
@@ -258,3 +291,18 @@ def perform_quote_extraction_and_clustering(text):
 #     (k[0], k[1] + 1): (v[0], v[1] + 1) for k, v in span_to_head_mapper.items()
 # }
 # span_to_head_mapper_strs = {doc[k[0]:k[1] + 1]: doc[v[0]:v[1] + 1] for k, v in span_to_head_mapper.items()}
+
+if __name__ == "__main__":
+    # this will not work since the module has relative imports:
+    # see https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time
+    # for more information.
+
+    # example script run in `extract_sources.py`
+
+    import argparse
+    import os
+    here = os.path.dirname(__file__)
+    filename = os.path.join(here, '../resources/data/nytimes-articles-to-extract-sources.csv')
+    data_df = pd.read_csv(filename)
+
+

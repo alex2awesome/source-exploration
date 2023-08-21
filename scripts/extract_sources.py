@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 import sys
 sys.path.insert(0, '../scripts/')
-import rules_method_num_3
+from scripts import rules_method_num_3
 import pickle
 from tqdm.auto import tqdm
 import numpy as np
@@ -34,7 +34,7 @@ if __name__ == '__main__':
         df = df[['version', 'summary', 'label']]
         df['summary'] = df['summary'].str.replace('</p><p>', ' ')
     else:
-        db_path = '../data/nytimes-articles-to-extract-sources.csv'
+        db_path = '../resources/data/nytimes-articles-to-extract-sources.csv'
         df = pd.read_csv(db_path, index_col=0)
         df = df.iloc[args.start_row: args.start_row + args.n_rows]
         df['version'] = 0
@@ -43,20 +43,17 @@ if __name__ == '__main__':
     ##
     output = []
     for entry_id, (version, summary, label) in tqdm(df.iterrows(), total=len(df)):
-        try:
-            quote_idxes, sent_words, _ = rules_method_num_3.perform_quote_extraction_and_clustering(summary)
-            output.append({
-                'entry_id': entry_id,
-                'version': version,
-                'quote_idxes': quote_idxes,
-                'sent_parse': sent_words,
-                'label': label
-            })
-        except:
-            pass
-
+        # try:
+        quote_idxes, sent_words, _ = rules_method_num_3.perform_quote_extraction_and_clustering(summary)
+        output.append({
+            'entry_id': entry_id,
+            'version': version,
+            'quote_idxes': quote_idxes,
+            'sent_parse': sent_words,
+            'label': label
+        })
+        # except:
+            # pass
     s, e = args.start_row, args.start_row + args.n_rows
     with open('%s/output_chunk__start-%s_end-%s.pkl' % (args.output_dir, s, e), 'wb') as f:
         pickle.dump(output, f)
-
-

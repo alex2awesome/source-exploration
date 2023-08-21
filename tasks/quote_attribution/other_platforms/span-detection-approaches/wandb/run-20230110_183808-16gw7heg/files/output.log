@@ -1,0 +1,39 @@
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.bias', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.bias', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+  0%|          | 0/516 [00:14<?, ?it/s]
+Traceback (most recent call last):
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/pydevd.py", line 1438, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/_pydev_imps/_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py", line 123, in <module>
+    include_nones_as_positives=data_args.include_nones_as_positives,
+  File "./dataset.py", line 45, in __init__
+    self.process_data_file(input_data)
+  File "./dataset.py", line 78, in process_data_file
+    [1] * (sent_end_tok - sent_start_tok) + \
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+Python 3.7.6 (default, Jan  8 2020, 13:42:34)
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.22.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.22.0
+Out[1]: 569
+Out[3]: 'There were about 20 passengers on board of which most were of high stature , ” said <span style="font-weight: bold">Sek Wannamethee</span> , a spokesman for the Thai Foreign Ministry .'
+Out[4]: 'There were about 20 passengers on board of which most were of high stature , " said Sek Wannamethee , a spokesman for the Thai Foreign Ministry .'
+Out[5]: 'journalist passive-voice BANGKOK -- A plane carrying key senior Laotian government officials crashed Saturday morning , leaving at least four people dead , Laotian diplomats said Saturday . Killed in the crash were two top figures in the security apparatus of the authoritarian Lao government : the deputy prime minister , Douangchay Phichit , and Thongbane Sengaphone , the minister of public security , according to two Lao diplomats . For a Communist party that relies on force and intimidation to stay in power , the loss of what were arguably the two most powerful people in the security apparatus was a significant blow . The governor of Vientiane province was also killed in the crash . In addition to his post as deputy prime minister Mr. Douangchay was defense minister and a member of the Politburo , the highest decision - making body of the Communist party . Mr. Thongbane , the public security head , was feared in the country and was said to be one of the officials leading a crackdown against dissent over the past year and half . That crackdown included the disappearance of the most prominent civic leader in the country , Sombath Somphone , a United States - trained agriculture specialist who led efforts to liberalize the hermetic communist leadership . Mr. Sombath was stopped at a police checkpoint in Dec. 2012 and has not been seen again . The Lao news agency posted photos to a web site Saturday showing the mangled wreckage of the plane , a Russian - made Antonov AN-74TK300 . The news agency , citing a statement from the prime minister \'s office , said it was a Laotian Air Force aircraft and it had crashed in Nadi village , west of the Xiangkhouang airport and not far from a major archeological site of prehistoric carved stone vessels , the Plain of Jars . The authorities were " helping to rescue the survivors , " the news agency said , without offering details on the number of people killed . The plane was traveling from the capital , Vientiane , to the mountainous northeastern province of Xiangkhouang , where the officials were due to attend a military ceremony . State television in Laos showed footage of rescue workers recovering debris from the aircraft , which appeared to have crashed in a jungle - covered area . A news presenter said the crash occurred at around 7 a.m. " The cause of the plane crash is still unknown , " the presenter said . A Lao Facebook page showed images of thick black smoke rising up near what appeared to be an airport runway . The images could not be independently confirmed . The crash was the second in Laos in the last year . Last October 49 people were killed when a Lao Airlines flight crashed in the south of the country . The Foreign Ministry in neighboring Thailand said it " received reports " about the crash . " There were about 20 passengers on board of which most were of high stature , " said Sek Wannamethee , a spokesman for the Thai Foreign Ministry .'
+Out[6]: 'There were about 20 passengers on board of which most were of high stature , " said Sek Wannamethee , a spokesman for the Thai Foreign Ministry .'
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3396, in run_code
+    async def run_code(self, code_obj, result=None, *, async_=False):
+  File "<ipython-input-8-4f364b2c1e08>", line 1, in <module>
+    start_char = doc_text.index(text)
+NameError: name 'text' is not defined
+Out[11]: 2942
+Out[12]: 2942
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3396, in run_code
+    async def run_code(self, code_obj, result=None, *, async_=False):
+  File "<ipython-input-13-f57c75548e2d>", line 1, in <module>
+    tokenized_obj.char_to_token(end_char - 1)
+NameError: name 'tokenized_obj' is not defined

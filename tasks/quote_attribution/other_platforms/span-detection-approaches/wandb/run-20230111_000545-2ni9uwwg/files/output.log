@@ -1,0 +1,49 @@
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.bias', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.weight', 'cls.predictions.decoder.bias']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+100%|██████████| 1/1 [00:00<00:00, 39.41it/s]
+100%|██████████| 1/1 [00:00<00:00, 45.84it/s]
+***** Running Evaluation *****
+  Num examples = 52
+  Batch size = 1
+Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py:978: UserWarning: __floordiv__ is deprecated, and its behavior will change in a future version of pytorch. It currently rounds toward 0 (like the 'trunc' function NOT 'floor'). This results in incorrect rounding for negative values. To keep the current behavior, use torch.div(a, b, rounding_mode='trunc'), or for actual floor division, use torch.div(a, b, rounding_mode='floor').
+  * num_indices_to_pick_from
+   11 training samples
+   52 validation samples
+*** Pre-run evaluation ***
+  0%|          | 0/52 [00:00<?, ?it/s]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+  4%|▍         | 2/52 [00:06<02:39,  3.19s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+  6%|▌         | 3/52 [00:12<03:30,  4.29s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+  8%|▊         | 4/52 [00:17<03:51,  4.83s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 10%|▉         | 5/52 [00:23<03:57,  5.06s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 12%|█▏        | 6/52 [00:29<04:02,  5.28s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 13%|█▎        | 7/52 [00:34<03:57,  5.27s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 15%|█▌        | 8/52 [00:39<03:50,  5.25s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 17%|█▋        | 9/52 [00:45<03:48,  5.32s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 19%|█▉        | 10/52 [00:50<03:45,  5.36s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 21%|██        | 11/52 [00:56<03:41,  5.40s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 23%|██▎       | 12/52 [01:02<03:50,  5.76s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 25%|██▌       | 13/52 [01:08<03:45,  5.77s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 27%|██▋       | 14/52 [01:14<03:40,  5.80s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 29%|██▉       | 15/52 [01:20<03:34,  5.80s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 31%|███       | 16/52 [01:25<03:26,  5.73s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 33%|███▎      | 17/52 [01:31<03:18,  5.68s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 35%|███▍      | 18/52 [01:36<03:12,  5.67s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 37%|███▋      | 19/52 [01:42<03:06,  5.64s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 38%|███▊      | 20/52 [01:48<03:07,  5.85s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 40%|████      | 21/52 [01:54<02:58,  5.75s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 42%|████▏     | 22/52 [01:59<02:52,  5.74s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 44%|████▍     | 23/52 [02:05<02:45,  5.69s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 46%|████▌     | 24/52 [02:11<02:37,  5.63s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 48%|████▊     | 25/52 [02:16<02:31,  5.59s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 50%|█████     | 26/52 [02:22<02:24,  5.56s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 52%|█████▏    | 27/52 [02:28<02:26,  5.88s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 54%|█████▍    | 28/52 [02:35<02:25,  6.05s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 56%|█████▌    | 29/52 [02:43<02:38,  6.89s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 58%|█████▊    | 30/52 [02:51<02:35,  7.07s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 60%|█████▉    | 31/52 [02:58<02:26,  6.98s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 62%|██████▏   | 32/52 [03:04<02:12,  6.63s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 63%|██████▎   | 33/52 [03:10<02:05,  6.60s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 65%|██████▌   | 34/52 [03:17<02:00,  6.72s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64
+ 67%|██████▋   | 35/52 [03:25<02:02,  7.22s/it]Input ids are automatically padded from 1695 to 1728 to be a multiple of `config.block_size`: 64

@@ -1,0 +1,32 @@
+2023-01-10 18:17:43,002 INFO    StreamThr :17837 [internal.py:wandb_internal():90] W&B internal server running at pid: 17837, started at: 2023-01-10 18:17:43.002241
+2023-01-10 18:17:43,004 DEBUG   HandlerThread:17837 [handler.py:handle_request():139] handle_request: status
+2023-01-10 18:17:43,007 DEBUG   SenderThread:17837 [sender.py:send_request():317] send_request: status
+2023-01-10 18:17:43,010 DEBUG   SenderThread:17837 [sender.py:send():303] send: header
+2023-01-10 18:17:43,010 INFO    WriterThread:17837 [datastore.py:open_for_write():75] open: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_181742-p9he0jre/run-p9he0jre.wandb
+2023-01-10 18:17:43,044 DEBUG   SenderThread:17837 [sender.py:send():303] send: run
+2023-01-10 18:17:43,280 DEBUG   HandlerThread:17837 [handler.py:handle_request():139] handle_request: check_version
+2023-01-10 18:17:43,282 INFO    SenderThread:17837 [dir_watcher.py:__init__():216] watching files in: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/wandb/run-20230110_181742-p9he0jre/files
+2023-01-10 18:17:43,283 INFO    SenderThread:17837 [sender.py:_start_run_threads():931] run started: p9he0jre with start time 1673392662.999001
+2023-01-10 18:17:43,283 DEBUG   SenderThread:17837 [sender.py:send():303] send: summary
+2023-01-10 18:17:43,283 INFO    SenderThread:17837 [sender.py:_save_file():1171] saving file wandb-summary.json with policy end
+2023-01-10 18:17:43,283 DEBUG   SenderThread:17837 [sender.py:send_request():317] send_request: check_version
+2023-01-10 18:17:43,372 DEBUG   HandlerThread:17837 [handler.py:handle_request():139] handle_request: run_start
+2023-01-10 18:17:43,375 DEBUG   HandlerThread:17837 [system_info.py:__init__():31] System info init
+2023-01-10 18:17:43,375 DEBUG   HandlerThread:17837 [system_info.py:__init__():46] System info init done
+2023-01-10 18:17:43,375 INFO    HandlerThread:17837 [system_monitor.py:start():150] Starting system monitor
+2023-01-10 18:17:43,375 INFO    SystemMonitor:17837 [system_monitor.py:_start():116] Starting system asset monitoring threads
+2023-01-10 18:17:43,375 INFO    HandlerThread:17837 [system_monitor.py:probe():171] Collecting system info
+2023-01-10 18:17:43,376 INFO    SystemMonitor:17837 [interfaces.py:start():168] Started cpu
+2023-01-10 18:17:43,377 DEBUG   HandlerThread:17837 [system_info.py:probe():195] Probing system
+2023-01-10 18:17:43,377 INFO    SystemMonitor:17837 [interfaces.py:start():168] Started disk
+2023-01-10 18:17:43,378 INFO    SystemMonitor:17837 [interfaces.py:start():168] Started memory
+2023-01-10 18:17:43,379 INFO    SystemMonitor:17837 [interfaces.py:start():168] Started network
+2023-01-10 18:17:43,380 DEBUG   HandlerThread:17837 [system_info.py:_probe_git():180] Probing git
+2023-01-10 18:17:43,424 DEBUG   HandlerThread:17837 [system_info.py:_probe_git():188] Probing git done
+2023-01-10 18:17:43,426 DEBUG   HandlerThread:17837 [system_info.py:probe():241] Probing system done
+2023-01-10 18:17:43,426 DEBUG   HandlerThread:17837 [system_monitor.py:probe():180] {'os': 'Darwin-21.6.0-x86_64-i386-64bit', 'python': '3.7.6', 'heartbeatAt': '2023-01-10T23:17:43.377528', 'startedAt': '2023-01-10T23:17:42.979320', 'docker': None, 'cuda': None, 'args': ('--dataset_name', 'data_split_annotated_sources.jsonl', '--output_dir', "''", '--model_name_or_path', 'google/bigbird-roberta-base', '--spacy_model_name', 'en_core_web_sm'), 'state': 'running', 'program': '/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py', 'codePath': 'tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py', 'git': {'remote': 'git@github.com:alex2awesome/source-exploration.git', 'commit': 'ef9fa0536c78504db099a77d4cdedb867b3f97c8'}, 'email': 'alex2awesome@gmail.com', 'root': '/Users/alex/Projects/usc-research/source-exploration', 'host': 'C02CJKQ2MD6M', 'username': 'alex', 'executable': '/Users/alex/opt/anaconda3/bin/python', 'cpu_count': 6, 'cpu_count_logical': 12, 'cpu_freq': {'current': 2600, 'min': 2600, 'max': 2600}, 'cpu_freq_per_core': [{'current': 2600, 'min': 2600, 'max': 2600}], 'disk': {'total': 465.62699127197266, 'used': 456.5511779785156}, 'memory': {'total': 16.0}}
+2023-01-10 18:17:43,427 INFO    HandlerThread:17837 [system_monitor.py:probe():181] Finished collecting system info
+2023-01-10 18:17:43,427 INFO    HandlerThread:17837 [system_monitor.py:probe():184] Publishing system info
+2023-01-10 18:17:43,427 DEBUG   HandlerThread:17837 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2023-01-10 18:17:43,432 DEBUG   HandlerThread:17837 [system_info.py:_save_pip():67] Saving pip packages done
+2023-01-10 18:17:43,432 DEBUG   HandlerThread:17837 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment

@@ -1,0 +1,294 @@
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.predictions.decoder.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+  0%|          | 0/516 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/pydevd.py", line 1438, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/_pydev_imps/_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/trainer.py", line 121, in <module>
+    train_input, spacy_model=spacy_model, hf_tokenizer=tokenizer, max_length=data_args.max_sequence_len
+  File "./dataset.py", line 110, in __init__
+    self.process_data_file(input_data)
+  File "./dataset.py", line 123, in process_data_file
+    processed_token_data = self.cache_doc_tokens_for_qa(doc_sents)
+  File "./dataset.py", line 173, in cache_doc_tokens_for_qa
+    enc = self.encode_sentence_as_words(sent)
+  File "./dataset.py", line 162, in encode_sentence_as_words
+    self.hf_tokenizer.encode(w, add_special_tokens=False, add_prefix_space=add_prefix_space)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_base.py", line 2176, in encode
+    **kwargs,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_base.py", line 2512, in encode_plus
+    **kwargs,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_fast.py", line 496, in _encode_plus
+    **kwargs,
+TypeError: _batch_encode_plus() got an unexpected keyword argument 'add_prefix_space'
+Python 3.7.6 (default, Jan  8 2020, 13:42:34)
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.22.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.22.0
+Out[1]: PreTrainedTokenizerFast(name_or_path='google/bigbird-roberta-base', vocab_size=50358, model_max_len=4096, is_fast=True, padding_side='right', special_tokens={'bos_token': AddedToken("</s>", rstrip=False, lstrip=False, single_word=False, normalized=True), 'eos_token': AddedToken("<s>", rstrip=False, lstrip=False, single_word=False, normalized=True), 'unk_token': AddedToken("<unk>", rstrip=False, lstrip=False, single_word=False, normalized=True), 'sep_token': AddedToken("[SEP]", rstrip=False, lstrip=False, single_word=False, normalized=True), 'pad_token': AddedToken("<pad>", rstrip=False, lstrip=False, single_word=False, normalized=True), 'cls_token': AddedToken("[CLS]", rstrip=False, lstrip=False, single_word=False, normalized=True), 'mask_token': AddedToken("[MASK]", rstrip=False, lstrip=True, single_word=False, normalized=True)})
+Out[2]: ['▁I', '▁have', '▁a', '▁new', '▁GPU', '!']
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3396, in run_code
+    async def run_code(self, code_obj, result=None, *, async_=False):
+  File "<ipython-input-3-b30d2663347a>", line 1, in <module>
+    self.hf_tokenizer.encode(['▁I', '▁have', '▁a', '▁new', '▁GPU', '!'])
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_base.py", line 2129, in encode
+    @add_end_docstrings(
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_base.py", line 2445, in encode_plus
+    @add_end_docstrings(ENCODE_KWARGS_DOCSTRING, ENCODE_PLUS_ADDITIONAL_KWARGS_DOCSTRING)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_fast.py", line 456, in _encode_plus
+    def _encode_plus(
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_fast.py", line 372, in _batch_encode_plus
+    def _batch_encode_plus(
+TypeError: TextEncodeInput must be Union[TextInputSequence, Tuple[InputSequence, InputSequence]]
+Out[4]: [65, 415, 524, 358, 750, 11463, 5246, 66]
+Out[5]: [65, 415, 524, 358, 750, 11463, 5246, 66]
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3396, in run_code
+    async def run_code(self, code_obj, result=None, *, async_=False):
+  File "<ipython-input-6-534d5662eb50>", line 1, in <module>
+    self.hf_tokenizer.encode(['I have a new GPU!'])
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_base.py", line 2129, in encode
+    @add_end_docstrings(
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_base.py", line 2445, in encode_plus
+    @add_end_docstrings(ENCODE_KWARGS_DOCSTRING, ENCODE_PLUS_ADDITIONAL_KWARGS_DOCSTRING)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_fast.py", line 456, in _encode_plus
+    def _encode_plus(
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_fast.py", line 372, in _batch_encode_plus
+    def _batch_encode_plus(
+TypeError: TextEncodeInput must be Union[TextInputSequence, Tuple[InputSequence, InputSequence]]
+Out[7]: [65, 415, 524, 358, 750, 11463, 101, 66]
+Out[8]:
+['▁Don',
+ "'t",
+ '▁you',
+ '▁love',
+ '▁',
+ '🤗',
+ '▁Transformers',
+ '?',
+ '▁We',
+ '▁sure',
+ '▁do',
+ '.']
+Out[9]:
+['▁Don',
+ "'t",
+ '▁you',
+ '▁love',
+ '▁',
+ '🤗',
+ '▁Transformers',
+ '?',
+ '▁We',
+ '▁sure',
+ '▁do',
+ '.',
+ '▁It',
+ "'s",
+ '▁extraordinarily',
+ '▁great',
+ '.']
+Out[10]:
+['▁Don',
+ "'t",
+ '▁you',
+ '▁love',
+ '▁',
+ '🤗',
+ '▁Transformers',
+ '?',
+ '▁We',
+ '▁sure',
+ '▁do',
+ '.',
+ '▁It',
+ "'s",
+ '▁extraordinarily',
+ 'ness',
+ '▁great',
+ '.']
+Out[12]:
+[65,
+ 2195,
+ 321,
+ 571,
+ 446,
+ 1943,
+ 321,
+ 321,
+ 100,
+ 39286,
+ 5734,
+ 876,
+ 1755,
+ 567,
+ 865,
+ 733,
+ 321,
+ 439,
+ 32100,
+ 321,
+ 1209,
+ 1150,
+ 865,
+ 66]
+Out[14]: False
+Out[15]: 18
+Out[16]: 24
+Out[17]:
+['▁Don',
+ "'t",
+ '▁you',
+ '▁love',
+ '▁',
+ '🤗',
+ '▁Transformers',
+ '?',
+ '▁We',
+ '▁sure',
+ '▁do',
+ '.',
+ '▁It',
+ "'s",
+ '▁extraordinarily',
+ 'ness',
+ '▁great',
+ '.']
+Out[18]: '[CLS]'
+Out[19]:
+['[CLS]',
+ 'Don',
+ '',
+ "'t",
+ 'you',
+ 'love',
+ '',
+ '',
+ '<unk>',
+ 'Transformers',
+ '?',
+ 'We',
+ 'sure',
+ 'do',
+ '.',
+ 'It',
+ '',
+ "'s",
+ 'extraordinarily',
+ '',
+ 'ness',
+ 'great',
+ '.',
+ '[SEP]']
+Out[21]: <bound method BatchEncoding.word_ids of {'input_ids': [65, 871, 419, 358, 11342, 1735, 1773, 66], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1]}>
+Out[22]: [None, 0, 1, 2, 3, 3, 4, None]
+Out[23]: {'input_ids': [65, 871, 419, 358, 11342, 1735, 1773, 66], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1]}
+Out[26]: {'input_ids': [65, 2195, 571, 446, 1943, 321, 100, 39286, 131, 876, 1755, 567, 114, 733, 439, 32100, 1150, 114, 66], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}
+Out[27]: [None, 0, 0, 1, 2, 3, 3, 4, 4, 5, 6, 7, 7, 8, 8, 9, 10, 10, None]
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3396, in run_code
+    async def run_code(self, code_obj, result=None, *, async_=False):
+  File "<ipython-input-28-06ff5219ba23>", line 1, in <module>
+    encoded.word_to_chars()
+TypeError: word_to_chars() missing 1 required positional argument: 'batch_or_word_index'
+Out[29]: 2
+Out[30]: 1
+Out[31]: '</s>'
+/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/tokenization_utils_base.py:319: FutureWarning: `BatchEncoding.words()` property is deprecated and should be replaced with the identical, but more self-explanatory `BatchEncoding.word_ids()` property.
+  def words(self, batch_index: int = 0) -> List[Optional[int]]:
+Out[32]: [None, 0, 0, 1, 2, 3, 3, 4, 4, 5, 6, 7, 7, 8, 8, 9, 10, 10, None]
+Out[33]: TokenSpan(start=1, end=3)
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3396, in run_code
+    async def run_code(self, code_obj, result=None, *, async_=False):
+  File "<ipython-input-34-f23ee4626e51>", line 1, in <module>
+    encoded.token_to_word()
+TypeError: token_to_word() missing 1 required positional argument: 'batch_or_token_index'
+Out[36]: 0
+Out[37]: 0
+Out[38]: 1
+Out[39]: 2
+Out[40]: 3
+Out[41]:
+{'bos_token': '</s>',
+ 'eos_token': '<s>',
+ 'unk_token': '<unk>',
+ 'sep_token': '[SEP]',
+ 'pad_token': '<pad>',
+ 'cls_token': '[CLS]',
+ 'mask_token': '[MASK]'}
+Out[42]: {'input_ids': [65, 2195, 571, 446, 1943, 321, 100, 39286, 131, 876, 1755, 567, 114, 733, 439, 32100, 1150, 114, 66], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}
+Out[43]:
+['[CLS]',
+ 'Don',
+ "'t",
+ 'you',
+ 'love',
+ '',
+ '<unk>',
+ 'Transformers',
+ '?',
+ 'We',
+ 'sure',
+ 'do',
+ '.',
+ 'It',
+ "'s",
+ 'extraordinarily',
+ 'great',
+ '.',
+ '[SEP]']
+Out[44]:
+[65,
+ 2195,
+ 571,
+ 446,
+ 1943,
+ 321,
+ 100,
+ 39286,
+ 131,
+ 876,
+ 1755,
+ 567,
+ 114,
+ 733,
+ 439,
+ 32100,
+ 1150,
+ 114,
+ 66]
+Out[46]: False
+Out[47]: True
+Out[50]: {'input_ids': [65, 18536, 717, 1539, 419, 4523, 114, 66], 'attention_mask': [1, 1, 1, 1, 1, 1, 1, 1]}
+Out[52]: 17
+Out[54]: 5
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3396, in run_code
+    async def run_code(self, code_obj, result=None, *, async_=False):
+  File "<ipython-input-55-08dd3a2f97c8>", line 1, in <module>
+    'abc'.index('d')
+ValueError: substring not found
+  File "<ipython-input-56-3bd1d03ab10d>", line 1
+    'abc'.index('d', 01)
+                      ^
+SyntaxError: invalid token
+  File "<ipython-input-57-3bd1d03ab10d>", line 1
+    'abc'.index('d', 01)
+                      ^
+SyntaxError: invalid token
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3396, in run_code
+    async def run_code(self, code_obj, result=None, *, async_=False):
+  File "<ipython-input-58-cb39eac9728d>", line 1, in <module>
+    'abc'.index('d', -1)
+ValueError: substring not found
+Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3396, in run_code
+    async def run_code(self, code_obj, result=None, *, async_=False):
+  File "<ipython-input-59-774d01a15e26>", line 1, in <module>
+    'abc'.indexOf('d', -1)

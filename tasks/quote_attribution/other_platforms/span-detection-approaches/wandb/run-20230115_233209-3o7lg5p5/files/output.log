@@ -1,0 +1,85 @@
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdForTokenClassification: ['cls.predictions.decoder.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BigBirdForTokenClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdForTokenClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BigBirdForTokenClassification were not initialized from the model checkpoint at google/bigbird-roberta-base and are newly initialized: ['classifier.bias', 'classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+100%|██████████| 1/1 [00:00<00:00, 103.67it/s]
+100%|██████████| 2/2 [00:00<00:00, 36.02it/s]
+    1 training samples
+   33 validation samples
+***** Running training *****
+  Num examples = 1
+  Num Epochs = 3
+  Instantaneous batch size per device = 1
+  Total train batch size (w. parallel, distributed & accumulation) = 1
+  Gradient Accumulation steps = 1
+  Total optimization steps = 3
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+
+
+ 67%|██████▋   | 2/3 [00:05<00:02,  2.76s/it]
+100%|██████████| 3/3 [00:07<00:00,  2.35s/it]
+Training completed. Do not forget to share your model on huggingface.co/models =)
+100%|██████████| 3/3 [00:07<00:00,  2.56s/it]
+Saving model checkpoint to ''
+Configuration saved in ''/config.json
+***** train metrics *****
+  epoch                    =        3.0
+  train_loss               =     0.3667
+  train_runtime            = 0:00:07.68
+  train_samples            =          1
+  train_samples_per_second =       0.39
+  train_steps_per_second   =       0.39
+*** Evaluate ***
+Model weights saved in ''/pytorch_model.bin
+***** Running Prediction *****
+  Num examples = 33
+  Batch size = 1
+
+
+
+
+
+
+
+
+
+ 30%|███       | 10/33 [00:20<00:51,  2.23s/it]Traceback (most recent call last):
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_attribution/other_platforms/span-detection-approaches/token_classification_trainer.py", line 280, in <module>
+    preds, labels, metrics = trainer.predict(eval_dataset)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2186, in predict
+    test_dataloader, description="Prediction", ignore_keys=ignore_keys, metric_key_prefix=metric_key_prefix
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2285, in evaluation_loop
+    loss, logits, labels = self.prediction_step(model, inputs, prediction_loss_only, ignore_keys=ignore_keys)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2493, in prediction_step
+    loss, outputs = self.compute_loss(model, inputs, return_outputs=True)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 1881, in compute_loss
+    outputs = model(**inputs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 2875, in forward
+    return_dict=return_dict,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 2154, in forward
+    return_dict=return_dict,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 1641, in forward
+    output_attentions,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 1532, in forward
+    self.feed_forward_chunk, self.chunk_size_feed_forward, self.seq_len_dim, attention_output
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/modeling_utils.py", line 2349, in apply_chunking_to_forward
+    return forward_fn(*input_tensors)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 1545, in feed_forward_chunk
+    layer_output = self.output(intermediate_output, attention_output)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/models/big_bird/modeling_big_bird.py", line 1430, in forward
+    hidden_states = self.dense(hidden_states)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
