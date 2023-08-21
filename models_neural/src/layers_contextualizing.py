@@ -101,6 +101,7 @@ class TransformerContextMixin(nn.Module):
     def get_contextualized_embeddings(self, cls_embeddings, input_len_eq_one=None, *args, **kwargs):
         if self.do_resize: # pass vector through a linear layer to resize it
             cls_embeddings = self.resize_layer(cls_embeddings)
+
         #  a single sentence/doc has been passed in, but flattened.
         if len(cls_embeddings.shape) == 1:
             cls_embeddings = cls_embeddings.unsqueeze(dim=0)

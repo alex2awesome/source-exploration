@@ -8,31 +8,34 @@ import json
 from models_neural.src.config_helper import training_args
 from models_neural.quote_attribution.utils_parser import attach_model_arguments
 from models_neural.src.utils_general import format_loss_weighting, reformat_model_path
-from models_neural.src.config_helper import TransformersConfig, get_transformer_config
-from models_neural.quote_attribution.language_models import LMModel, GPT2LMHeadModel, RobertaForCausalLM
+from models_neural.src.config_helper import TransformersConfig
+from models_neural.quote_attribution.language_models import LMModel
 from models_neural.quote_attribution.utils_dataset import (
     SourceConditionalGenerationDataset,
     SourceClassificationDataModule,
+    SourceClassificationExtraTokens,
+    EasiestSanityCheckDataModule,
     SourceQADataModule
 )
 from models_neural.quote_attribution.classification_models import (
     SourceClassifier,
+    SanityCheckClassifier,
+    SourceClassifierWithSourceSentVecs,
     SourceQA
 )
-
 
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning import loggers
-import torch
-from transformers import AutoConfig
-
 import logging
 logging.basicConfig(level=logging.INFO)
 
 experiments = {
     'roberta_generation': ('roberta', SourceConditionalGenerationDataset, LMModel),
     'roberta_classification': ('roberta', SourceClassificationDataModule, SourceClassifier),
+    'roberta_classification_vecs': ('roberta', SourceClassificationDataModule, SourceClassifierWithSourceSentVecs),
+    'roberta_classification_toks': ('roberta', SourceClassificationExtraTokens, SourceClassifier),
+    'roberta_sanity_check': ('roberta', EasiestSanityCheckDataModule, SourceClassifier),
     'roberta_qa': ('roberta', SourceQADataModule, SourceQA)
 }
 
@@ -66,7 +69,7 @@ def main(
         pretrained_model_path=config.pretrained_model_path,
         num_cpus=config.num_dataloader_cpus,
         split_type=args.split_type,
-        split_perc=.95,
+        split_perc=.9,
         model_type=lm_type,
         batch_size=args.batch_size,
         max_length_seq=args.max_length_seq,
@@ -78,26 +81,21 @@ def main(
 
     model = lm_class(config=config)  # our experimental setup
 
-
     #########
     # get TB logger
     if os.environ.get('TENSORBOARD_LOGDIR'):
         tb_logger = loggers.TensorBoardLogger(
             save_dir=os.environ['TENSORBOARD_LOGDIR'],
         )
-        tb_logger.log_hyperparams(config.to_dict())
-        # tb_logger.log_hyperparams({
-        #         'notes': args.notes,
-        #         'embedding_model_type': config.model_type,
-        #         'dataset_size': len(dataset.train_dataset),
-        #         'experiment': args.experiment,
-        #         # trainer params
-        #         'batch_size': config.batch_size,
-        #         'warmup_steps': config.warmup_steps,
-        #         'learning_rate': config.learning_rate,
-        #         'gradient_accumulation': config.accumulate_grad_batches,
-        #     }
-        # )
+        # tb_logger.log_hyperparams(config.to_dict())
+        tb_logger.log_hyperparams({
+                'notes': args.notes,
+                'embedding_model_type': config.model_type,
+                'dataset_size': len(dataset.train_dataset),
+                'experiment': args.experiment,
+            }
+        )
+        tb_logger.save()
     else:
         tb_logger = None
 
@@ -171,6 +169,8 @@ if __name__ == "__main__":
         # train and eval files
         args.num_gpus = 0
         args.train_data_file = os.path.join(here, args.train_data_file)
+        if args.auxiliary_train_data_file is not None:
+            args.auxiliary_train_data_file = os.path.join(here, args.auxiliary_train_data_file)
     else:
         from models_neural.src.utils_data_access import download_all_necessary_files
         download_all_necessary_files(args)
@@ -189,7 +189,7 @@ if __name__ == "__main__":
     # set up model
     logging.info('MODEL PARAMS:')
     logging.info(config.to_json_string(use_diff=False))
-    dump_config_now = True
+    dump_config_now = False
     if dump_config_now:
         local_config_path = 'config-%s.json' % args.notes
         with open(local_config_path, 'w') as f:

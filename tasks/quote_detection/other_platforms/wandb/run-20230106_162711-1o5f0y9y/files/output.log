@@ -1,0 +1,49 @@
+
+normalizer.cc(50) LOG(INFO) precompiled_charsmap is empty. use identity normalization.
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.bias', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+  516 training samples
+   75 validation samples
+***** Running training *****
+  Num examples = 516
+  Num Epochs = 3
+  Instantaneous batch size per device = 8
+  Total train batch size (w. parallel, distributed & accumulation) = 8
+  Gradient Accumulation steps = 1
+  Total optimization steps = 195
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  0% 0/195 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 628, in __next__
+    data = self._next_data()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 671, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/utils/data/_utils/fetch.py", line 61, in fetch
+    return self.collate_fn(data)
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/trainer.py", line 181, in collate_fn
+    output['sentence_lens'] = torch.tensor(batch_by_columns['sentence_lens'])
+ValueError: only one element tensors can be converted to Python scalars
+Python 3.7.6 (default, Jan  8 2020, 13:42:34)
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.22.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.22.0
+Out[1]:
+[tensor([40, 30, 51, 46, 40, 11, 45, 12, 26, 25,  4, 28,  5, 40, 16, 15, 15, 40,
+         39,  9, 19, 16, 44, 33, 32, 38, 29, 37, 42, 56,  4, 18, 27]),
+ tensor([26, 30, 35, 17, 18, 33, 26, 27, 19, 13, 24, 17,  4, 25,  4,  6, 18, 21,
+         49, 38, 39, 50, 13]),
+ tensor([41, 20, 26, 14,  4, 33, 30, 26, 28, 29, 41, 40, 34, 27, 17,  4, 31, 12,
+         31, 32,  4, 42,  9, 37, 38, 26, 22, 18, 24, 11, 21, 17, 27, 47, 13, 20,
+         34, 20, 19, 30, 19, 14, 23, 19, 26, 13, 32, 24, 12, 30,  4, 21]),
+ tensor([40, 49, 23, 21, 32, 18, 74, 24, 35, 45,  4, 30,  4, 40, 12,  5, 35,  4,
+         19, 25, 29, 27,  4, 60,  4, 40,  5, 52,  4, 23, 49, 40, 26,  4, 47,  4,
+         21, 39, 22, 32, 37, 26, 30,  4, 51, 37, 20,  4, 13,  4, 11,  4]),
+ tensor([23, 19, 31, 17, 27, 38, 14, 23, 42, 27, 17, 43, 44,  4, 33,  4, 14, 10,
+         40, 31, 45, 23, 14, 28,  4, 37,  4, 31,  5, 39, 12, 34, 27, 26, 24, 42,
+         19,  4, 37,  4,  9,  5, 22, 59, 44, 44, 15, 23, 27, 23, 31, 17, 35, 31,
+         16]),
+ tensor([37, 53, 42, 33,  4, 37, 22,  4, 39, 14, 30, 31, 45, 47, 45, 22,  4, 39,
+          4, 49, 23, 24, 27, 16, 25, 26]),
+ tensor([58, 38, 31, 35, 34, 26, 36, 43, 20,  4, 49, 45, 29, 17, 36, 43, 29, 77,
+          4, 31,  4, 21, 28, 28]),
+ tensor([41, 14, 52, 36, 31,  4, 28, 56, 15, 20, 59, 17, 17,  4, 31, 33, 20, 53,

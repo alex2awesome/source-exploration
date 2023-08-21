@@ -1,0 +1,39 @@
+
+normalizer.cc(50) LOG(INFO) precompiled_charsmap is empty. use identity normalization.
+    6 training samples
+    6 validation samples
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+***** Running training *****
+  Num examples = 6
+  Num Epochs = 3
+  Instantaneous batch size per device = 1
+  Total train batch size (w. parallel, distributed & accumulation) = 1
+  Gradient Accumulation steps = 1
+  Total optimization steps = 18
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  0% 0/18 [00:00<?, ?it/s]Attention type 'block_sparse' is not possible if sequence_length: 68 <= num global tokens: 2 * config.block_size + min. num sliding tokens: 3 * config.block_size + config.num_random_blocks * config.block_size + additional buffer: config.num_random_blocks * config.block_size = 704 with config.block_size = 64, config.num_random_blocks = 3. Changing attention type to 'original_full'...
+Traceback (most recent call last):
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/pydevd.py", line 1438, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/_pydev_imps/_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/trainer.py", line 290, in <module>
+    train_result = trainer.train(resume_from_checkpoint=checkpoint)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 1316, in train
+    tr_loss_step = self.training_step(model, inputs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 1849, in training_step
+    loss = self.compute_loss(model, inputs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 1881, in compute_loss
+    outputs = model(**inputs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/model.py", line 94, in forward
+    loss = self.loss_fct(logits.view(-1, self.num_labels), labels.view(-1, 1))
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/loss.py", line 723, in forward
+    reduction=self.reduction)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/torch/nn/functional.py", line 3160, in binary_cross_entropy_with_logits
+    raise ValueError("Target size ({}) must be the same as input size ({})".format(target.size(), input.size()))

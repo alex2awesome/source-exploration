@@ -1,0 +1,127 @@
+
+normalizer.cc(50) LOG(INFO) precompiled_charsmap is empty. use identity normalization.
+    6 training samples
+    6 validation samples
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.decoder.bias', 'cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+***** Running training *****
+  Num examples = 6
+  Num Epochs = 3
+  Instantaneous batch size per device = 1
+  Total train batch size (w. parallel, distributed & accumulation) = 1
+  Gradient Accumulation steps = 1
+  Total optimization steps = 18
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  0% 0/18 [00:00<?, ?it/s]Attention type 'block_sparse' is not possible if sequence_length: 162 <= num global tokens: 2 * config.block_size + min. num sliding tokens: 3 * config.block_size + config.num_random_blocks * config.block_size + additional buffer: config.num_random_blocks * config.block_size = 704 with config.block_size = 64, config.num_random_blocks = 3. Changing attention type to 'original_full'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+100% 18/18 [00:45<00:00,  2.12s/it]
+Training completed. Do not forget to share your model on huggingface.co/models =)
+100% 18/18 [00:45<00:00,  2.50s/it]
+Saving model checkpoint to .
+Trainer.model is not a `PreTrainedModel`, only saving its state dict.
+{'train_runtime': 45.0853, 'train_samples_per_second': 0.399, 'train_steps_per_second': 0.399, 'train_loss': 0.5505253473917643, 'epoch': 3.0}
+***** Running Evaluation *****
+  Num examples = 6
+  Batch size = 1
+  0% 0/6 [00:00<?, ?it/s]
+***** train metrics *****
+  epoch                    =        3.0
+  train_loss               =     0.5505
+  train_runtime            = 0:00:45.08
+  train_samples            =          6
+  train_samples_per_second =      0.399
+  train_steps_per_second   =      0.399
+
+
+100% 6/6 [00:02<00:00,  2.21it/s]
+Python 3.7.6 (default, Jan  8 2020, 13:42:34)
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.22.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.22.0
+Out[1]:
+EvalPrediction(predictions=array([[  -1.075813  ,   -0.9268959 ,   -0.79281867,   -0.88633955,
+          -1.8857539 , -100.        , -100.        , -100.        ,
+        -100.        ],
+       [  -1.1378574 ,   -1.0558867 ,   -1.0650682 ,   -1.5226816 ,
+          -1.9261346 ,   -1.1377767 , -100.        , -100.        ,
+        -100.        ],
+       [  -1.1831858 ,   -0.931364  ,   -1.2652838 , -100.        ,
+        -100.        , -100.        , -100.        , -100.        ,
+        -100.        ],
+       [  -1.1896664 ,   -1.1895717 ,   -1.8077263 ,   -1.1347959 ,
+          -1.0998064 ,   -1.4392889 ,   -1.8465238 ,   -2.0203772 ,
+          -1.4342142 ],
+       [  -1.4658449 ,   -1.4658008 ,   -1.2669113 ,   -1.644383  ,
+          -1.3517556 ,   -1.644383  ,   -1.049887  , -100.        ,
+        -100.        ],
+       [  -1.124716  ,   -1.0316491 ,   -1.244928  ,   -1.2282588 ,
+          -0.95083946,   -1.0018784 ,   -1.6909568 ,   -1.3240981 ,
+        -100.        ]], dtype=float32), label_ids=array([[   1.,    1.,    1.,    0.,    1., -100., -100., -100., -100.],
+       [   0.,    0.,    0.,    0.,    0.,    0., -100., -100., -100.],
+       [   0.,    0.,    0., -100., -100., -100., -100., -100., -100.],
+       [   1.,    1.,    1.,    1.,    0.,    1.,    1.,    0.,    1.],
+       [   0.,    1.,    1.,    1.,    1.,    0.,    1., -100., -100.],
+       [   0.,    0.,    0.,    0.,    0.,    0.,    0.,    0., -100.]]))
+Out[2]:
+array([[  -1.075813  ,   -0.9268959 ,   -0.79281867,   -0.88633955,
+          -1.8857539 , -100.        , -100.        , -100.        ,
+        -100.        ],
+       [  -1.1378574 ,   -1.0558867 ,   -1.0650682 ,   -1.5226816 ,
+          -1.9261346 ,   -1.1377767 , -100.        , -100.        ,
+        -100.        ],
+       [  -1.1831858 ,   -0.931364  ,   -1.2652838 , -100.        ,
+        -100.        , -100.        , -100.        , -100.        ,
+        -100.        ],
+       [  -1.1896664 ,   -1.1895717 ,   -1.8077263 ,   -1.1347959 ,
+          -1.0998064 ,   -1.4392889 ,   -1.8465238 ,   -2.0203772 ,
+          -1.4342142 ],
+       [  -1.4658449 ,   -1.4658008 ,   -1.2669113 ,   -1.644383  ,
+          -1.3517556 ,   -1.644383  ,   -1.049887  , -100.        ,
+        -100.        ],
+       [  -1.124716  ,   -1.0316491 ,   -1.244928  ,   -1.2282588 ,
+          -0.95083946,   -1.0018784 ,   -1.6909568 ,   -1.3240981 ,
+100% 6/6 [00:02<00:00,  2.21it/s]Traceback (most recent call last):
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3437, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "<ipython-input-3-e3f43799ab7c>", line 1, in <module>
+    logits.view(1, -1)
+ValueError: Type must be a sub-type of ndarray type
+Out[4]:
+array([  -1.075813  ,   -0.9268959 ,   -0.79281867,   -0.88633955,
+         -1.8857539 , -100.        , -100.        , -100.        ,
+       -100.        ,   -1.1378574 ,   -1.0558867 ,   -1.0650682 ,
+         -1.5226816 ,   -1.9261346 ,   -1.1377767 , -100.        ,
+       -100.        , -100.        ,   -1.1831858 ,   -0.931364  ,
+         -1.2652838 , -100.        , -100.        , -100.        ,
+       -100.        , -100.        , -100.        ,   -1.1896664 ,
+         -1.1895717 ,   -1.8077263 ,   -1.1347959 ,   -1.0998064 ,
+         -1.4392889 ,   -1.8465238 ,   -2.0203772 ,   -1.4342142 ,
+         -1.4658449 ,   -1.4658008 ,   -1.2669113 ,   -1.644383  ,
+         -1.3517556 ,   -1.644383  ,   -1.049887  , -100.        ,
+       -100.        ,   -1.124716  ,   -1.0316491 ,   -1.244928  ,
+         -1.2282588 ,   -0.95083946,   -1.0018784 ,   -1.6909568 ,
+         -1.3240981 , -100.        ], dtype=float32)
+Out[6]:
+array([-1.075813  , -0.9268959 , -0.79281867, -0.88633955, -1.8857539 ,
+       -1.1378574 , -1.0558867 , -1.0650682 , -1.5226816 , -1.9261346 ,
+       -1.1377767 , -1.1831858 , -0.931364  , -1.2652838 , -1.1896664 ,
+       -1.1895717 , -1.8077263 , -1.1347959 , -1.0998064 , -1.4392889 ,
+       -1.8465238 , -2.0203772 , -1.4342142 , -1.4658449 , -1.4658008 ,
+       -1.2669113 , -1.644383  , -1.3517556 , -1.644383  , -1.049887  ,
+       -1.124716  , -1.0316491 , -1.244928  , -1.2282588 , -0.95083946,
+       -1.0018784 , -1.6909568 , -1.3240981 ], dtype=float32)

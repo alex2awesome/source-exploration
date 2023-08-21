@@ -28,7 +28,7 @@ then
   frozen_layers="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22"
 else
   pretrained_model='roberta-base-expanded-embeddings'
-  frozen_layers="0 1 2 3 4 5 6 7 8 9"
+  frozen_layers="0 1 2 3 4 5 6 7 8"
 fi
 ##
 
@@ -53,7 +53,7 @@ katie compute run \
         --batch_size 1 \
         --num_train_epochs 3 \
         --train_data_file data/our-annotated-data__stage-2.tsv \
-        --notes "Stage 2: Quote Attribution + Detection. Classification. Our dataset only." \
+          --notes "Stage 2: Quote Attribution + Detection. Classification. Method 2. Our full dataset only. No train on None." \
         --freeze_encoder_layers $frozen_layers \
         --sentence_embedding_method 'attention' \
         --dropout .1 \
@@ -62,7 +62,9 @@ katie compute run \
         --spacy_model_file spacy/en_core_web_lg \
         --downsample_negative_data 1 \
         --shuffle_data \
-        --num_documents 10
+        --num_contextual_layers 0 \
+
+
 
 
 

@@ -18,6 +18,7 @@ import itertools
 import spacy
 import random
 from tqdm.auto import tqdm
+import copy
 
 try: # version 3.0.2
     from transformers.tokenization_gpt2 import AddedToken
@@ -128,6 +129,10 @@ class BaseFineTuningDataModule(pl.LightningDataModule):
         if not os.path.exists(self.data_fp):
             raise FileNotFoundError('Data files... make sure to download them from S3!')
 
+    def tensorfy_and_pad(self, list_of_lists):
+        tensors = list(map(torch.tensor, list_of_lists))
+        return pad_sequence(tensors, batch_first=True)[:, :max_num_tokens_in_doc]
+
     def setup(self, stage=None, split=None):
         """
             Download and split the dataset before training/testing.
@@ -211,6 +216,33 @@ class BaseFineTuningDataModule(pl.LightningDataModule):
         return Dataset(X, y, split=split)
 
 
+class SanityCheckClassificationDataset(BaseFineTuningDataModule):
+    """Processes a different sentence-level classification dataset."""
+
+    def process_row(self, text, label, has_label=True):
+        x_seq = self.tokenizer.encode(text)
+        x_seq = torch.tensor(x_seq)
+        y_seq = torch.tensor(label)
+        return x_seq, y_seq
+
+    def collate_fn(self, dataset):
+        """
+        Takes in an instance of Torch Dataset (or a subclassed instance).
+        Expects dataset[i]['X'] to be a list of list of sentences
+            and dataset[i]['y'] to be a list of list of labels.
+        Returns dict with key:
+             input_ids: list of tensors of len # docs where each tensor is an entire document.
+             labels: same as `input_ids`, for language modeling.
+        """
+        columns = transpose_dict(dataset)
+        X_batch = list(map(lambda sents: torch.cat(sents), columns["input_ids"]))
+        Y_batch = list(map(lambda labels: torch.cat(labels), columns["labels"]))
+        return {
+            "input_ids": torch.cat(X_batch).unsqueeze(dim=0),
+            "labels": torch.cat(Y_batch).unsqueeze(dim=0)
+        }
+
+
 class SourceConditionalGenerationDataset(BaseFineTuningDataModule):
     def __init__(
             self, data_fp, model_type, max_length_seq,
@@ -270,6 +302,20 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
         else:
             self.nlp = None
 
+    def core_processing(self, sorted_doc, d_idx, split, blank_toks_by_sent, doc_tok_by_word, all_doc_tokens, sent_lens):
+        source_cand_df = get_source_candidates(sorted_doc, self.nlp)
+        annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp, split=split)
+        source_ind_list, sent_ind_list = generate_indicator_lists(
+            blank_toks_by_sent, doc_tok_by_word, source_cand_df, sorted_doc
+        )
+        source_cand_df = build_source_lookup_table(source_cand_df, source_ind_list)
+        return generate_training_data(
+            sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
+            self.config.downsample_negative_data, doc_idx=d_idx,
+            update_w_doc_tokens=self.config.local, sent_lens=sent_lens,
+            include_nones_as_positives=self.config.include_nones_as_positives
+        )
+
     def get_dataset(self, use_split=None):
         """
         Read in dataset as a list of "label \t text" entries.
@@ -304,22 +350,14 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
                 continue
 
             sorted_doc[0][0] = 'journalist passive-voice ' + sorted_doc[0][0]
-            doc_tok_by_word, doc_tok_by_sent, blank_toks_by_sent, all_doc_tokens = cache_doc_tokens(sorted_doc, self.tokenizer, self.nlp)
-            sent_lens = list(map(len, doc_tok_by_sent))
+            toks_by_word, toks_by_sent, blanks_by_sent, all_toks = cache_doc_tokens(sorted_doc, self.tokenizer, self.nlp)
+            s_lens = list(map(len, toks_by_sent))
             if self.config.num_documents is not None:
                 if i > self.config.num_documents:
                     break
                 i += 1
 
-            source_cand_df = get_source_candidates(sorted_doc, self.nlp)
-            annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp, split=s)
-            source_ind_list, sent_ind_list = generate_indicator_lists(blank_toks_by_sent, doc_tok_by_word, source_cand_df, sorted_doc)
-            source_cand_df = build_source_lookup_table(source_cand_df, source_ind_list)
-            training_data = generate_training_data(
-                sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
-                self.config.downsample_negative_data, doc_idx=doc_idx,
-                update_w_doc_tokens=self.config.local, sent_lens=sent_lens
-            )
+            training_data = self.core_processing(sorted_doc, doc_idx, s, blanks_by_sent, toks_by_word, all_toks, s_lens)
 
             # append processed data
             data_chunk.extend(training_data)
@@ -328,10 +366,6 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
             split.extend([s] * len(training_data))
 
         return SourceDataset(input=data_chunk, split=split)
-
-    def tensorfy_and_pad(self, list_of_lists):
-        tensors = list(map(torch.tensor, list_of_lists))
-        return pad_sequence(tensors, batch_first=True)[:, :max_num_tokens_in_doc]
 
     def collate_fn(self, dataset):
         """
@@ -364,6 +398,82 @@ class SourceClassificationDataModule(BaseFineTuningDataModule):
         }
 
 
+class SourceClassificationExtraTokens(SourceClassificationDataModule):
+    """Append extra tokens to the input to signify sources and sentences."""
+
+    def get_tokens_from_lists(self, indicator_list, token_list):
+        toks = list(filter(lambda x: x[0] == 1, zip(indicator_list, token_list)))
+        return list(map(lambda x: x[1], toks))
+
+    def augment_training_data(self, vanilla_training_data):
+        output_data = []
+        sep_token_chunk = [self.tokenizer.eos_token_id] * 5
+        for vanilla_datum in vanilla_training_data:
+            output_datum = {}
+            output_datum['label'] = vanilla_datum['label']
+            output_datum['sent_lens'] = vanilla_datum['sent_lens']
+            source_inds = vanilla_datum['source_ind_tokens']
+            sent_inds = vanilla_datum['sentence_ind_tokens']
+            doc_toks = copy.copy(vanilla_datum['doc_tokens'])
+
+            #
+            source_toks = self.get_tokens_from_lists(source_inds, doc_toks)
+            sent_toks = self.get_tokens_from_lists(sent_inds, doc_toks)
+            new_doc_toks = doc_toks + sep_token_chunk + source_toks + sep_token_chunk + sent_toks
+            len_added = len(sep_token_chunk) + len(source_toks) + len(sep_token_chunk) + len(sent_toks)
+
+            new_source_inds = source_inds + [0] * len_added
+            new_sent_inds = sent_inds + [0] * len_added
+
+            output_datum['doc_tokens'] = new_doc_toks
+            output_datum['source_ind_tokens'] = new_source_inds
+            output_datum['sentence_ind_tokens'] = new_sent_inds
+            assert len(new_doc_toks) == len(new_source_inds)
+            assert len(new_doc_toks) == len(new_sent_inds)
+
+            output_data.append(output_datum)
+        return output_data
+
+    def core_processing(self, sorted_doc, d_idx, split, blank_toks_by_sent, doc_tok_by_word, all_doc_tokens, sent_lens):
+        source_cand_df = get_source_candidates(sorted_doc, self.nlp)
+        annot_to_cand_mapper = reconcile_candidates_and_annotations(source_cand_df, sorted_doc, self.nlp, split=split)
+        source_ind_list, sent_ind_list = generate_indicator_lists(
+            blank_toks_by_sent, doc_tok_by_word, source_cand_df, sorted_doc
+        )
+        source_cand_df = build_source_lookup_table(source_cand_df, source_ind_list)
+        vanilla_training_data = generate_training_data(
+            sorted_doc, annot_to_cand_mapper, source_cand_df, sent_ind_list, all_doc_tokens,
+            self.config.downsample_negative_data, doc_idx=d_idx,
+            update_w_doc_tokens=self.config.local, sent_lens=sent_lens,
+            include_nones_as_positives=self.config.include_nones_as_positives
+        )
+
+        return self.augment_training_data(vanilla_training_data)
+
+
+class EasiestSanityCheckDataModule(SourceClassificationDataModule):
+    def __init__(self, data_fp, *args, **kwargs):
+        super().__init__(**format_local_vars(locals()))
+
+    def get_dataset(self, use_split=None):
+        training_data = []
+        with open(self.data_fp) as f:
+            csv_reader = csv.reader(f, delimiter="\t")
+            csv_data = list(csv_reader)
+            for X, y in csv_data:
+                doc_tokens = self.tokenizer.encode(X)
+                training_data.append({
+                    'doc_tokens': doc_tokens,
+                    'source_ind_tokens': [1] * len(doc_tokens),
+                    'sentence_ind_tokens': [1] * len(doc_tokens),
+                    'sent_lens': [len(doc_tokens)],
+                    'label': int(y)
+                })
+
+        split = np.random.choice(['train', 'test'], size=len(training_data), p=[self.split_perc, 1-self.split_perc])
+        return SourceDataset(input=training_data, split=split)
+
+
 class SourceQADataModule(BaseFineTuningDataModule):
     def __init__(
             self, data_fp, model_type, max_length_seq,
@@ -377,13 +487,9 @@ class SourceQADataModule(BaseFineTuningDataModule):
         else:
             self.nlp = None
 
-    def get_dataset(self, use_split=None):
-        """
-        Read in dataset as a list of "label \t text" entries.
-        Output flat lists of X = [sent_1, sent_2, ...], y = [label_1, label_2]
-        """
+    def process_one_csv_file(self, filepath, num_documents=None):
         split, data_chunk = [], []
-        with open(self.data_fp) as f:
+        with open(filepath) as f:
             csv_reader = csv.reader(f, delimiter="\t")
             csv_data = list(csv_reader)
 
@@ -393,6 +499,7 @@ class SourceQADataModule(BaseFineTuningDataModule):
             sorted_doc = list(map(lambda x: [x[0].strip(), x[1], x[2], x[3]], sorted_doc))
             grouped.append((doc_idx, sorted_doc))
 
+        n_total_docs = num_documents or len(grouped)
         if self.config.shuffle_data:
             random.shuffle(grouped)
 
@@ -408,8 +515,8 @@ class SourceQADataModule(BaseFineTuningDataModule):
                 continue
 
             # check to see if we're only running this on a small sample
-            if self.config.num_documents is not None:
-                if i > self.config.num_documents:
+            if num_documents is not None:
+                if i > num_documents:
                     break
                 i += 1
 
@@ -428,7 +535,7 @@ class SourceQADataModule(BaseFineTuningDataModule):
 
             for source_heads, source_sentences in itertools.groupby(doc_to_group, key=lambda x: x[1]):
                 source_sentences = list(source_sentences)
-                if (not self.config.train_on_none) and (source_heads == 'None'):
+                if (not self.config.include_nones_as_positives) and (source_heads == 'None'):
                     continue
 
                 for source_head in source_heads.split(';'):
@@ -442,7 +549,25 @@ class SourceQADataModule(BaseFineTuningDataModule):
                     training_data.extend(training_chunks)
                     split.extend([s] * len(source_sentences))
 
-        return SourceDataset(input=training_data, split=split)
+        return training_data, split, n_total_docs
+
+    def get_dataset(self, use_split=None):
+        """
+        Read in dataset as a list of "label \t text" entries.
+        Output flat lists of X = [sent_1, sent_2, ...], y = [label_1, label_2]
+        """
+        all_training_data, all_splits, n_docs = self.process_one_csv_file(self.data_fp, self.config.num_documents)
+
+        if self.config.auxiliary_train_data_file is not None:
+            num_aux_docs = None
+            if self.config.auxiliary_train_dat_downsample is not None:
+                num_aux_docs = int(self.config.auxiliary_train_dat_downsample * n_docs)
+            aux_training_data, _, _ = self.process_one_csv_file(self.config.auxiliary_train_data_file, num_aux_docs)
+            aux_splits = ['train'] * len(aux_training_data)
+            all_training_data += aux_training_data
+            all_splits += aux_splits
+
+        return SourceDataset(input=all_training_data, split=all_splits)
 
     def tensorfy_and_pad(self, list_of_lists):
         tensors = list(map(torch.tensor, list_of_lists))

@@ -1,0 +1,90 @@
+2023-01-06 16:02:49,942 INFO    MainThread:99911 [internal.py:wandb_internal():89] W&B internal server running at pid: 99911, started at: 2023-01-06 16:02:49.942084
+2023-01-06 16:02:49,944 INFO    WriterThread:99911 [datastore.py:open_for_write():77] open: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/run-uu6ithgy.wandb
+2023-01-06 16:02:49,944 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: check_version
+2023-01-06 16:02:49,945 DEBUG   SenderThread:99911 [sender.py:send():185] send: header
+2023-01-06 16:02:49,945 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: check_version
+2023-01-06 16:02:50,023 DEBUG   SenderThread:99911 [sender.py:send():185] send: run
+2023-01-06 16:02:50,159 INFO    SenderThread:99911 [dir_watcher.py:__init__():169] watching files in: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files
+2023-01-06 16:02:50,159 INFO    SenderThread:99911 [sender.py:_start_run_threads():749] run started: uu6ithgy with start time 1673038967
+2023-01-06 16:02:50,160 DEBUG   SenderThread:99911 [sender.py:send():185] send: summary
+2023-01-06 16:02:50,160 INFO    SenderThread:99911 [sender.py:_save_file():879] saving file wandb-summary.json with policy end
+2023-01-06 16:02:50,162 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: run_start
+2023-01-06 16:02:51,390 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/wandb-summary.json
+2023-01-06 16:02:58,735 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:02:59,740 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:02:59,865 DEBUG   HandlerThread:99911 [meta.py:__init__():40] meta init
+2023-01-06 16:02:59,865 DEBUG   HandlerThread:99911 [meta.py:__init__():54] meta init done
+2023-01-06 16:02:59,865 DEBUG   HandlerThread:99911 [meta.py:probe():211] probe
+2023-01-06 16:02:59,867 DEBUG   HandlerThread:99911 [meta.py:_setup_git():201] setup git
+2023-01-06 16:03:00,010 DEBUG   HandlerThread:99911 [meta.py:_setup_git():208] setup git done
+2023-01-06 16:03:00,013 DEBUG   HandlerThread:99911 [meta.py:_save_pip():58] save pip
+2023-01-06 16:03:00,019 DEBUG   HandlerThread:99911 [meta.py:_save_pip():72] save pip done
+2023-01-06 16:03:00,020 DEBUG   HandlerThread:99911 [meta.py:_save_conda():79] save conda
+2023-01-06 16:03:00,752 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/requirements.txt
+2023-01-06 16:03:00,753 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/conda-environment.yaml
+2023-01-06 16:03:03,762 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:03:10,702 DEBUG   HandlerThread:99911 [meta.py:_save_conda():87] save conda done
+2023-01-06 16:03:10,702 DEBUG   HandlerThread:99911 [meta.py:probe():249] probe done
+2023-01-06 16:03:10,722 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:03:10,723 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:03:10,788 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_created():217] file/dir created: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/wandb-metadata.json
+2023-01-06 16:03:10,841 DEBUG   SenderThread:99911 [sender.py:send():185] send: config
+2023-01-06 16:03:10,845 DEBUG   SenderThread:99911 [sender.py:send():185] send: metric
+2023-01-06 16:03:10,846 DEBUG   SenderThread:99911 [sender.py:send():185] send: metric
+2023-01-06 16:03:10,846 WARNING SenderThread:99911 [sender.py:send_metric():837] Seen metric with glob (shouldnt happen)
+2023-01-06 16:03:10,846 DEBUG   SenderThread:99911 [sender.py:send():185] send: files
+2023-01-06 16:03:10,846 INFO    SenderThread:99911 [sender.py:_save_file():879] saving file wandb-metadata.json with policy now
+2023-01-06 16:03:11,265 INFO    Thread-11 :99911 [upload_job.py:push():137] Uploaded file /var/folders/89/6dsq1ymj63x009t6wpt25f9h0000gp/T/tmp49ie1mgmwandb/15kgtiv1-wandb-metadata.json
+2023-01-06 16:03:11,791 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:03:17,808 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:03:20,819 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/config.yaml
+2023-01-06 16:03:23,831 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:03:25,848 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:03:25,848 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:03:28,679 DEBUG   SenderThread:99911 [sender.py:send():185] send: stats
+2023-01-06 16:03:37,875 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:03:40,945 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:03:40,946 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:03:41,890 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:03:56,040 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:03:56,040 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:03:59,527 DEBUG   SenderThread:99911 [sender.py:send():185] send: stats
+2023-01-06 16:04:11,143 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:04:11,145 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:04:26,237 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:04:26,237 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:04:30,371 DEBUG   SenderThread:99911 [sender.py:send():185] send: stats
+2023-01-06 16:04:40,112 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:04:41,344 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:04:41,345 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:04:56,480 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:04:56,481 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:05:01,270 DEBUG   SenderThread:99911 [sender.py:send():185] send: stats
+2023-01-06 16:05:11,597 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:05:11,597 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:05:26,933 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:05:26,934 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:05:32,107 DEBUG   SenderThread:99911 [sender.py:send():185] send: stats
+2023-01-06 16:05:42,016 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:05:42,017 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:05:57,855 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:05:57,855 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:06:02,859 DEBUG   SenderThread:99911 [sender.py:send():185] send: stats
+2023-01-06 16:06:12,956 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:06:12,957 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:06:28,047 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:06:28,048 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:06:33,701 DEBUG   SenderThread:99911 [sender.py:send():185] send: stats
+2023-01-06 16:06:43,220 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:06:43,220 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:06:45,527 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:06:58,349 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:06:58,350 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:07:04,515 DEBUG   SenderThread:99911 [sender.py:send():185] send: stats
+2023-01-06 16:07:13,449 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:07:13,450 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:07:17,641 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:07:25,659 INFO    Thread-8  :99911 [dir_watcher.py:_on_file_modified():230] file/dir modified: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_160246-uu6ithgy/files/output.log
+2023-01-06 16:07:28,535 DEBUG   HandlerThread:99911 [handler.py:handle_request():126] handle_request: stop_status
+2023-01-06 16:07:28,536 DEBUG   SenderThread:99911 [sender.py:send_request():199] send_request: stop_status
+2023-01-06 16:07:35,117 WARNING MainThread:99911 [internal.py:wandb_internal():145] Internal process interrupt: 1

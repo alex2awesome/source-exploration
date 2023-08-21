@@ -1,0 +1,59 @@
+
+normalizer.cc(50) LOG(INFO) precompiled_charsmap is empty. use identity normalization.
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.predictions.decoder.bias']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+***** Running training *****
+  Num examples = 6
+  Num Epochs = 3
+  Instantaneous batch size per device = 1
+  Total train batch size (w. parallel, distributed & accumulation) = 1
+  Gradient Accumulation steps = 1
+  Total optimization steps = 18
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  0% 0/18 [00:00<?, ?it/s]Attention type 'block_sparse' is not possible if sequence_length: 162 <= num global tokens: 2 * config.block_size + min. num sliding tokens: 3 * config.block_size + config.num_random_blocks * config.block_size + additional buffer: config.num_random_blocks * config.block_size = 704 with config.block_size = 64, config.num_random_blocks = 3. Changing attention type to 'original_full'...
+    6 training samples
+    6 validation samples
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 89% 16/18 [00:36<00:04,  2.31s/it]
+100% 18/18 [00:39<00:00,  1.86s/it]
+Training completed. Do not forget to share your model on huggingface.co/models =)
+100% 18/18 [00:39<00:00,  2.17s/it]
+Saving model checkpoint to .
+Trainer.model is not a `PreTrainedModel`, only saving its state dict.
+***** Running Evaluation *****
+  Num examples = 6
+  Batch size = 1
+***** train metrics *****
+  epoch                    =        3.0
+  train_loss               =     0.5213
+  train_runtime            = 0:00:39.12
+  train_samples            =          6
+  train_samples_per_second =       0.46
+  train_steps_per_second   =       0.46
+*** Evaluate ***
+
+
+
+100% 6/6 [00:09<00:00,  1.64s/it]
+***** eval metrics *****
+  epoch                   =        3.0
+  eval_f1                 =        0.0
+  eval_loss               =      0.725
+  eval_runtime            = 0:00:10.19
+  eval_samples            =          6
+  eval_samples_per_second =      0.588
+  eval_steps_per_second   =      0.588
+  perplexity              =     2.0648

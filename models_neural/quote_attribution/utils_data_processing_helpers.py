@@ -253,7 +253,6 @@ def generate_training_data(
     for _, annotated_source, sent_idx, _ in input_doc:
         if (not include_nones_as_positives) and (annotated_source == 'None'):
             continue
-
         candidate = annot_to_cand_mapper[annotated_source]
         source_ind_tokens = source_cand_df.loc[candidate]['source_tokenized']
         sentence_ind_tokens = sentence_indicator_output[int(sent_idx)]
@@ -277,9 +276,9 @@ def generate_training_data(
 
     # generate false-labeled data from all other sentence/candidate pairs
     for c in candidate_set:
-        if (not include_nones_as_positives) and (annotated_source == 'None'):
-            continue
         for _, annotated_source, sent_idx, _ in input_doc:
+            if (not include_nones_as_positives) and (annotated_source == 'None'):
+                continue
             if (c, sent_idx) not in true_pairs:
                 source_ind_tokens = source_cand_df.loc[c]['source_tokenized']
                 sentence_ind_tokens = sentence_indicator_output[int(sent_idx)]

@@ -3,8 +3,10 @@ from torch import nn
 from models_neural.src.layers_sentence_embedding import PretrainedModelLoader, SentenceEmbeddingsLayer
 from models_neural.src.utils_general import get_config
 from models_neural.src.layers_head import HeadLayerBinaryFF, HeadLayerBinaryLSTM, HeadLayerBinaryTransformer
-from models_neural.src.utils_lightning import LightningMixin, LightningLMSteps, LightningOptimizer, LightningQASteps
+from models_neural.src.utils_lightning import LightningOptimizer
+from models_neural.quote_attribution.utils_lightning import LightningClassificationSteps, LightningQASteps
 from torch.nn import CrossEntropyLoss
+
 
 class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
     def __init__(self, config, *args, **kwargs):
@@ -35,36 +37,70 @@ class SourceSentenceEmbeddingLayer(SentenceEmbeddingsLayer):
         source_type_embs = self.person_embedding(target_person_ids)
         sentence_type_embs = self.target_sentence_embedding(target_sentence_ids)
         word_embs = word_embs + source_type_embs + sentence_type_embs
-
         return self.get_sentence_embed_helper(word_embs, attention_mask)
 
 
-class SourceClassifier(LightningOptimizer, LightningQASteps):
+class BinaryClassificationHead(nn.Module):
+    def __init__(self, config, *args, **kwargs):
+        super().__init__()
+        self.config = config
+        # for FFNN
+        self.embedding_to_hidden = nn.Linear(self.config.embedding_dim, self.config.hidden_dim, bias=False)
+
+        self.pred = nn.Linear(self.config.hidden_dim, self.config.num_output_tags)
+        self.drop = nn.Dropout(self.config.dropout)
+        self.criterion = nn.BCEWithLogitsLoss(reduction='none')
+        self._init_weights()
+
+    def _init_weights(self):
+        nn.init.xavier_uniform_(self.embedding_to_hidden.state_dict()['weight'])
+        nn.init.xavier_uniform_(self.pred.state_dict()['weight'])
+        self.pred.bias.data.fill_(0)
+
+    def get_contextualized_embeddings(self, cls_embeddings, *args, **kwargs):
+        """Determines whether we contextualize the sentence-level embeddings with an LSTM or Transformer layer, or
+        whether we just pass through a FFNN."""
+        hidden_output = self.embedding_to_hidden(cls_embeddings)
+        return hidden_output
+
+    def calculate_loss(self, preds, labels):
+        if labels.shape != preds.shape:
+            labels = labels.reshape_as(preds)
+        loss = self.criterion(preds, labels)
+        return loss
+
+    def classification(self, hidden_embs, labels=None):
+        prediction = self.pred(self.drop(torch.tanh(hidden_embs)))  # pred = ( batch_size x num_labels)
+        if labels is None:
+            return None, prediction
+
+        loss = self.calculate_loss(prediction, labels)
+        loss = torch.mean(loss)
+        return loss, prediction, labels
+
+    def forward(self, sent_embs, labels):
+        sent_embs = self.get_contextualized_embeddings(sent_embs)
+        return self.classification(sent_embs, labels)
+
+
+class SourceClassifier(LightningOptimizer, LightningClassificationSteps):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.config = get_config(kwargs=kwargs)
         self.transformer = SourceSentenceEmbeddingLayer(*args, **kwargs)
-        self.head = self.get_head_layer()(*args, **kwargs)
+        self.head = self.get_head_layer() # (*args, **kwargs)
 
     def get_head_layer(self):
-        if self.config.num_contextual_layers == 0:
-            return HeadLayerBinaryFF
-        if self.config.context_layer == 'lstm':
-            return HeadLayerBinaryLSTM
-        elif self.config.context_layer == 'gpt2-sentence':
-            return HeadLayerBinaryTransformer
+        # if self.config.num_contextual_layers == 0:
+        #     return HeadLayerBinaryFF
+        # if self.config.context_layer == 'lstm':
+        #     return HeadLayerBinaryLSTM
+        # elif self.config.context_layer == 'gpt2-sentence':
+        #     return HeadLayerBinaryTransformer
+        return BinaryClassificationHead(self.config)
 
-    def forward(
-            self,
-            input_ids,
-            target_sentence_ids,
-            target_person_ids,
-            labels=None,
-            attention_mask=None,
-            input_lens=None,
-            *args,
-            **kwargs
-    ):
+    def forward(self, input_ids, target_sentence_ids, target_person_ids,
+                labels=None, attention_mask=None, input_lens=None, *args, **kwargs):
         """
         Step that's shared between training loop and validation loop. Contains sequence-specific processing,
         so we're keeping it in the child class.
@@ -86,7 +122,62 @@ class SourceClassifier(LightningOptimizer, LightningQASteps):
         """
         sent_embeddings = self.transformer(
             input_ids, target_sentence_ids, target_person_ids, attention_mask, sent_lens=input_lens)
-        return self.head.classification(sent_embeddings, labels)
+        return self.head(sent_embeddings, labels)
+
+
+class SanityCheckClassifier(LightningOptimizer, LightningClassificationSteps):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.config = get_config(kwargs=kwargs)
+        self.transformer = SentenceEmbeddingsLayer(*args, **kwargs)
+        self.head = BinaryClassificationHead(self.config)
+
+    def forward(self, input_ids, labels=None, attention_mask=None, input_lens=None, *args, **kwargs):
+        sent_embeddings = self.transformer.get_sentence_embedding(input_ids, attention_mask)
+        return self.head(sent_embeddings, labels)
+
+
+class SourceClassifierWithSourceSentVecs(SourceClassifier):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.head = self.get_head_layer()(hidden_dim=self.config.hidden_dim * 3, *args, **kwargs)
+
+    def get_tokens_from_input_tensors(self, token_tensor, selector_tensor):
+        idx = (selector_tensor == 1).nonzero()
+        return token_tensor[:, idx[:, 1]]
+        # return self.dim2_index_select(token_tensor, idx)
+
+    # def dim2_index_select(self, vec, idx):
+    #     idx_0, idx_1 = idx.T
+    #     return vec[idx_0, idx_1]
+
+    def _get_sentence_embeddings(self, tokens, attention_mask):
+        word_embs = self.transformer._get_word_embeddings(tokens, attention_mask=attention_mask)
+        return self.transformer.get_sentence_embed_helper(word_embs, attention_mask)
+
+    def forward(
+            self,
+            input_ids,
+            target_sentence_ids,
+            target_person_ids,
+            labels=None,
+            attention_mask=None,
+            input_lens=None,
+            *args,
+            **kwargs
+    ):
+        # todo: this method will fail if batch_size > 1.
+        orig_sent_embs = self.transformer(
+            input_ids, target_sentence_ids, target_person_ids, attention_mask, sent_lens=input_lens)
+        source_toks = self.get_tokens_from_input_tensors(input_ids, target_person_ids)
+        if source_toks.shape[1] == 0:
+            source_embs = torch.zeros_like(orig_sent_embs, device=orig_sent_embs.device)
+        else:
+            source_embs = self._get_sentence_embeddings(source_toks, attention_mask=None)
+        sent_toks = self.get_tokens_from_input_tensors(input_ids, target_sentence_ids)
+        sent_embs = self._get_sentence_embeddings(sent_toks, attention_mask=None)
+        all_embs = torch.hstack((orig_sent_embs, source_embs, sent_embs))
+        return self.head.classification(all_embs, labels)
 
 
 class SourceQA(LightningOptimizer, LightningQASteps):
@@ -128,6 +219,7 @@ class SourceQA(LightningOptimizer, LightningQASteps):
                 start_positions = start_positions.squeeze(-1)
             if len(end_positions.size()) > 1:
                 end_positions = end_positions.squeeze(-1)
+
             # sometimes the start/end positions are outside our model inputs, we ignore these terms
             ignored_index = start_logits.size(1)
             start_positions = start_positions.clamp(0, ignored_index)

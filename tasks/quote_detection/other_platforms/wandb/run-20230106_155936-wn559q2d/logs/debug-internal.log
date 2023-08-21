@@ -1,0 +1,11 @@
+2023-01-06 15:59:40,734 INFO    MainThread:99722 [internal.py:wandb_internal():89] W&B internal server running at pid: 99722, started at: 2023-01-06 15:59:40.734055
+2023-01-06 15:59:40,736 INFO    WriterThread:99722 [datastore.py:open_for_write():77] open: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_155936-wn559q2d/run-wn559q2d.wandb
+2023-01-06 15:59:40,736 DEBUG   HandlerThread:99722 [handler.py:handle_request():126] handle_request: check_version
+2023-01-06 15:59:40,738 DEBUG   SenderThread:99722 [sender.py:send():185] send: header
+2023-01-06 15:59:40,738 DEBUG   SenderThread:99722 [sender.py:send_request():199] send_request: check_version
+2023-01-06 15:59:40,848 DEBUG   SenderThread:99722 [sender.py:send():185] send: run
+2023-01-06 15:59:41,083 INFO    SenderThread:99722 [dir_watcher.py:__init__():169] watching files in: /Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/wandb/run-20230106_155936-wn559q2d/files
+2023-01-06 15:59:41,084 INFO    SenderThread:99722 [sender.py:_start_run_threads():749] run started: wn559q2d with start time 1673038778
+2023-01-06 15:59:41,084 DEBUG   SenderThread:99722 [sender.py:send():185] send: summary
+2023-01-06 15:59:41,086 INFO    SenderThread:99722 [sender.py:_save_file():879] saving file wandb-summary.json with policy end
+2023-01-06 15:59:41,089 DEBUG   HandlerThread:99722 [handler.py:handle_request():126] handle_request: run_start

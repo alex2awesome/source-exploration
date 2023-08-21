@@ -1,0 +1,391 @@
+
+normalizer.cc(50) LOG(INFO) precompiled_charsmap is empty. use identity normalization.
+    6 training samples
+    6 validation samples
+Some weights of the model checkpoint at google/bigbird-roberta-base were not used when initializing BigBirdModel: ['cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.bias', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BigBirdModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BigBirdModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+***** Running training *****
+  Num examples = 6
+  Num Epochs = 3
+  Instantaneous batch size per device = 1
+  Total train batch size (w. parallel, distributed & accumulation) = 1
+  Gradient Accumulation steps = 1
+  Total optimization steps = 18
+Automatic Weights & Biases logging enabled, to disable set os.environ["WANDB_DISABLED"] = "true"
+  0% 0/18 [00:00<?, ?it/s]Attention type 'block_sparse' is not possible if sequence_length: 68 <= num global tokens: 2 * config.block_size + min. num sliding tokens: 3 * config.block_size + config.num_random_blocks * config.block_size + additional buffer: config.num_random_blocks * config.block_size = 704 with config.block_size = 64, config.num_random_blocks = 3. Changing attention type to 'original_full'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 94% 17/18 [00:27<00:01,  1.45s/it]
+{'train_runtime': 29.01, 'train_samples_per_second': 0.62, 'train_steps_per_second': 0.62, 'train_loss': 0.5098454157511393, 'epoch': 3.0}
+***** train metrics *****
+  epoch                    =        3.0
+  train_loss               =     0.5098
+  train_runtime            = 0:00:29.01
+  train_samples            =          6
+  train_samples_per_second =       0.62
+  train_steps_per_second   =       0.62
+100% 18/18 [00:28<00:00,  1.47s/it]
+Training completed. Do not forget to share your model on huggingface.co/models =)
+100% 18/18 [00:28<00:00,  1.61s/it]
+Saving model checkpoint to .
+Trainer.model is not a `PreTrainedModel`, only saving its state dict.
+***** Running Evaluation *****
+  Num examples = 6
+  Batch size = 1
+
+Downloading builder script: 100% 6.77k/6.77k [00:00<00:00, 3.72MB/s]
+Traceback (most recent call last):.00/6.77k [00:00<?, ?B/s]
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/pydevd.py", line 1438, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "/Applications/PyCharm.app/Contents/plugins/python/helpers/pydev/_pydev_imps/_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/trainer.py", line 309, in <module>
+    metrics = trainer.evaluate()
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2120, in evaluate
+    metric_key_prefix=metric_key_prefix,
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/transformers/trainer.py", line 2354, in evaluation_loop
+    metrics = self.compute_metrics(EvalPrediction(predictions=all_preds, label_ids=all_labels))
+  File "/Users/alex/Projects/usc-research/source-exploration/tasks/quote_detection/other_platforms/trainer.py", line 159, in compute_metrics
+    return metric.compute(predictions=predictions, references=labels)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/evaluate/module.py", line 432, in compute
+    self.add_batch(**inputs)
+  File "/Users/alex/opt/anaconda3/lib/python3.7/site-packages/evaluate/module.py", line 512, in add_batch
+    raise ValueError(error_msg) from None
+ValueError: Predictions and/or references don't match the expected format.
+Expected format: {'predictions': Value(dtype='int32', id=None), 'references': Value(dtype='int32', id=None)},
+Input predictions: [0 0 0 0 0 0],
+Input references: [[1. 1. 1. 0.]
+ [0. 0. 0. 0.]
+ [0. 0. 0. 1.]
+ [1. 1. 1. 1.]
+ [0. 1. 1. 1.]
+ [0. 0. 0. 0.]]
+Python 3.7.6 (default, Jan  8 2020, 13:42:34)
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.22.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.22.0
+Out[1]: array([0, 0, 0, 0, 0, 0])
+Out[2]:
+array([[1., 1., 1., 0.],
+       [0., 0., 0., 0.],
+       [0., 0., 0., 1.],
+       [1., 1., 1., 1.],
+       [0., 1., 1., 1.],
+       [0., 0., 0., 0.]])
+Out[3]:
+array([[1., 1., 1., 0.],
+       [0., 0., 0., 0.],
+       [0., 0., 0., 1.],
+       [1., 1., 1., 1.],
+       [0., 1., 1., 1.],
+       [0., 0., 0., 0.]])
+Out[4]:
+array([[-2.7509336 ],
+       [-1.2140073 ],
+       [-0.43552876],
+       [-1.037529  ],
+       [-3.0977473 ],
+       [-2.1253715 ]], dtype=float32)
+Out[5]:
+array([[1., 1., 1., 0.],
+       [0., 0., 0., 0.],
+       [0., 0., 0., 1.],
+       [1., 1., 1., 1.],
+       [0., 1., 1., 1.],
+       [0., 0., 0., 0.]])
+Out[6]: tensor(0.1540, dtype=torch.float64)
+Out[7]:
+array([[-2.7509336 ],
+       [-1.2140073 ],
+       [-0.43552876],
+       [-1.037529  ],
+       [-3.0977473 ],
+       [-2.1253715 ],
+       [-0.9056298 ],
+       [-1.8679495 ],
+       [-2.4679003 ],
+       [-0.6293455 ],
+       [-1.1220632 ],
+       [-1.11329   ],
+       [-2.687889  ],
+       [-0.9366147 ],
+       [-1.6165721 ],
+       [-0.9456112 ],
+       [-2.793642  ],
+       [-0.17879999],
+       [-1.1138276 ],
+       [-1.202135  ],
+       [-2.8021073 ],
+       [-2.05043   ],
+       [-1.2845863 ],
+       [-1.5548383 ]], dtype=float32)
+Out[8]:
+SentenceClassificationModel(
+  (transformer): BigBirdModel(
+    (embeddings): BigBirdEmbeddings(
+      (word_embeddings): Embedding(50358, 768, padding_idx=0)
+      (position_embeddings): Embedding(4096, 768)
+      (token_type_embeddings): Embedding(2, 768)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (encoder): BigBirdEncoder(
+      (layer): ModuleList(
+        (0): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (1): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (2): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (3): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (4): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (5): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (6): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (7): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (8): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (9): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BigBirdSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BigBirdIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BigBirdOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (10): BigBirdLayer(
+          (attention): BigBirdAttention(
+            (self): BigBirdSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+  )
+  (dropout): Dropout(p=0.1, inplace=False)
+  (classifier): Linear(in_features=768, out_features=1, bias=True)
+  (loss_fct): BCEWithLogitsLoss()
+)
+Out[9]:
+tensor([[1., 1., 1., 0.],
+        [0., 0., 0., 0.],
+        [0., 0., 0., 1.],
+        [1., 1., 1., 1.],
+        [0., 1., 1., 1.],
+        [0., 0., 0., 0.]], dtype=torch.float64)
